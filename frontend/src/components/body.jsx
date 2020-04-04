@@ -5,11 +5,15 @@ class Body extends Component {
     return (
       <div className="container">
         <div className="left-buttons">
-            <button className="btn-up"></button>
-            <button className="btn-down"></button>
+          <button className="btn-up"></button>
+          <div className="upvotes">
+            <p>10000000000000000</p>
+          </div>
+          <button className="btn-down"></button>
         </div>
         <div className="right-content">
           <h2>Lorem ipsum dolor sit, amet consectetur adipisicing elit.</h2>
+
           <p>
             Lorem ipsum dolor, sit amet consectetur adipisicing elit. Fuga,
             reiciendis incidunt perferendis sapiente eligendi dolor, ex illo
