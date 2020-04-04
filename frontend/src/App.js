@@ -1,5 +1,7 @@
 import React from 'react';
 import Nav from './components/nav';
+import Body from './components/body';
+
 
 import './App.css';
 
@@ -8,6 +10,7 @@ class App extends React.Component{
     return (
     <div className="App">
       <Nav />    
+      <Body />
     </div>
   );
   }
