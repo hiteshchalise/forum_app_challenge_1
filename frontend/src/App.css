@@ -23,6 +23,8 @@
 }
 
 .container{
+
+  font-family: Arial, Helvetica, sans-serif;
   display: flex;
   max-width: 60%;
   margin: auto;
@@ -39,27 +41,34 @@
   display: flex;
   justify-content: flex-start;
   flex-direction: column;
-  /* width: 120px; */
   flex: 0 0 50px;
-  padding: 0px;
-  /* margin-right: 10px; */
+  padding: 8px 0px 0px 0px;
   background-color: rgb(240, 240, 240);
 }
 
 .container .left-buttons .upvotes{
   text-align: center;
+  font-weight: bold;
+  margin: 4px 0px 4px 0px;
 }
 
 .container .left-buttons .btn-up, .btn-down{
   text-align: center;
+  display: flex;
+  align-items: center; justify-content: center;
 }
 
 .container .left-buttons .btn-up button{
   width: 20px;
-  height: 20px;
+  height: 15px;
   background: none;
   border: none;
+
+  background-repeat: no-repeat;
   background-image: url(./imgs/up.svg);
+  background-position: center;
+  
+
 }
 
 .container .left-buttons .btn-up button:hover{
@@ -67,11 +76,13 @@
 }
 .container .left-buttons .btn-down button{
   width: 20px;
-  height: 20px;
-
-  background: none;
+  height: 15px;
+  background:none;
   border: none;
   background-image: url(./imgs/down.svg);
+  background-repeat: no-repeat;
+  /* background-position: center; */
+  background-position: top center;
 }
 
 .container .left-buttons .btn-down button:hover{

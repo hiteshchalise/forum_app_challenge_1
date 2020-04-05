@@ -9,7 +9,7 @@ class Body extends Component {
             <button></button>
           </div>
           <div className="upvotes">
-            <p>0</p>
+            <h5>100K</h5>
           </div>
           <div className="btn-down">
             <button></button>
