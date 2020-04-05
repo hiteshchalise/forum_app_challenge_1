@@ -27,7 +27,6 @@
   max-width: 60%;
   margin: auto;
   margin-top: 20px;
-  padding: 0px 6px 2px 0px;
   box-shadow: 0 2px 4px 0 rgba(0,0,0,0.4);
   transition: 0.3s;
 }
@@ -37,9 +36,12 @@
 }
 
 .container .left-buttons {
-  display: block;
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+  /* width: 120px; */
+  flex: 0 0 50px;
   padding: 0px;
-  max-width: 8%;
   /* margin-right: 10px; */
   background-color: rgb(240, 240, 240);
 }
@@ -48,35 +50,37 @@
   text-align: center;
 }
 
-.container .left-buttons .btn-up{
+.container .left-buttons .btn-up, .btn-down{
+  text-align: center;
+}
+
+.container .left-buttons .btn-up button{
   width: 20px;
   height: 20px;
-  margin: 4px;
   background: none;
   border: none;
   background-image: url(./imgs/up.svg);
 }
 
-.container .left-buttons .btn-up:hover{
+.container .left-buttons .btn-up button:hover{
   background-image: url(./imgs/up-active.svg);
 }
-.container .left-buttons .btn-down{
+.container .left-buttons .btn-down button{
   width: 20px;
   height: 20px;
-  margin: 4px;
 
   background: none;
   border: none;
   background-image: url(./imgs/down.svg);
 }
 
-.container .left-buttons .btn-down:hover{
+.container .left-buttons .btn-down button:hover{
   background-image: url(./imgs/down-active.svg);
 }
 
 .container .right-content {
-  margin: auto;
-  padding: 4px 4px;
-  /* background-color: beige; */
+  flex: auto;
+  padding: 8px 8px 8px 16px;
+  background-color: beige;
 }
 
