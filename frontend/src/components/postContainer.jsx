@@ -1,7 +1,11 @@
 import React, { Component } from "react";
-import './style/post-container.css';
+import "./style/post-container.css";
 
 class PostContainer extends Component {
+  constructor(props) {
+    super(props);
+
+  }
   render() {
     return (
       <div className="container">
@@ -18,7 +22,7 @@ class PostContainer extends Component {
         </div>
         <div className="right-content">
           <div className="title">
-            <h2>Lorem ipsum dolor sit, amet consectetur adipisicing elit.</h2>
+            <h2>{this.props.post.post_title}</h2>
           </div>
 
           <div className="sub-title">
@@ -31,12 +35,7 @@ class PostContainer extends Component {
             </div>
           </div>
           <div className="content">
-            <p>
-              Lorem ipsum dolor, sit amet consectetur adipisicing elit. Fuga,
-              reiciendis incidunt perferendis sapiente eligendi dolor, ex illo
-              eveniet temporibus dignissimos molestiae totam, accusamus dolorem
-              tempore consectetur vitae obcaecati. Neque, at!
-            </p>
+            <p>{this.props.post.post_body}</p>
           </div>
         </div>
       </div>

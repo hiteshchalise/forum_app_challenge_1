@@ -1,0 +1,13 @@
+
+
+GET http://localhost:5000/api/posts
+
+###
+
+POST http://localhost:5000/api/posts
+Content-Type: application/json
+
+{
+    "post_title": "Lorem ipsum dolor sit, amet consectetur adipisicing elit.",
+    "post_body": "ChLorem ipsum dolor sit, amet consectetur adipisicing elit. Quisquam non tempore quibusdam rerum fuga molestiae et vitae, quas, cupiditate incidunt aut minus doloribus quia praesentium quis vel? Aut, nihil quis.Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quisquam non tempore quibusdam rerum fuga molestiae et vitae, quas, cupiditate incidunt aut minus doloribus quia praesentium quis vel? Aut, nihil quis.alise"
+}
