@@ -34,7 +34,7 @@ class Body extends Component {
       return <div>Loading...</div>;
     } else {
       let postsContainers = [];
-      items.map((item) => {
+      items.forEach((item)=>{
         postsContainers.push(<PostContainer post={item} />);
       });
       return postsContainers;

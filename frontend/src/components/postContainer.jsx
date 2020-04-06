@@ -2,13 +2,13 @@ import React, { Component } from "react";
 import "./style/post-container.css";
 
 class PostContainer extends Component {
-  constructor(props) {
-    super(props);
+  // constructor(props) {
+  //   super(props);
 
-  }
+  // }
   render() {
     return (
-      <div className="container">
+      <div className="post-container">
         <div className="left-buttons">
           <div className="btn-up">
             <button></button>
