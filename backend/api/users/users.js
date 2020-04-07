@@ -49,4 +49,18 @@ router.post("/", (req, res) => {
   });
 });
 
+router.get("/:name", (req, res)=>{
+  User.findOne({name: req.params.name}).then(user => {
+    if(!user) res.status(400).json({
+      "msg": "User Not Found"
+    })
+
+    res.json({user: {
+      id: user._id,
+      name: user.name,
+      email: user.email
+    }});
+  })
+})
+
 module.exports = router;

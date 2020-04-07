@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
+const config = require("config");
 
 const app = express();
 
@@ -8,7 +9,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors());
 
-const db = require("./config/keys").mongoURI;
+const db = config.get("mongoURI");
 mongoose
   .connect(db, {useNewUrlParser: true, useUnifiedTopology:true, useCreateIndex:true})
   .then(() => console.log("mongodb Connected"))
