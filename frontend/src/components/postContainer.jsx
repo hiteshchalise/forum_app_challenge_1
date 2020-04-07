@@ -2,10 +2,27 @@ import React, { Component } from "react";
 import "./style/post-container.css";
 
 class PostContainer extends Component {
-  // constructor(props) {
-  //   super(props);
 
-  // }
+  getPostedAt() {
+    const dateNow = new Date(Date.now());
+    const postedAtDate = new Date(this.props.post.posted_at);
+
+    let postedAt = "";
+    const timeDifference = dateNow.getTime() - postedAtDate.getTime() ;
+    if (timeDifference < 1000 * 60) {
+      postedAt = Math.round(timeDifference / 1000) + " Seconds Ago";
+    } else if (timeDifference < 1000 * 60 * 60){
+      postedAt = Math.round(timeDifference / 60000) + " Minutes Ago";
+    } else if (timeDifference < 1000 * 60 * 60 * 24){
+      postedAt = Math.round(timeDifference / 3600000) + " Hours Ago";
+    } else if (timeDifference < 1000 * 60 * 60 * 24 * 365){
+      postedAt =  Math.round(timeDifference / (1000 * 60 * 60 * 24)) + " Days Ago";
+    }
+
+    console.log(postedAt);
+    return postedAt;
+  }
+
   render() {
     return (
       <div className="post-container">
@@ -28,10 +45,10 @@ class PostContainer extends Component {
           <div className="sub-title">
             <div className="posted-by">
               <small>Posted By: </small>
-              <small> Hitesh Chalise</small>
+              <small> {this.props.post.posted_by}</small>
             </div>
             <div className="posted-on">
-              <small> 2 hours ago</small>
+              <small> {this.getPostedAt()}</small>
             </div>
           </div>
           <div className="content">
