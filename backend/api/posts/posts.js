@@ -7,9 +7,12 @@ const auth = require("./../../middleware/auth");
 const router = express.Router();
 
 router.get("/", (req, res) => {
-  Post.find({}, (error, posts) => {
+  // Post.find({}, (error, posts) => {
+  //   res.json(posts);
+  // });
+  Post.find({}).sort({"posted_at": "desc"}).limit(15).exec((error, posts) => {
     res.json(posts);
-  });
+  })
 });
 
 // @route POST api/posts/posts

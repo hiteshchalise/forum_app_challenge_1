@@ -31,7 +31,7 @@ class PostContainer extends Component {
             <button></button>
           </div>
           <div className="upvotes">
-            <h5>100K</h5>
+            <h5>1</h5>
           </div>
           <div className="btn-down">
             <button></button>
