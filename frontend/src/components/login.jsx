@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import "./style/login.css";
+import "./style/auth.css";
+import { Link } from "react-router-dom";
 
 class Login extends Component {
   constructor(props) {
@@ -67,10 +68,6 @@ class Login extends Component {
     });
   };
 
-  handleRegister = (event) =>{
-    console.log("registration clicked");
-  }
-
   render() {
     let invalidEmailStyle;
     if (this.state.emailIsValid === false) {
@@ -93,12 +90,12 @@ class Login extends Component {
     }
     return (
       <div className="login-register-container">
-        <div className="register-container" onClick={this.handleRegister}>
-          REGISTER
-        </div>
-        <div className="login-container">
-          <div className="login-title">Login</div>
-          <div className="login-body">
+          <Link to="/register" className="side-container">
+            REGISTER
+          </Link>
+        <div className="main-container">
+          <div className="title">Login</div>
+          <div className="body">
             <form>
               <input
                 type="text"
@@ -106,7 +103,7 @@ class Login extends Component {
                 placeholder="Email"
                 value={this.state.email}
                 onChange={this.handleEmailChange}
-                className="login-input"
+                className="input"
                 style={invalidEmailStyle}
               />
               <br />
@@ -116,7 +113,7 @@ class Login extends Component {
                 placeholder="Password"
                 value={this.state.password}
                 onChange={this.handlePasswordChange}
-                className="login-input"
+                className="input"
                 style={invalidFormStyle}
               />
               <br />
