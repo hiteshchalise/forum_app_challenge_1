@@ -8,6 +8,7 @@ class Body extends Component {
     this.state = {
       error: null,
       isLoaded: false,
+      loggedIn: props.loggedIn,
       items: [],
     };
   }

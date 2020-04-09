@@ -70,6 +70,19 @@ class Register extends Component {
         password: password,
       };
     });
+    if (this.state.confirmPassword === password) {
+      this.setState((prevState, props) => {
+        return {
+          confirmPasswordIsValid: true,
+        };
+      });
+    } else {
+      this.setState((prevState, props) => {
+        return {
+          confirmPasswordIsValid: false,
+        };
+      });
+    }
   };
 
   handleConfirmPasswordChange = (event) => {
