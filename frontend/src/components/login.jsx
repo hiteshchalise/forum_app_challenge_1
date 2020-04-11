@@ -32,9 +32,6 @@ class Login extends Component {
           invalidForm: false,
         };
       });
-      console.log("Email: ", this.state.email);
-      console.log("Password: ", this.state.password);
-
       this.props.loginCallback(this.state.email, this.state.password);
     }
   };

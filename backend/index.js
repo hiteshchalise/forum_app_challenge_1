@@ -7,10 +7,9 @@ const cookieParser = require("cookie-parser");
 const app = express();
 
 app.use(cookieParser());
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cors());
-
 const db = config.get("mongoURI") ;
 mongoose
   .connect(db, {useNewUrlParser: true, useUnifiedTopology:true, useCreateIndex:true})

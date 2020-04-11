@@ -17,6 +17,8 @@ class App extends React.Component {
       loggedIn: false,
       user: {},
     };
+
+    this.loginCallback = this.loginCallback.bind(this); 
   }
 
   componentDidMount() {
@@ -50,19 +52,19 @@ class App extends React.Component {
   }
 
   loginCallback(email, password) {
-    fetch("http://localhost:5000/api/auth/auth", {
+    fetch("http://localhost:5000/api/auth/", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json; charset=utf-8",
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
       },
-      body: {
+      body: JSON.stringify({
         email: email,
-        password: password,
-      }
+        password: password
+      })
     })
-      .then((res) => res.json())
       .then((result) =>{
-        console.log("loggedIn via email password");
+        console.log("loggedIn via email password: ", result);
         this.setState((prevState, props) => {
           return {
             token: result.token,
@@ -90,13 +92,13 @@ class App extends React.Component {
         <div className="App">
           <Switch>
             <Route path="/login">
-              <Login />
+              <Login  loginCallback={this.loginCallback}/>
             </Route>
-            <Route path="/register">
+            <Route path="/register" >
               <Register />
             </Route>
             <Route path="/">
-              <Nav loggedIn={loggedIn} user={user} loginCallback={this.loginCallback}/>
+              <Nav loggedIn={loggedIn} user={user} />
               <Body loggedIn={loggedIn} user={user} />
             </Route>
           </Switch>

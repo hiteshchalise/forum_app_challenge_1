@@ -15,9 +15,12 @@ class Nav extends Component {
     let loginBtn;
     let registerBtn;
     let userName;
+    console.log("props: ", this.props.loginCallback);
     if(!this.state.loggedIn){
-      loginBtn = <Link to="/login/:this.props.loginCallback"> Login </Link>;
-      registerBtn = <Link to="/register"> Register </Link>
+      loginBtn = <Link to={{pathname: '/login', state: {
+
+      }}}> <button> Login </button> </Link>;
+      registerBtn = <Link to="/register"> <button> Register </button> </Link>
     } else {
       loginBtn = null;
       registerBtn = null;
