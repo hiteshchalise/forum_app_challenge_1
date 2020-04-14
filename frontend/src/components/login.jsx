@@ -4,15 +4,8 @@ import { Link, useHistory } from "react-router-dom";
 import { UserContext } from "../userContext";
 
 const Login = (props) => {
-  const [user, setUser] = useContext(UserContext);
+  const [user, ] = useContext(UserContext);
   let history = useHistory();
-
-  // const [email, setEmail] = useState({
-  //   email: "",
-  //   password: "",
-  //   emailIsValid: false,
-  //   invalidForm: false,
-  // });
 
   if(user.loggedIn){
     history.push("/");
@@ -21,26 +14,7 @@ const Login = (props) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailIsValid, setEmailIsValid] = useState(false);
-  const [invalidForm, setInvalidFormState] = useState(false);
-
-  const login = (email, password) => {
-    fetch("http://localhost:5000/api/auth/", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: email,
-        password: password,
-      }),
-    })
-      .then((result) => {
-        console.log("loggedIn via email password: ", result);
-        setUser({ token: result.token, loggedIn: true, user: result.user });
-      })
-      .catch(setUser({ token: "", loggedIn: false, user: {} }));
-  };
+  const [invalidForm, setInvalidFormState] = useState(false)
 
   const handleSubmit = () => {
     if (email === "" || password === "" || !emailIsValid) {
@@ -48,7 +22,7 @@ const Login = (props) => {
       setInvalidFormState(true);
     } else {
       setInvalidFormState(false);
-      login(email, password);
+      props.loginCallback(email, password);
     }
   };
 
