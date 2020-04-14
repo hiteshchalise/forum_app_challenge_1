@@ -1,131 +1,129 @@
-import React, { Component } from "react";
+import React, { useState, useContext } from "react";
 import "./style/auth.css";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
+import { UserContext } from "../userContext";
 
-class Login extends Component {
-  constructor(props) {
-    super(props);
+const Login = (props) => {
+  const [user, setUser] = useContext(UserContext);
+  let history = useHistory();
 
-    this.state = {
-      email: "",
-      password: "",
-      emailIsValid: false,
-      invalidForm: false,
-    };
+  // const [email, setEmail] = useState({
+  //   email: "",
+  //   password: "",
+  //   emailIsValid: false,
+  //   invalidForm: false,
+  // });
+
+  if(user.loggedIn){
+    history.push("/");
   }
 
-  handleSubmit = () => {
-    if (
-      this.state.email === "" ||
-      this.state.password === "" ||
-      !this.state.emailIsValid
-    ) {
-      console.log("invalid form");
-      this.setState((prevState, props) => {
-        return {
-          invalidForm: true,
-        };
-      });
-    } else {
-      this.setState((prevState, props) => {
-        return {
-          invalidForm: false,
-        };
-      });
-      this.props.loginCallback(this.state.email, this.state.password);
-    }
-  };
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [emailIsValid, setEmailIsValid] = useState(false);
+  const [invalidForm, setInvalidFormState] = useState(false);
 
-  handleEmailChange = (event) => {
-    const email = event.target.value;
-    this.setState((prevState, props) => {
-      return {
+  const login = (email, password) => {
+    fetch("http://localhost:5000/api/auth/", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
         email: email,
-      };
-    });
-    if (validateEmail(email)) {
-      this.setState((prevState, props) => {
-        return {
-          emailIsValid: true,
-        };
-      });
-    } else {
-      this.setState((prevState, props) => {
-        return {
-          emailIsValid: false,
-        };
-      });
-    }
-  };
-
-  handlePasswordChange = (event) => {
-    const password = event.target.value;
-    this.setState((prevState, props) => {
-      return {
         password: password,
-      };
-    });
+      }),
+    })
+      .then((result) => {
+        console.log("loggedIn via email password: ", result);
+        setUser({ token: result.token, loggedIn: true, user: result.user });
+      })
+      .catch(setUser({ token: "", loggedIn: false, user: {} }));
   };
 
-  render() {
-    let invalidEmailStyle;
-    if (this.state.emailIsValid === false) {
-      invalidEmailStyle = {
-        borderBottomColor: "red",
-        borderBottomWidth: "2px",
-      };
+  const handleSubmit = () => {
+    if (email === "" || password === "" || !emailIsValid) {
+      console.log("invalid form");
+      setInvalidFormState(true);
     } else {
-      invalidEmailStyle = {};
+      setInvalidFormState(false);
+      login(email, password);
     }
+  };
 
-    let invalidFormStyle;
-    if (this.state.invalidForm || this.state.password === "") {
-      invalidFormStyle = {
-        borderBottomColor: "red",
-        borderBottomWidth: "2px",
-      };
+  const handleEmailChange = (event) => {
+    const email = event.target.value;
+    setEmail(email);
+    if (validateEmail(email)) {
+      setEmailIsValid(true);
     } else {
-      invalidFormStyle = {};
+      setEmailIsValid(false);
     }
-    return (
-      <div className="login-register-container">
-          <Link to="/register" className="side-container">
-            REGISTER
-          </Link>
-        <div className="main-container">
-          <div className="title">Login</div>
-          <div className="body">
-            <form>
-              <input
-                type="text"
-                name="email"
-                placeholder="Email"
-                value={this.state.email}
-                onChange={this.handleEmailChange}
-                className="input"
-                style={invalidEmailStyle}
-              />
-              <br />
-              <input
-                type="password"
-                name="password"
-                placeholder="Password"
-                value={this.state.password}
-                onChange={this.handlePasswordChange}
-                className="input"
-                style={invalidFormStyle}
-              />
-              <br />
-              <button type="button" onClick={this.handleSubmit}>
-                Login
-              </button>
-            </form>
-          </div>
+  };
+
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value);
+  };
+
+  let invalidEmailStyle;
+  if (emailIsValid === false) {
+    invalidEmailStyle = {
+      borderBottomColor: "red",
+      borderBottomWidth: "2px",
+    };
+  } else {
+    invalidEmailStyle = {};
+  }
+
+  let invalidFormStyle;
+  if (invalidForm || password === "") {
+    invalidFormStyle = {
+      borderBottomColor: "red",
+      borderBottomWidth: "2px",
+    };
+  } else {
+    invalidFormStyle = {};
+  }
+
+  return (
+    <div className="login-register-container">
+      <Link to="/register" className="side-container">
+        REGISTER
+      </Link>
+      <div className="main-container">
+        <div className="title">Login</div>
+        <div className="body">
+          <form>
+            <input
+              type="text"
+              name="email"
+              placeholder="Email"
+              value={email}
+              onChange={handleEmailChange}
+              className="input"
+              style={invalidEmailStyle}
+            />
+            <br />
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              value={password}
+              onChange={handlePasswordChange}
+              className="input"
+              style={invalidFormStyle}
+            />
+            <br />
+            <button type="button" onClick={handleSubmit}>
+              Login
+            </button>
+          </form>
         </div>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
 function validateEmail(email) {
   var emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
