@@ -4,7 +4,7 @@ import { Link, useHistory } from "react-router-dom";
 import { UserContext } from "../userContext";
 
 const Login = (props) => {
-  const [user, setUser] = useContext(UserContext);
+  const [, setUser] = useContext(UserContext);
   let history = useHistory();
 
   // if(user.loggedIn){

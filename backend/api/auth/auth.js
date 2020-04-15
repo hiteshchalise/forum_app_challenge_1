@@ -57,6 +57,7 @@ router.post("/", (req, res) => {
 
 router.post("/refresh", (req, res) => {
   const refreshToken = req.cookies.refreshToken;
+  console.log(refreshToken);
   if (!refreshToken) {
     return res
       .status(401)
