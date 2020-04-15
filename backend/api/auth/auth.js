@@ -7,7 +7,7 @@ const config = require("config");
 
 const router = express.Router();
 
-// @route POST api/auth/auth
+// @route POST api/auth/
 // @desc Authenticate user
 // @access Public
 router.post("/", (req, res) => {
@@ -27,7 +27,10 @@ router.post("/", (req, res) => {
         config.get("REFRESH_TOKEN"),
         (error, refreshToken) => {
           if (error) throw error;
-          res.cookie("refreshToken", refreshToken, { httpOnly: true });
+          res.cookie("refreshToken", refreshToken, {
+            expiresIn: Date.now() + 99999999999,
+            httpOnly: true,
+          });
           console.log("cookie is set");
         }
       );
@@ -54,10 +57,11 @@ router.post("/", (req, res) => {
 
 router.post("/refresh", (req, res) => {
   const refreshToken = req.cookies.refreshToken;
-  if (!refreshToken)
-    res
+  if (!refreshToken) {
+    return res
       .status(401)
       .json({ msg: "invalid refreshtoken, refresh action denied" });
+  }
 
   try {
     const decoded = jwt.verify(refreshToken, config.get("REFRESH_TOKEN"));
@@ -82,8 +86,7 @@ router.post("/refresh", (req, res) => {
       );
     });
   } catch (e) {
-    console.log(e);
-    res.status(400).json({ msg: "Token not valid" });
+    // console.log(e);
   }
 });
 
