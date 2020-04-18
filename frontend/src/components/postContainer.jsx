@@ -19,7 +19,6 @@ class PostContainer extends Component {
       postedAt =  Math.round(timeDifference / (1000 * 60 * 60 * 24)) + " Days Ago";
     }
 
-    console.log(postedAt);
     return postedAt;
   }
 

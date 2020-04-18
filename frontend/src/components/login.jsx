@@ -19,6 +19,7 @@ const Login = (props) => {
   const login = (email, password) => {
     fetch("http://localhost:5000/api/auth/", {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },

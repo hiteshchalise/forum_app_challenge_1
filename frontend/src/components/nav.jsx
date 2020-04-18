@@ -4,8 +4,8 @@ import { Link } from "react-router-dom";
 import { UserContext } from "./../userContext";
 
 const Nav = (props) => {
-  const [user, ] = useContext(UserContext);
-  console.log("User: ", user.user.name)
+  // const [user, ] = useContext(UserContext);
+  const { user } = props; 
 
   let loginBtn;
   let registerBtn;
@@ -25,6 +25,7 @@ const Nav = (props) => {
   } else {
     loginBtn = null;
     registerBtn = null;
+    console.log(user);
     userName = <small>Welcome {user.user.name}</small>;
   }
 

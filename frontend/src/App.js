@@ -1,5 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
-import Cookies from "js-cookie";
+import React, { useContext, useState,  useEffect } from "react";
 import Nav from "./components/nav";
 import Body from "./components/body";
 import Login from "./components/login";
@@ -11,49 +10,26 @@ import "./App.css";
 import { UserContext } from "./userContext";
 
 const api = axios.create({
-  baseURL: "http://localhost:5000"
-})
+  baseURL: "http://localhost:5000",
+});
 
 const App = (props) => {
   const [user, setUser] = useContext(UserContext);
   const [loginTried, setLoginTried] = useState(false);
 
-  console.log(
-    "User token: " +
-      user.token +
-      "  refresh token: " +
-      Cookies.get("refreshToken")
-  );
-
   useEffect(() => {
     if (!user.loggedIn && !loginTried) {
       setLoginTried(true);
-      
-      // api("/api/auth/refresh/", { method: "POST", withCredentials: true })
-      // .then(result=>{
-      //   setUser({token:result.token, loggedIn: true, user: result.user});
-      // })
-      // .catch(error=>{
-      //   console.log(error);
-      //   setUser({token: "", loggedIn: false, user:""});
-      // })
-      fetch("http://localhost:5000/api/auth/refresh", {
-        method: "POST",
-        credentials: "include"
-      })
-        .then((res) => {
-          res.json();
-        })
+      api("/api/auth/refresh/", { method: "GET", withCredentials: true })
         .then((result) => {
-          console.log("loggedIn via token: ", result);
-          if (result !== undefined) {
-            setUser({ token: result.token, loggedIn: true, user: result.user });
-            console.log(user);
-          }
+          setUser({ token: result.data.token, loggedIn: true, user: result.data.user });
         })
-        .catch(setUser({ token: "", loggedIn: false, user: {} }));
+        .catch((error) => {
+          console.log(error);
+          setUser({ token: "", loggedIn: false, user: "" });
+        });
     }
-  }, [user, loginTried, setUser]);
+  }, [user, setUser, loginTried, setLoginTried]);
 
   return (
     <Router>
@@ -66,8 +42,8 @@ const App = (props) => {
             <Register />
           </Route>
           <Route path="/">
-            <Nav />
-            <Body />
+            <Nav user={user}/>
+            <Body user={user}/>
           </Route>
         </Switch>
       </div>

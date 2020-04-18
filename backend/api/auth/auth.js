@@ -55,7 +55,7 @@ router.post("/", (req, res) => {
   });
 });
 
-router.post("/refresh", (req, res) => {
+router.get("/refresh", (req, res) => {
   const refreshToken = req.cookies.refreshToken;
   console.log(refreshToken);
   if (!refreshToken) {
