@@ -91,4 +91,14 @@ router.get("/refresh", (req, res) => {
   }
 });
 
+router.post("/logout", (req, res) => {
+  console.log("cookie unset");
+  res.cookie("refreshToken", "", {
+    expiresIn: Date.now(),
+    httpOnly: true,
+  });
+
+  res.json({msg: "cookie distoryed"})
+});
+
 module.exports = router;

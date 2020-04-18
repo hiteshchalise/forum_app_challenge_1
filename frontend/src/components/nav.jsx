@@ -2,31 +2,21 @@ import React, { useContext } from "react";
 import "./style/nav.css";
 import { Link } from "react-router-dom";
 import { UserContext } from "./../userContext";
+import api from "../utils/api";
 
 const Nav = (props) => {
-  // const [user, ] = useContext(UserContext);
-  const { user } = props; 
+  const [user, setUser] = useContext(UserContext);
 
-  let loginBtn;
-  let registerBtn;
-  let userName;
-
-  if (!user.loggedIn) {
-    loginBtn = (
-      <Link to="/login">
-        <button> Login </button>
-      </Link>
+  const onLogout = () => {
+    api('/api/auth/logout', {method: "POST", withCredentials:true}).then(
+      (result) => {
+        setUser({ token: "", loggedIn: false, user: "" });
+      }
+    ).catch(
+      (error) => {
+        console.error(error); 
+        setUser({ token: "", loggedIn: false, user: "" });}
     );
-    registerBtn = (
-      <Link to="/register">
-        <button> Register </button>
-      </Link>
-    );
-  } else {
-    loginBtn = null;
-    registerBtn = null;
-    console.log(user);
-    userName = <small>Welcome {user.user.name}</small>;
   }
 
   return (
@@ -35,9 +25,21 @@ const Nav = (props) => {
         <h1>Forum App</h1>
       </div>
       <div className="nav-btn">
-        {loginBtn}
-        {registerBtn}
-        {userName}
+        {user.loggedIn ? (
+          <div>
+            <small>Welcome {user.user.name}  </small>
+            <button onClick={onLogout}>Logout</button>
+          </div>
+        ) : (
+          <div className="nav-btn">
+            <Link to="/login">
+              <button> Login </button>
+            </Link>
+            <Link to="/register">
+              <button> Register </button>
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );

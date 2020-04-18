@@ -4,14 +4,11 @@ import Body from "./components/body";
 import Login from "./components/login";
 import Register from "./components/register";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import axios from "axios";
+import api from "./utils/api";
 
 import "./App.css";
 import { UserContext } from "./userContext";
 
-const api = axios.create({
-  baseURL: "http://localhost:5000",
-});
 
 const App = (props) => {
   const [user, setUser] = useContext(UserContext);
