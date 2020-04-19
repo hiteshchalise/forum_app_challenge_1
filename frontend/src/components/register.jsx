@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./style/auth.css";
 import { Link, useHistory } from "react-router-dom";
 import { UserContext } from "../userContext";
 import { useContext } from "react";
+import api from "../utils/api";
 
 const Register = (props) => {
   const [name, setName] = useState("");
@@ -12,12 +13,32 @@ const Register = (props) => {
   const [emailIsValid, setEmailIsValid] = useState(false);
   const [confirmPasswordIsValid, setConfirmPasswordIsValid] = useState(false);
 
-  const [user,] = useContext(UserContext);
+  const [user, setUser] = useContext(UserContext);
   let history = useHistory();
 
-  if(user.loggedIn) {
-    history.push("/");
-  }
+  useEffect(() => {
+    if (user.loggedIn) {
+      history.push("/");
+    }
+  }, [user, history]);
+
+  const register = (name, email, password) => {
+    api("/api/users", {
+      method: "POST",
+      withCredentials: true,
+      data: {
+        name: name,
+        email: email,
+        password: password,
+      },
+    }).then((result)=>{
+      console.log("username: " + result.data.user.name);
+      setUser({user: result.data.user, loggedIn: true, token: result.data.token});
+    }).catch((error)=>{
+      console.log(error);
+      setUser({user: "", loggedIn: false, token: ""});
+    });
+  };
 
   const handleSubmit = () => {
     if (
@@ -32,6 +53,8 @@ const Register = (props) => {
       console.log("Name: ", name);
       console.log("Email: ", email);
       console.log("Password: ", password);
+
+      register(name, email, password);
     }
   };
 

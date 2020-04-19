@@ -2,14 +2,17 @@ import React, { useState, useContext } from "react";
 import "./style/auth.css";
 import { Link, useHistory } from "react-router-dom";
 import { UserContext } from "../userContext";
+import { useEffect } from "react";
 
 const Login = (props) => {
-  const [, setUser] = useContext(UserContext);
+  const [user, setUser] = useContext(UserContext);
   let history = useHistory();
 
-  // if(user.loggedIn){
-  //   history.push("/");
-  // }
+  useEffect(()=>{
+    if(user.loggedIn){
+      history.push("/");
+    }
+  }, [user, history])
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

@@ -7,11 +7,12 @@ const router = express.Router();
 // User Model
 const User = require("../../model/User");
 
-// @route POST api/users/users
+// @route POST api/users
 // @desc Register new user
 // @access Public
 router.post("/", (req, res) => {
   const { name, email, password } = req.body;
+  console.log("name: " + name + " email: " + email + " password: " + password);
 
   if (!name || !email || !password) {
     return res.status(400).json({
@@ -35,6 +36,17 @@ router.post("/", (req, res) => {
             newUser.password = hash;
             newUser.save()
             .then(user=>{
+
+              jwt.sign({id: user._id}, config.get("REFRESH_TOKEN"), (error, refreshToken)=>{
+                if(error) throw error;
+
+                res.cookie("refreshToken", refreshToken, {
+                  expiresIn: Date.now() + 999999999999,
+                  httpOnly: true
+                });
+                console.log("cookie is set");
+              })
+
               jwt.sign({id: user._id}, config.get("ACCESS_TOKEN_SECRET"), {expiresIn: 3600}, (error, token)=>{
                 if(error) throw error;
                 res.json({
