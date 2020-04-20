@@ -42,19 +42,15 @@ router.post("/", auth, (req, res) => {
   });
 });
 
-// @route GET api/posts/posts
+// @route GET api/posts/:postId
 // @desc Get post with postId
 // @access Public
 router.get("/:postId", (req, res) => {
-  const foundPost = posts.some((post) => post.id === req.params.postId);
+  const foundPost = Post.findById(req.params.postId, (error, post)=>{
+    if(error) throw error;
 
-  if (foundPost) {
-    res.json(posts.filter((post) => post.id === req.params.postId));
-  } else {
-    res.status(404).json({
-      msg: "There is no post with such ID.",
-    });
-  }
+    res.json(post);
+  })
 });
 
 module.exports = router;

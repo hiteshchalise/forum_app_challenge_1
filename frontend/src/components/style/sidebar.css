@@ -1,0 +1,23 @@
+
+.sidebar-description{
+    margin-top: 20px;
+    padding: 16px 16px;
+    border: 1px solid rgba(0,0,0, 0.2);
+  /* box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.4); */
+}
+
+.sidebar-description .banner{
+    margin-bottom: 16px;
+}
+
+.sidebar-description .description{
+  margin-bottom: 16px;
+}
+
+.sidebar-description button {
+  width: 100%;
+  background-color: rgb(34, 168, 90);
+  border-style: none;
+  padding: 10px;
+  border-radius: 4px;
+}

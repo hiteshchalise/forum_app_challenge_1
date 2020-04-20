@@ -4,6 +4,7 @@ import Body from "./components/body";
 import Login from "./components/login";
 import Register from "./components/register";
 import CreatePost from "./components/createPost";
+import PostDetail from "./components/postDetail";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import api from "./utils/api";
 
@@ -41,6 +42,9 @@ const App = (props) => {
           </Route>
           <Route path="/createPost">
             <CreatePost />
+          </Route>
+          <Route path="/postDetail">
+            <PostDetail/>
           </Route>
           <Route exact path="/">
             <Nav />

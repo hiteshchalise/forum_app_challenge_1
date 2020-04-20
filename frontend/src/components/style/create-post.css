@@ -13,11 +13,11 @@
   margin: 24px;
 }
 
-h1 {
+.create-post .create-post-banner h1 {
   color: #3f3f3f;
 }
 
-.title-input input {
+.create-post .title-input input {
   width: 100%;
   border: 2px solid rgba(0, 0, 0, 0.26); 
   border-radius: 4px;
@@ -26,7 +26,7 @@ h1 {
   box-sizing: border-box;
 }
 
-.body-input textarea {
+.create-post .body-input textarea {
   width: 100%;
   border: 2px solid rgba(0, 0, 0, 0.26);  
   border-radius: 4px;
@@ -35,7 +35,7 @@ h1 {
   box-sizing: border-box;
 }
 
-.submit button {
+.create-post .submit button {
     margin-top: 24px;
   width: 100%;
   background-color: rgb(34, 168, 90);

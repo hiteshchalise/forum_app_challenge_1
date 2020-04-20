@@ -51,7 +51,7 @@
   margin-top: 20px;
 }
 
-.login-register-container .main-container .input {
+.login-register-container .main-container .body .input {
   transform: translateZ(0);
   outline: 0;
   width: 95%;
@@ -67,7 +67,7 @@
   background-color: #fcfcfb;
 }
 
-.login-register-container .main-container .input:hover {
+.login-register-container .main-container .body .input:hover {
   border: 1px solid rgba(0, 0, 0, 0.5);
 }
 
