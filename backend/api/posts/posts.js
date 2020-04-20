@@ -15,10 +15,11 @@ router.get("/", (req, res) => {
   })
 });
 
-// @route POST api/posts/posts
+// @route POST api/posts/
 // @desc Submit new post
 // @access Private
 router.post("/", auth, (req, res) => {
+  
   User.findById(req.user.id, (error, user) => {
     if (error) throw error;
 

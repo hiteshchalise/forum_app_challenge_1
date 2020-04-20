@@ -1,19 +1,18 @@
+#main-nav {
+  width: 100%;
+  display: flex;
+  font-family: Arial, Helvetica, sans-serif;
+  justify-content: space-around;
+  align-items: center;
+  min-height: 10vh;
+  background-color: #073042;
+  color: #fff;
+}
 
-#main-nav{
-    display: flex;
-    font-family: Arial, Helvetica, sans-serif;
-    justify-content: space-around;
-    align-items: center;
-    min-height: 10vh;
-    background-color: #073042;
-    color: #fff;
-  }
-  
-  .app-name{
-    min-width: 40%;
-  }
-  
-  .nav-btn button{
-    margin-right: 8px;
-  }
-  
+.app-name {
+  min-width: 40%;
+}
+
+.nav-btn button {
+  margin-right: 8px;
+}

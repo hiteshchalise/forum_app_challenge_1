@@ -1,0 +1,50 @@
+.body {
+  box-sizing: border-box;
+  max-width: 100%;
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.posts {
+  max-width: 640px;
+}
+
+.sidebar {
+  margin-left: 24px;
+  margin-top: 0px;
+  display: block;
+  flex: 0 0 312px;
+  width: 312px;
+  position: static;
+}
+
+.sidebar .sidebar-description{
+    margin-top: 20px;
+    padding: 16px 16px;
+  box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.4);
+}
+
+.sidebar .sidebar-description .banner{
+    margin-bottom: 16px;
+}
+
+.sidebar .sidebar-description .description{
+  margin-bottom: 16px;
+}
+
+.sidebar .sidebar-description button {
+  width: 100%;
+  background-color: rgb(34, 168, 90);
+  border-style: none;
+  padding: 10px;
+  border-radius: 4px;
+}
+
+@media screen and (max-width: 950px) {
+  .sidebar {
+    display: none !important;
+  }
+}

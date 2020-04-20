@@ -1,7 +1,6 @@
 .post-container {
   font-family: Arial, Helvetica, sans-serif;
   display: flex;
-  max-width: 60%;
   margin: auto;
   margin-top: 20px;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.4);

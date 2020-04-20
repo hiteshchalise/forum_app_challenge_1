@@ -1,43 +1,34 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 import PostContainer from "./postContainer";
+import { useEffect } from "react";
+import api from "../utils/api";
+import SideBar from "./sidebar";
+import "./style/body.css";
 
-class Body extends Component {
-  constructor(props) {
-    super(props);
+const Body = (props) => {
+      const [items, setItems] = useState([]);
 
-    this.state = {
-      error: null,
-      isLoaded: false,
-      loggedIn: props.loggedIn,
-      items: [],
-    };
-  }
 
-  componentDidMount() {
-    fetch("http://localhost:5000/api/posts")
-      .then((res) => res.json())
-      .then((result) => {
-        this.setState({
-          isLoaded: true,
-          items: result,
-        });
-      });
-  }
+  useEffect(()=>{
 
-  render() {
-    const { error, isLoaded, items } = this.state;
-    if (error) {
-      return <div>Error: {error}</div>;
-    } else if (!isLoaded) {
-      return <div>Loading...</div>;
-    } else {
-      let postsContainers = [];
-      items.forEach((item) => {
-        postsContainers.push(<PostContainer post={item} key={item._id}/>);
-      });
-      return postsContainers;
-    }
-  }
+    api("/api/posts").then((result) => {
+      setItems(result.data);
+    }).catch((error) => {
+      console.log(error);
+    });
+  }, [])
+
+  let postContainers = [];
+  items.forEach((item)=>{
+    postContainers.push(<PostContainer post={item} key={item._id} />)
+  })
+  return (
+    <div className="body">
+      <div className="posts">{postContainers}</div>
+      <div className="sidebar"><SideBar/></div>
+    </div>
+  );
+
 }
 
 export default Body;
