@@ -6,20 +6,26 @@ import api from "../utils/api";
 
 const PostDetail = (props) => {
     const data = useLocation();
-    const [post, setPost] = useState({});
+    const [post, setPost] = useState({
+      postId: data.state.post._id,
+      post_title: data.state.post.post_title,
+      posted_by: data.state.post.posted_by,
+      posted_at: data.state.post.posted_at,
+      post_body:  data.state.post.post_body
+    });
 
-    useEffect(() => {
-        api.get(`/api/posts/${data.state.postId}`).then((result)=>{
+    useEffect(() => {  
+        api.get(`/api/posts/${post.postId}`).then((result)=>{
             setPost(result.data);
         }).catch((error)=>{
             console.log(error);
-            setPost(cachedDetailPost);
+            // setPost(cachedDetailPost);
         });
     }, [data])
 
     const getPostedAt = () => {
         const dateNow = new Date(Date.now());
-        const postedAtDate = new Date(data.posted_at);
+        const postedAtDate = new Date(data.state.post.posted_at);
     
         let postedAt = "";
         const timeDifference = dateNow.getTime() - postedAtDate.getTime();

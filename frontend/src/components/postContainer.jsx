@@ -26,7 +26,6 @@ const PostContainer = (props) => {
   }
 
   const getPostPreview = () => {
-    console.log(props.post);
     const post = props.post.post_body;
 
     if (props.post.post_body.length > 750) {
@@ -41,7 +40,7 @@ const PostContainer = (props) => {
   // }
 
   return (
-    <Link to={{pathname: "/postDetail", state: {postId: props.post._id}}} className="post-container-link">
+    <Link to={{pathname: "/postDetail", state: {post: props.post}}} className="post-container-link">
       <div className="post-container">
         <div className="left-buttons">
           <div className="btn-up">

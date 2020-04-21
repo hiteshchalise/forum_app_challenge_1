@@ -24,6 +24,7 @@ const CreatePost = (props) => {
     }
 
     const handleSubmit = () => {
+        console.log(user.token);
         api.post("/api/posts/", {
             "post_title": title,
             "post_body": body

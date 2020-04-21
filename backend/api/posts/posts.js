@@ -10,7 +10,7 @@ router.get("/", (req, res) => {
   // Post.find({}, (error, posts) => {
   //   res.json(posts);
   // });
-  Post.find({}).sort({"posted_at": "desc"}).limit(15).exec((error, posts) => {
+  Post.find({}).sort({ "posted_at": "desc" }).limit(15).exec((error, posts) => {
     res.json(posts);
   })
 });
@@ -19,7 +19,7 @@ router.get("/", (req, res) => {
 // @desc Submit new post
 // @access Private
 router.post("/", auth, (req, res) => {
-  
+
   User.findById(req.user.id, (error, user) => {
     if (error) throw error;
 
@@ -46,11 +46,18 @@ router.post("/", auth, (req, res) => {
 // @desc Get post with postId
 // @access Public
 router.get("/:postId", (req, res) => {
-  const foundPost = Post.findById(req.params.postId, (error, post)=>{
-    if(error) throw error;
+  console.log(req.params.postId);
+  if (req.params.postId === 'undefined') {
+    console.log("here");
+    res.status(400).json({ msg: "no postId found" });
+  }
+  else {
+    const foundPost = Post.findById(req.params.postId, (error, post) => {
+      if (error) throw error;
 
-    res.json(post);
-  })
+      res.json(post);
+    })
+  }
 });
 
 module.exports = router;
