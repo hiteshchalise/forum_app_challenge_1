@@ -1,0 +1,93 @@
+.container {
+    font-family: Arial, Helvetica, sans-serif;
+    display: flex;
+    margin: 20px auto auto;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    background-color: white;
+    transition: 0.3s;
+}
+
+.container:hover {
+    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.4);
+}
+
+.container .left-section {
+    flex: 0 0 50px;
+    justify-content: flex-start;
+    display: flex;
+    flex-direction: column;
+    padding: 8px 0px 0px 0px;
+    background-color: rgb(240, 240, 240);
+}
+
+.container .left-section .upvotes {
+    text-align: center;
+    font-weight: bold;
+    margin: 4px 0px 4px 0px;
+}
+
+.container .left-section .btn-up,
+.btn-down {
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.container .left-section .btn-up button {
+    width: 20px;
+    height: 15px;
+    background: none;
+    border: none;
+    background-repeat: no-repeat;
+    background-image: url(../../imgs/up.svg);
+    background-position: center;
+}
+
+.container .left-section .btn-up button:hover {
+    background-image: url(../../imgs/up-active.svg);
+}
+
+.container .left-section .btn-down button {
+    width: 20px;
+    height: 15px;
+    border: none;
+    background: none;
+    background-image: url(../../imgs/down.svg);
+    background-repeat: no-repeat;
+    background-position: top center;
+}
+
+.container .left-section .btn-down button:hover {
+    background-image: url(../../imgs/down-active.svg);
+}
+
+.container .right-section {
+    flex: auto;
+    padding: 8px 8px 8px 16px;
+}
+
+.container .right-section .info-section {
+}
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.container .right-section .content-section {
+    margin-top: 4px;
+    margin-bottom: 10px;
+}
+
+.subitem {
+    margin-right: 8px;
+}
+
+.width-70 {
+    width: 70%;
+}
+
+.margin-0 {
+    margin: 0;
+}

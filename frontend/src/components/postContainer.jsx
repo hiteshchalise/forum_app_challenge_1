@@ -1,5 +1,5 @@
 import React from "react";
-import "./style/post-container.css";
+import "./style/container.css";
 import { Link } from "react-router-dom";
 
 const PostContainer = (props) => {
@@ -40,9 +40,16 @@ const PostContainer = (props) => {
   // }
 
   return (
-    <Link to={{pathname: "/postDetail", state: {post: props.post}}} className="post-container-link">
-      <div className="post-container">
-        <div className="left-buttons">
+    <Link
+      to={{ pathname: "/postDetail", state: { post: props.post } }}
+      className="post-container-link"
+      style={{
+        "textDecoration": "none",
+        "color": "#141414"
+      }}
+    >
+      <div className="container">
+        <div className="left-section">
           <div className="btn-up">
             <button></button>
           </div>
@@ -53,21 +60,14 @@ const PostContainer = (props) => {
             <button></button>
           </div>
         </div>
-        <div className="right-content">
-          <div className="title">
+        <div className="right-section">
+          <div className="info-section">
             <h2>{props.post.post_title}</h2>
+            <small >Posted By: </small>
+            <small className="subitem"> {props.post.posted_by}</small>
+            <small className="subitem"> {getPostedAt()}</small>
           </div>
-
-          <div className="sub-title">
-            <div className="posted-by">
-              <small>Posted By: </small>
-              <small> {props.post.posted_by}</small>
-            </div>
-            <div className="posted-on">
-              <small> {getPostedAt()}</small>
-            </div>
-          </div>
-          <div className="content">
+          <div className="content-section">
             {getPostPreview()}
           </div>
         </div>

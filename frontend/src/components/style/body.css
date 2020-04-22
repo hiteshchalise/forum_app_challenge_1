@@ -1,28 +1,28 @@
 .body {
-  box-sizing: border-box;
-  max-width: 100%;
-  padding: 20px 24px;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  margin: 0 auto;
+    box-sizing: border-box;
+    max-width: 100%;
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin: 0 auto;
 }
 
 .body .posts {
-  max-width: 640px;
+    max-width: 640px;
 }
 
 .body .sidebar {
-  margin-left: 24px;
-  margin-top: 0px;
-  display: block;
-  flex: 0 0 312px;
-  width: 312px;
-  position: static;
+    margin-left: 24px;
+    margin-top: 0px;
+    display: block;
+    flex: 0 0 312px;
+    width: 312px;
+    position: static;
 }
 
 @media screen and (max-width: 950px) {
-  .sidebar {
-    display: none !important;
-  }
+    .sidebar {
+        display: none !important;
+    }
 }
