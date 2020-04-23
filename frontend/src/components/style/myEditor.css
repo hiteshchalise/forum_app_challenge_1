@@ -1,0 +1,38 @@
+.editor-container {
+    background-color: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    margin-bottom: 12px;
+}
+
+.editor-container .main-section .DraftEditor-root {
+    background-color: rgb(245, 245, 245);
+    height: 150px;
+    width: 100%;
+    overflow-y: auto;
+}
+.editor-container .main-section .DraftEditor-editorContainer,
+.public-DraftEditor-content {
+    height: 100%;
+}
+
+.editor-container .footer-section {
+    height: 40px;
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.editor-container .footer-section button {
+    height: 40px;
+    width: 40px;
+    border-color: transparent;
+    font-weight: bold;
+    font-size: medium;
+}
+
+.editor-container .footer-section button:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.editor-container .footer-section .active {
+    background-color: rgba(0, 0, 0, 0.2);
+}

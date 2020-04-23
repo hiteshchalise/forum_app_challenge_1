@@ -3,12 +3,13 @@ import { useLocation } from "react-router-dom";
 import "./style/post-detail.css";
 import { useEffect, useState } from "react";
 import api from "../utils/api";
-import Comment from "./comment"
+import Comment from "./comment";
+import AddComment from "./addComment";
 
 const PostDetail = (props) => {
   const data = useLocation();
   const [post, setPost] = useState({
-    postId: data.state.post._id,
+    _id: data.state.post._id,
     post_title: data.state.post.post_title,
     posted_by: data.state.post.posted_by,
     posted_at: data.state.post.posted_at,
@@ -17,13 +18,13 @@ const PostDetail = (props) => {
   });
 
   useEffect(() => {
-    // api.get(`/api/posts/${post.postId}`).then((result) => {
-    //   setPost(result.data);
-    // }).catch((error) => {
-    //   console.log(error);
-    // });
-    setPost(cachedDetailPost);
-  }, [data])
+    api.get(`/api/posts/${post._id}`).then((result) => {
+      setPost(result.data);
+    }).catch((error) => {
+      console.log(error);
+    });
+    // setPost(cachedDetailPost);
+  }, [post._id])
 
   const getPostedAt = () => {
     const dateNow = new Date(Date.now());
@@ -45,11 +46,15 @@ const PostDetail = (props) => {
   }
 
   const comments = [];
-  post.comments.forEach(
-    (comment) => {
-      comments.push(<Comment comment={comment} key={comment._id} />);
+  useEffect(() => {
+    if (post.comments !== undefined) {
+      post.comments.forEach(
+        (comment) => {
+          comments.push(<Comment comment={comment} key={comment._id} />);
+        }
+      )
     }
-  )
+  }, [post, comments]);
 
 
   return (
@@ -84,6 +89,9 @@ const PostDetail = (props) => {
           </div>
           <div className="content-section">
             {post.post_body}
+          </div>
+          <div className="add-comment">
+            <AddComment />
           </div>
           <div className="commentSection">
             {comments.length === 0 ? <div>No Comments</div> : <div>{comments}</div>}

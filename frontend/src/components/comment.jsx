@@ -25,13 +25,8 @@ const Comment = (props) => {
 
 
     return (
-        // <div className="comment_body">
-        //     <div className="comment_head"></div>
-        //     .comment_
-        //     <p>{props.comment.comment_body}</p>
-        // </div>
         <div className="comment">
-            <div className="container margin-0">
+            <div className="container margin-0 border-0 ">
                 <div className="left-section">
                     <div className="btn-up">
                         <button></button>
@@ -51,9 +46,6 @@ const Comment = (props) => {
                     <div className="content-section">
                         <p>{props.comment.comment_body}</p>
                     </div>
-                    {/* <div className="commentSection">
-                        {comments.length === 0 ? <div>No Comments</div> : <div>{comments}</div>}
-                    </div> */}
                 </div>
             </div>
         </div>
