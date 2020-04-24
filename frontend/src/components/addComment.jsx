@@ -11,19 +11,19 @@ const AddComment = (props) => {
 
 
     return (
-        !user.loggedIn ?
-            <div className="rounded-container flex-row" style={{ justifyContent: "space-between" }}>
-                <p> You need to be logged in to comment</p>
-                <div>
-                    <Link className="button" style={{ marginRight: "4px" }} to="/register">Sign Up</Link>
-                    <Link className="button" to="/login">Login</Link>
-                </div>
-            </div> :
-            <div>
-                <small> Comment as: {user.user.name}</small>
-                {/* <input placeholder="" style={{ width: "70%" }}></input> */}
-                <MyEditor className="rounded-container" />
-            </div>
+        // !user.loggedIn ?
+        //     <div className="rounded-container flex-row" style={{ justifyContent: "space-between" }}>
+        //         <p> You need to be logged in to comment</p>
+        //         <div>
+        //             <Link className="button" style={{ marginRight: "4px" }} to="/register">Sign Up</Link>
+        //             <Link className="button" to="/login">Login</Link>
+        //         </div>
+        //     </div> :
+        <div>
+            <small> Comment as: {user.user.name}</small>
+            {/* <input placeholder="" style={{ width: "70%" }}></input> */}
+            <MyEditor className="rounded-container" />
+        </div>
     )
 }
 
