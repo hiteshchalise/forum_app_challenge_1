@@ -42,9 +42,14 @@
 }
 
 .blockquote {
+    background: #eeeeee;
     margin-left: 12px;
-    color: rgb(121, 120, 120);
-    font-family: "Hoefler Text", Georgia, serif;
+    border-left: 5px solid rgb(133, 133, 133);
+    padding-left: 10px;
     font-style: italic;
-    text-align: center;
+}
+
+.header {
+    font-size: 36px;
+    line-height: 40px;
 }

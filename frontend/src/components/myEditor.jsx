@@ -16,6 +16,8 @@ const blockStyleFn = (contentBlock) => {
     const type = contentBlock.getType();
     if (type === 'blockquote') {
         return 'blockquote';
+    } else if (type === 'header') {
+        return 'header';
     }
 }
 
@@ -31,7 +33,9 @@ const MyEditor = (props) => {
     const [isStrikethrough, setIsStrikethrough] = useState(false);
     const [isCode, setIsCode] = useState(false);
     const [isSuperscript, setIsSuperscript] = useState(false);
+
     const [isBlockQuote, setIsBlockQuote] = useState(false);
+    const [isHeader, setIsHeader] = useState(false);
 
 
     useEffect(() => {
@@ -44,7 +48,9 @@ const MyEditor = (props) => {
         setIsStrikethrough(inlineStyle.has("STRIKETHROUGH"))
         setIsCode(inlineStyle.has("CODE"))
         setIsSuperscript(inlineStyle.has("SUPERSCRIPT"))
+
         setIsBlockQuote(block.getType() === 'blockquote')
+        setIsHeader(block.getType() === 'header')
 
     }, [editorState])
 
@@ -83,6 +89,11 @@ const MyEditor = (props) => {
         setEditorState(RichUtils.toggleBlockType(editorState, 'blockquote'))
     }
 
+    const handleHeader = () => {
+        setIsHeader(!isHeader);
+        setEditorState(RichUtils.toggleBlockType(editorState, 'header'))
+    }
+
     return (
         <div className="editor-container">
             <div className="main-section">
@@ -118,16 +129,11 @@ const MyEditor = (props) => {
                 <abbr title="BlockQuote">
                     <button onClick={handleBlockQuote} className={isBlockQuote ? "active" : "default"}><h2 >"</h2></button>
                 </abbr>
+                <abbr title="Header">
+                    <button onClick={handleHeader} className={isHeader ? "active" : "default"}>H1</button>
+                </abbr>
             </div>
-            <big>hehe</big>
-            <small>small</small>
-            The <abbr title="World Health Organization">WHO</abbr> was founded in 1948.<em>Emphasized text</em> <p>He named his car <i>The lightning</i>, because it was very fast.</p> <p>This text contains <sup>superscript</sup> text.</p>
-            <br />
-            <blockquote >
-                For 50 years, WWF has been protecting the future of nature. The world's leading conservation organization, WWF works in 100 countries and is supported by 1.2 million members in the United States and close to 5 million globally.
-            </blockquote>
 
-            akka
         </div>
     )
 }
