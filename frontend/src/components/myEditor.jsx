@@ -35,7 +35,8 @@ const MyEditor = (props) => {
 
 
     useEffect(() => {
-        const currentFocus = editorState.getSelection().getFocusKey()
+        const currentFocus = editorState.getSelection().getFocusKey();
+        const block = editorState.getCurrentContent().getBlockForKey(currentFocus);
         const inlineStyle = editorState.getCurrentInlineStyle(currentFocus);
         setIsBold(inlineStyle.has("BOLD"))
         setIsItalic(inlineStyle.has("ITALIC"))
@@ -43,6 +44,7 @@ const MyEditor = (props) => {
         setIsStrikethrough(inlineStyle.has("STRIKETHROUGH"))
         setIsCode(inlineStyle.has("CODE"))
         setIsSuperscript(inlineStyle.has("SUPERSCRIPT"))
+        setIsBlockQuote(block.getType() === 'blockquote')
 
     }, [editorState])
 
