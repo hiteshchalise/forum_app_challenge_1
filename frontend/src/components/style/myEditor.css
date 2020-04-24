@@ -19,6 +19,7 @@
 .editor-container .footer-section {
     height: 40px;
     background-color: rgba(0, 0, 0, 0.1);
+    display: flex;
 }
 
 .editor-container .footer-section button {
@@ -38,4 +39,12 @@
 
 .editor-container .footer-section .active {
     background-color: rgba(0, 0, 0, 0.2);
+}
+
+.blockquote {
+    margin-left: 12px;
+    color: rgb(121, 120, 120);
+    font-family: "Hoefler Text", Georgia, serif;
+    font-style: italic;
+    text-align: center;
 }
