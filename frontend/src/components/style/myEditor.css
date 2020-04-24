@@ -25,10 +25,13 @@
     height: 40px;
     width: 40px;
     border-color: transparent;
+    transition: all 0.3s ease-in-out;
     font-weight: bold;
     font-size: medium;
 }
-
+.editor-container .footer-section abbr {
+    text-decoration: none;
+}
 .editor-container .footer-section button:hover {
     background-color: rgba(0, 0, 0, 0.2);
 }

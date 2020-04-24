@@ -12,6 +12,7 @@ const MyEditor = (props) => {
     const [isItalic, setIsItalic] = useState(false);
     const [isUnderlined, setIsUnderlined] = useState(false);
     const [isStrikethrough, setIsStrikethrough] = useState(false);
+    const [isCode, setIsCode] = useState(false);
 
 
     useEffect(() => {
@@ -21,6 +22,7 @@ const MyEditor = (props) => {
         setIsItalic(inlineStyle.has("ITALIC"))
         setIsUnderlined(inlineStyle.has("UNDERLINE"))
         setIsStrikethrough(inlineStyle.has("STRIKETHROUGH"))
+        setIsCode(inlineStyle.has("CODE"))
     }, [editorState])
 
     const handleBold = () => {
@@ -43,17 +45,39 @@ const MyEditor = (props) => {
         setEditorState(RichUtils.toggleInlineStyle(editorState, 'STRIKETHROUGH'))
     }
 
+    const handleCode = () => {
+        setIsCode(!isCode);
+        setEditorState(RichUtils.toggleInlineStyle(editorState, 'CODE'))
+    }
+
     return (
         <div className="editor-container">
             <div className="main-section">
                 <Editor editorState={editorState} onChange={setEditorState} />
             </div>
             <div className="footer-section">
-                <button onClick={handleBold} className={isBold ? "active" : "default"}>B</button>
-                <button onClick={handleItalic} className={isItalic ? "active" : "default"} style={{ fontStyle: "italic" }}>i</button>
-                <button onClick={handleUnderlined} className={isUnderlined ? "active" : "default"}><u>U</u></button>
-                <button onClick={handleStrikethrough} className={isStrikethrough ? "active" : "default"}><s>S</s></button>
+                <abbr title="Bold">
+                    <button onClick={handleBold}
+                        className={isBold ? "active" : "default"}>B</button>
+                </abbr>
+                <abbr title="Italic">
+                    <button onClick={handleItalic}
+                        className={isItalic ? "active" : "default"}
+                        style={{ fontStyle: "italic" }}>i</button>
+                </abbr>
+                <abbr title="Underline">
+                    <button onClick={handleUnderlined} className={isUnderlined ? "active" : "default"}><u>U</u></button>
+                </abbr>
+                <abbr title="Strikethrough">
+                    <button onClick={handleStrikethrough} className={isStrikethrough ? "active" : "default"}><s>S</s></button>
+                </abbr>
+                <abbr title="Code">
+                    <button onClick={handleCode} className={isCode ? "active" : "default"}><code>{"</>"}</code></button>
+                </abbr>
             </div>
+            <big>hehe</big>
+            <small>small</small>
+            The <abbr title="World Health Organization">WHO</abbr> was founded in 1948.<em>Emphasized text</em> <p>He named his car <i>The lightning</i>, because it was very fast.</p> <p>This text contains <sup>superscript</sup> text.</p>
         </div>
     )
 }
