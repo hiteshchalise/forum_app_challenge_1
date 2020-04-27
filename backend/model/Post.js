@@ -11,13 +11,27 @@ const PostSchema = new Schema({
         require: true
     },
     posted_by: {
-        type: String, 
+        type: String,
         require: true
     },
     posted_at: {
         type: Date,
         default: Date.now
-    }
+    },
+    comments: [{
+        comment_body: {
+            type: String,
+            require: true
+        },
+        commented_by: {
+            type: String,
+            require: true
+        },
+        commented_at: {
+            type: Date,
+            default: Date.now
+        }
+    }]
 });
 
 module.exports = Post = mongoose.model('post', PostSchema);

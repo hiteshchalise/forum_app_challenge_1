@@ -5,10 +5,13 @@ import { useHistory } from "react-router-dom";
 import { useContext } from "react";
 import { UserContext } from "../userContext";
 
+import MyEditor from "./myEditor";
+import 'draft-js/dist/Draft.css';
+
 
 const CreatePost = (props) => {
     const [title, setTitle] = useState("");
-    const [body, setBody] = useState("");
+    // const [body, setBody] = useState("");
     const [user] = useContext(UserContext);
 
     let history = useHistory();
@@ -19,11 +22,11 @@ const CreatePost = (props) => {
         setTitle(event.target.value);
     }
 
-    const onBodyChange = (event) => {
-        setBody(event.target.value);
-    }
+    // const onBodyChange = (event) => {
+    //     setBody(event.target.value);
+    // }
 
-    const handleSubmit = () => {
+    const handleSubmit = (body) => {
         console.log(user.token);
         api.post("/api/posts/", {
             "post_title": title,
@@ -45,8 +48,10 @@ const CreatePost = (props) => {
         <div className="create-post">
             <div className="create-post-banner"><h1>CreatePost</h1></div>
             <div className="title-input"><input onChange={onTitleChange} placeholder="Title of post" /> </div>
-            <div className="body-input"><textarea name="postBody" id="createPostBody" cols="30" rows="10" placeholder="Body of post" onChange={onBodyChange}></textarea></div>
-            <div className="submit"><button onClick={handleSubmit}>submit</button></div>
+            {/* <div className="body-input"><textarea name="postBody" id="createPostBody" cols="30" rows="10" placeholder="Body of post" onChange={onBodyChange}></textarea></div> */}
+
+            <MyEditor className="rounded-container" submitCB={handleSubmit} />
+            {/* <div className="submit"><button onClick={handleSubmit}>submit</button></div> */}
         </div>
     )
 }

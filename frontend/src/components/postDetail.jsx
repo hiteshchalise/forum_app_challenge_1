@@ -20,6 +20,7 @@ const PostDetail = (props) => {
   useEffect(() => {
     api.get(`/api/posts/${post._id}`).then((result) => {
       setPost(result.data);
+      console.log(result.data);
     }).catch((error) => {
       console.log(error);
     });
@@ -44,18 +45,6 @@ const PostDetail = (props) => {
 
     return postedAt;
   }
-
-  const comments = [];
-  useEffect(() => {
-    if (post.comments !== undefined) {
-      post.comments.forEach(
-        (comment) => {
-          comments.push(<Comment comment={comment} key={comment._id} />);
-        }
-      )
-    }
-  }, [post, comments]);
-
 
   return (
     // <p>Post Detail Page: {data.state.postId}</p>
@@ -91,10 +80,16 @@ const PostDetail = (props) => {
             {post.post_body}
           </div>
           <div className="add-comment">
-            <AddComment />
+            <AddComment post={post} />
           </div>
           <div className="commentSection">
-            {comments.length === 0 ? <div>No Comments</div> : <div>{comments}</div>}
+            {/* {comments.length === 0 ? <div>No Comments ...</div> : <div>{comments}</div>}
+            {comments} */}
+            {post.comments !== undefined ?
+              post.comments.map(
+                (comment) => <Comment comment={comment} key={comment._id} />
+              ) : <div className="">No Comments</div>
+            }
           </div>
         </div>
       </div>
@@ -112,40 +107,40 @@ const cachedDetailPost = {
     {
       "_id": 1,
       "comment_body": "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Odit, obcaecati voluptate nisi provident iusto voluptatem hic dolorum. Accusantium, accusamus nobis, tempora saepe architecto autem praesentium, aliquid deserunt odio ab quasi?",
-      "commented_by_id": "userId",
-      "posted_at": 1587346935571
+      "commented_by": "userId",
+      "commented_at": 1587346935571
     },
 
     {
       "_id": 2,
       "comment_body": "This is comment 2",
-      "commented_by_id": "userId",
-      "posted_at": 1587346935571
+      "commented_by": "userId",
+      "commented_at": 1587346935571
     },
     {
       "_id": 3,
       "comment_body": "This is comment 3",
-      "commented_by_id": "userId",
-      "posted_at": 1587346935571
+      "commented_by": "userId",
+      "commented_at": 1587346935571
     },
     {
       "_id": 4,
       "comment_body": "This is comment 1",
-      "commented_by_id": "userId",
-      "posted_at": 1587346935571
+      "commented_by": "userId",
+      "commented_at": 1587346935571
     },
 
     {
       "_id": 5,
       "comment_body": "This is comment 2",
-      "commented_by_id": "userId",
-      "posted_at": 1587346935571
+      "commented_by": "userId",
+      "commented_at": 1587346935571
     },
     {
       "_id": 6,
       "comment_body": "This is comment 3",
-      "commented_by_id": "userId",
-      "posted_at": 1587346935571
+      "commented_by": "userId",
+      "commented_at": 1587346935571
     }
   ]
 }

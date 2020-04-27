@@ -10,13 +10,13 @@ const Body = (props) => {
 
   useEffect(() => {
 
-    // api("/api/posts").then((result) => {
-    //   setItems(result.data);
-    // }).catch((error) => {
-    //   console.log(error);
-    // });
+    api("/api/posts").then((result) => {
+      setItems(result.data);
+    }).catch((error) => {
+      console.log(error);
+    });
     // when internet is down, this is for development purpose
-    setItems(cachedPost);
+    // setItems(cachedPost);
   }, [])
 
   let postContainers = [];

@@ -8,7 +8,6 @@
 .editor-container .main-section .DraftEditor-root {
     background-color: rgb(245, 245, 245);
     height: 150px;
-    width: 100%;
     overflow-y: auto;
 }
 .editor-container .main-section .DraftEditor-editorContainer,
@@ -17,12 +16,17 @@
 }
 
 .editor-container .footer-section {
+    display: flex;
+    justify-content: space-between;
+}
+
+.editor-container .footer-section .toolbar {
     height: 40px;
     background-color: rgba(0, 0, 0, 0.1);
     display: flex;
 }
 
-.editor-container .footer-section button {
+.editor-container .footer-section .toolbar button {
     height: 40px;
     width: 40px;
     border-color: transparent;
@@ -30,14 +34,25 @@
     font-weight: bold;
     font-size: medium;
 }
-.editor-container .footer-section abbr {
+.editor-container .footer-section .toolbar abbr {
     text-decoration: none;
 }
-.editor-container .footer-section button:hover {
+.editor-container .footer-section .toolbar button:hover {
     background-color: rgba(0, 0, 0, 0.2);
 }
 
-.editor-container .footer-section .active {
+.editor-container .footer-section .toolbar .active {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.editor-container .footer-section .submit button {
+    height: 40px;
+    width: 80px;
+    border-color: transparent;
+    transition: all 0.3s ease-in-out;
+}
+
+.editor-container .footer-section .submit button:hover {
     background-color: rgba(0, 0, 0, 0.2);
 }
 

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Editor, EditorState, RichUtils } from "draft-js";
+import { Editor, EditorState, RichUtils, convertToRaw } from "draft-js";
 import "./style/myEditor.css"
 import { useEffect } from "react";
 
@@ -94,6 +94,17 @@ const MyEditor = (props) => {
         setEditorState(RichUtils.toggleBlockType(editorState, 'header'))
     }
 
+    const handleSubmit = () => {
+        console.log("submmit clicked")
+        const currentContent = editorState.getCurrentContent();
+        const content = JSON.stringify(convertToRaw(currentContent));
+        if (!currentContent.hasText()) {
+            console.log("Empty");
+        } else {
+            props.submitCB(content);
+        }
+    }
+
     return (
         <div className="editor-container">
             <div className="main-section">
@@ -105,33 +116,38 @@ const MyEditor = (props) => {
                 />
             </div>
             <div className="footer-section">
-                <abbr title="Bold">
-                    <button onClick={handleBold}
-                        className={isBold ? "active" : "default"}>B</button>
-                </abbr>
-                <abbr title="Italic">
-                    <button onClick={handleItalic}
-                        className={isItalic ? "active" : "default"}
-                        style={{ fontStyle: "italic" }}>i</button>
-                </abbr>
-                <abbr title="Underline">
-                    <button onClick={handleUnderlined} className={isUnderlined ? "active" : "default"}><u>U</u></button>
-                </abbr>
-                <abbr title="Strikethrough">
-                    <button onClick={handleStrikethrough} className={isStrikethrough ? "active" : "default"}><s>S</s></button>
-                </abbr>
-                <abbr title="Code">
-                    <button onClick={handleCode} className={isCode ? "active" : "default"}><code>{"</>"}</code></button>
-                </abbr>
-                <abbr title="SuperScript">
-                    <button onClick={handleSuperscript} className={isSuperscript ? "active" : "default"}>A<sup>A</sup></button>
-                </abbr>
-                <abbr title="BlockQuote">
-                    <button onClick={handleBlockQuote} className={isBlockQuote ? "active" : "default"}><h2 >"</h2></button>
-                </abbr>
-                <abbr title="Header">
-                    <button onClick={handleHeader} className={isHeader ? "active" : "default"}>H1</button>
-                </abbr>
+                <div className="toolbar">
+                    <abbr title="Bold">
+                        <button onClick={handleBold}
+                            className={isBold ? "active" : "default"}>B</button>
+                    </abbr>
+                    <abbr title="Italic">
+                        <button onClick={handleItalic}
+                            className={isItalic ? "active" : "default"}
+                            style={{ fontStyle: "italic" }}>i</button>
+                    </abbr>
+                    <abbr title="Underline">
+                        <button onClick={handleUnderlined} className={isUnderlined ? "active" : "default"}><u>U</u></button>
+                    </abbr>
+                    <abbr title="Strikethrough">
+                        <button onClick={handleStrikethrough} className={isStrikethrough ? "active" : "default"}><s>S</s></button>
+                    </abbr>
+                    <abbr title="Code">
+                        <button onClick={handleCode} className={isCode ? "active" : "default"}><code>{"</>"}</code></button>
+                    </abbr>
+                    <abbr title="SuperScript">
+                        <button onClick={handleSuperscript} className={isSuperscript ? "active" : "default"}>A<sup>A</sup></button>
+                    </abbr>
+                    <abbr title="BlockQuote">
+                        <button onClick={handleBlockQuote} className={isBlockQuote ? "active" : "default"}><h2 >"</h2></button>
+                    </abbr>
+                    <abbr title="Header">
+                        <button onClick={handleHeader} className={isHeader ? "active" : "default"}>H1</button>
+                    </abbr>
+                </div>
+                <div className="submit">
+                    <button onClick={handleSubmit}>Submit</button>
+                </div>
             </div>
 
         </div>

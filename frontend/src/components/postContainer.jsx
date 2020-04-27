@@ -1,10 +1,32 @@
 import React from "react";
 import "./style/container.css";
 import { Link } from "react-router-dom";
+import { Editor, EditorState, convertFromRaw } from 'draft-js';
+
+const styleMap = {
+  'SUPERSCRIPT': {
+    position: "relative",
+    top: "-0.5em",
+    fontSize: "80%"
+  }
+}
+
+const blockStyleFn = (contentBlock) => {
+  const type = contentBlock.getType();
+  if (type === 'blockquote') {
+    return 'blockquote';
+  } else if (type === 'header') {
+    return 'header';
+  }
+}
 
 const PostContainer = (props) => {
 
   // const history = useHistory();
+  const convertPost = (raw) => {
+    const editorState = EditorState.createWithContent(convertFromRaw(JSON.parse(raw)))
+    return editorState;
+  }
 
   const getPostedAt = () => {
     const dateNow = new Date(Date.now());
@@ -25,14 +47,14 @@ const PostContainer = (props) => {
     return postedAt;
   }
 
-  const getPostPreview = () => {
-    const post = props.post.post_body;
+  // const getPostPreview = () => {
+  //   const post = props.post.post_body;
 
-    if (props.post.post_body.length > 750) {
-      return <div><p>{props.post.post_body.substr(0, 750)}</p><h4>{"Continue..."}</h4></div>;
-    }
-    return <div><p>{post}</p></div>;
-  }
+  //   if (props.post.post_body.length > 750) {
+  //     return <div><p>{props.post.post_body.substr(0, 750)}</p><h4>{"Continue..."}</h4></div>;
+  //   }
+  //   return <div><p>{post}</p></div>;
+  // }
 
   // const handlePostClick = () =>{
   //   console.log("Post Clicked: " + props.post._id);
@@ -68,7 +90,12 @@ const PostContainer = (props) => {
             <small className="subitem"> {getPostedAt()}</small>
           </div>
           <div className="content-section">
-            {getPostPreview()}
+            <Editor
+              editorState={convertPost(props.post.post_body)}
+              readOnly={true}
+              customStyleMap={styleMap}
+              blockStyleFn={blockStyleFn}
+            />
           </div>
         </div>
       </div>

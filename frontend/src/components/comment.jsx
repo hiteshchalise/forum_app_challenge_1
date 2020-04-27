@@ -1,5 +1,23 @@
 import React from 'react';
 import "./style/comment.css";
+import { Editor, EditorState, convertFromRaw } from 'draft-js';
+
+const styleMap = {
+    'SUPERSCRIPT': {
+        position: "relative",
+        top: "-0.5em",
+        fontSize: "80%"
+    }
+}
+
+const blockStyleFn = (contentBlock) => {
+    const type = contentBlock.getType();
+    if (type === 'blockquote') {
+        return 'blockquote';
+    } else if (type === 'header') {
+        return 'header';
+    }
+}
 
 const Comment = (props) => {
 
@@ -22,6 +40,10 @@ const Comment = (props) => {
 
         return postedAt;
     }
+    const convertComment = (raw) => {
+        const editorState = EditorState.createWithContent(convertFromRaw(JSON.parse(raw)))
+        return editorState;
+    }
 
 
     return (
@@ -40,11 +62,19 @@ const Comment = (props) => {
                 </div>
                 <div className="right-section">
                     <div className="info-section">
-                        <small className="subitem">{props.comment.commented_by_id}</small>
-                        <small> {getPostedAt(props.comment.posted_at)}</small>
+                        <small className="subitem">{props.comment.commented_by}</small>
+                        <small> {getPostedAt(props.comment.commented_at)}</small>
                     </div>
                     <div className="content-section">
-                        <p>{props.comment.comment_body}</p>
+                        {/* {console.log(convertFromRaw(JSON.parse(props.comment.comment_body)))}
+                        {stateToHTML(convertFromRaw(JSON.parse(props.comment.comment_body)))} */}
+
+                        <Editor
+                            editorState={convertComment(props.comment.comment_body)}
+                            readOnly={true}
+                            customStyleMap={styleMap}
+                            blockStyleFn={blockStyleFn}
+                        />
                     </div>
                 </div>
             </div>

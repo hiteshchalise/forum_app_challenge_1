@@ -10,6 +10,7 @@ const Register = (props) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [usernameIsValid, setUsernameIsValid] = useState(false);
   const [emailIsValid, setEmailIsValid] = useState(false);
   const [confirmPasswordIsValid, setConfirmPasswordIsValid] = useState(false);
 
@@ -31,12 +32,12 @@ const Register = (props) => {
         email: email,
         password: password,
       },
-    }).then((result)=>{
+    }).then((result) => {
       console.log("username: " + result.data.user.name);
-      setUser({user: result.data.user, loggedIn: true, token: result.data.token});
-    }).catch((error)=>{
+      setUser({ user: result.data.user, loggedIn: true, token: result.data.token });
+    }).catch((error) => {
       console.log(error);
-      setUser({user: "", loggedIn: false, token: ""});
+      setUser({ user: "", loggedIn: false, token: "" });
     });
   };
 
@@ -45,6 +46,7 @@ const Register = (props) => {
       name === "" ||
       email === "" ||
       password === "" ||
+      !usernameIsValid ||
       !emailIsValid ||
       !confirmPasswordIsValid
     ) {
@@ -60,7 +62,13 @@ const Register = (props) => {
 
   const handleNameChange = (event) => {
     const name = event.target.value;
+    const usernameRegex = /^[a-zA-Z0-9]+$/;
     setName(name);
+    if (name.match(usernameRegex)) {
+      setUsernameIsValid(true);
+    } else {
+      setUsernameIsValid(false);
+    }
   };
 
   const handleEmailChange = (event) => {
@@ -98,8 +106,9 @@ const Register = (props) => {
     borderBottomColor: "red",
     borderBottomWidth: "2px",
   };
+
   let invalidNameStyle;
-  if (name === "") {
+  if (!usernameIsValid) {
     invalidNameStyle = invalidBorderStyle;
   } else {
     invalidNameStyle = {};
