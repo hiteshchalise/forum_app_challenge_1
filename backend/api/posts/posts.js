@@ -67,6 +67,7 @@ router.get("/:postId", (req, res) => {
           "posted_at": post.posted_at,
           "_v": post._v,
           "comments": comments,
+          "upvotes": post.upvotes
         });
       }
     })
