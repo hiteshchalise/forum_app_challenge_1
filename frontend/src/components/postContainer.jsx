@@ -1,6 +1,6 @@
 import React from "react";
 import "./style/container.css";
-import { Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { Editor, EditorState, convertFromRaw } from 'draft-js';
 import Upvote from "./upvote";
 
@@ -22,6 +22,8 @@ const blockStyleFn = (contentBlock) => {
 }
 
 const PostContainer = (props) => {
+  const history = useHistory();
+
   const convertPost = (raw) => {
     const editorState = EditorState.createWithContent(convertFromRaw(JSON.parse(raw)))
     return editorState;
@@ -46,37 +48,32 @@ const PostContainer = (props) => {
     return postedAt;
   }
 
+  const handlePostClick = () => {
+    history.push("/postDetail", { post: props.post })
+  }
+
   return (
-    <Link
-      to={{ pathname: "/postDetail", state: { post: props.post } }}
-      className="post-container-link"
-      style={{
-        "textDecoration": "none",
-        "color": "#141414"
-      }}
-    >
-      <div className="container">
-        <div className="left-section">
-          <Upvote post={props.post} />
+    <div className="container">
+      <div className="left-section">
+        <Upvote post={props.post} />
+      </div>
+      <div className="right-section" onClick={handlePostClick}>
+        <div className="info-section">
+          <h2>{props.post.post_title}</h2>
+          <small >Posted By: </small>
+          <small className="subitem"> {props.post.posted_by}</small>
+          <small className="subitem"> {getPostedAt()}</small>
         </div>
-        <div className="right-section">
-          <div className="info-section">
-            <h2>{props.post.post_title}</h2>
-            <small >Posted By: </small>
-            <small className="subitem"> {props.post.posted_by}</small>
-            <small className="subitem"> {getPostedAt()}</small>
-          </div>
-          <div className="content-section">
-            <Editor
-              editorState={convertPost(props.post.post_body)}
-              readOnly={true}
-              customStyleMap={styleMap}
-              blockStyleFn={blockStyleFn}
-            />
-          </div>
+        <div className="content-section">
+          <Editor
+            editorState={convertPost(props.post.post_body)}
+            readOnly={true}
+            customStyleMap={styleMap}
+            blockStyleFn={blockStyleFn}
+          />
         </div>
       </div>
-    </Link>
+    </div>
   );
 
 }

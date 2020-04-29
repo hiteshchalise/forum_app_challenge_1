@@ -34,7 +34,8 @@ const PostDetail = (props) => {
     posted_by: data.state.post.posted_by,
     posted_at: data.state.post.posted_at,
     post_body: data.state.post.post_body,
-    comments: []
+    comments: [],
+    upvotes: data.state.post.upvotes
   });
 
   const convertPost = (raw) => {

@@ -10,7 +10,6 @@ const Upvote = (props) => {
 
     useEffect(() => {
         if (user.loggedIn) {
-            console.log(user.user.name);
             const upvotedPost = user.user.upvoted_posts.find((upvoted_post) => {
                 return props.post._id === upvoted_post.postId;
             })
