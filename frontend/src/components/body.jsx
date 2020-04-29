@@ -32,28 +32,4 @@ const Body = (props) => {
 
 }
 
-const cachedPost = [
-  {
-    "_id": 1,
-    "post_title": "Lorem ipsum dolor sit, amet consectetur adipisicing elit.",
-    "post_body": "ChLorem ipsum dolor sit, amet consectetur adipisicing elit. Quisquam non tempore quibusdam rerum fuga molestiae et vitae, quas, cupiditate incidunt aut minus doloribus quia praesentium quis vel? Aut, nihil quis.Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quisquam non tempore quibusdam rerum fuga molestiae et vitae, quas, cupiditate incidunt aut minus doloribus quia praesentium quis vel? Aut, nihil quis.alise. ChLorem ipsum dolor sit, amet consectetur adipisicing elit. Quisquam non tempore quibusdam rerum fuga molestiae et vitae, quas, cupiditate incidunt aut minus doloribus quia praesentium quis vel? Aut, nihil quis.Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quisquam non tempore quibusdam rerum fuga molestiae et vitae, quas, cupiditate incidunt aut minus doloribus quia praesentium quis vel? Aut, nihil quis.alise. ChLorem ipsum dolor sit, amet consectetur adipisicing elit. Quisquam non tempore quibusdam rerum fuga molestiae et vitae, quas, cupiditate incidunt aut minus doloribus quia praesentium quis vel? Aut, nihil quis.Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quisquam non tempore quibusdam rerum fuga molestiae et vitae, quas, cupiditate incidunt aut minus doloribus quia praesentium quis vel? Aut, nihil quis.alise. ChLorem ipsum dolor sit, amet consectetur adipisicing elit. Quisquam non tempore quibusdam rerum fuga molestiae et vitae, quas, cupiditate incidunt aut minus doloribus quia praesentium quis vel? Aut, nihil quis.Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quisquam non tempore quibusdam rerum fuga molestiae et vitae, quas, cupiditate incidunt aut minus doloribus quia praesentium quis vel? Aut, nihil quis.alise",
-    "posted_by": "HiteshChalise",
-    "posted_at": 1587346935571
-  },
-  {
-    "_id": 2,
-    "post_title": "Lorem ipsum dolor sit, amet consectetur adipisicing elit.",
-    "post_body": "ChLorem ipsum dolor sit, amet consectetur adipisicing elit. Quisquam non tempore quibusdam rerum fuga molestiae et vitae, quas, cupiditate incidunt aut minus doloribus quia praesentium quis vel? Aut, nihil quis.Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quisquam non tempore quibusdam rerum fuga molestiae et vitae, quas, cupiditate incidunt aut minus doloribus quia praesentium quis vel? Aut, nihil quis.alise",
-    "posted_by": "HiteshChalise",
-    "posted_at": 1587346935571
-  },
-  {
-    "_id": 3,
-    "post_title": "Lorem ipsum dolor sit, amet consectetur adipisicing elit.",
-    "post_body": "ChLorem ipsum dolor sit, amet consectetur adipisicing elit. Quisquam non tempore quibusdam rerum fuga molestiae et vitae, quas, cupiditate incidunt aut minus doloribus quia praesentium quis vel? Aut, nihil quis.Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quisquam non tempore quibusdam rerum fuga molestiae et vitae, quas, cupiditate incidunt aut minus doloribus quia praesentium quis vel? Aut, nihil quis.alise",
-    "posted_by": "HiteshChalise",
-    "posted_at": 1587346935571
-  }
-];
-
 export default Body;
