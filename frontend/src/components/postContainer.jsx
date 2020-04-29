@@ -2,6 +2,7 @@ import React from "react";
 import "./style/container.css";
 import { Link } from "react-router-dom";
 import { Editor, EditorState, convertFromRaw } from 'draft-js';
+import Upvote from "./upvote";
 
 const styleMap = {
   'SUPERSCRIPT': {
@@ -21,8 +22,6 @@ const blockStyleFn = (contentBlock) => {
 }
 
 const PostContainer = (props) => {
-
-  // const history = useHistory();
   const convertPost = (raw) => {
     const editorState = EditorState.createWithContent(convertFromRaw(JSON.parse(raw)))
     return editorState;
@@ -58,15 +57,7 @@ const PostContainer = (props) => {
     >
       <div className="container">
         <div className="left-section">
-          <div className="btn-up">
-            <button></button>
-          </div>
-          <div className="upvotes">
-            <h5>1</h5>
-          </div>
-          <div className="btn-down">
-            <button></button>
-          </div>
+          <Upvote post={props.post} />
         </div>
         <div className="right-section">
           <div className="info-section">

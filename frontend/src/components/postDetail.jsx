@@ -6,7 +6,7 @@ import api from "../utils/api";
 import Comment from "./comment";
 import AddComment from "./addComment";
 import { Editor, EditorState, convertFromRaw } from 'draft-js';
-
+import Upvote from "./upvote";
 
 const styleMap = {
   'SUPERSCRIPT': {
@@ -45,7 +45,6 @@ const PostDetail = (props) => {
   useEffect(() => {
     api.get(`/api/posts/${post._id}`).then((result) => {
       setPost(result.data);
-      console.log(result.data);
     }).catch((error) => {
       console.log(error);
     });
@@ -76,15 +75,7 @@ const PostDetail = (props) => {
     <div className="post-detail">
       <div className="container width-70">
         <div className="left-section">
-          <div className="btn-up">
-            <button></button>
-          </div>
-          <div className="upvotes">
-            <h5>1</h5>
-          </div>
-          <div className="btn-down">
-            <button></button>
-          </div>
+          <Upvote post={post} />
         </div>
         <div className="right-section">
           <div className="info-section">

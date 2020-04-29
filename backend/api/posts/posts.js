@@ -37,6 +37,8 @@ router.post("/", auth, (req, res) => {
       .save()
       .then((post) => {
         res.json(post);
+        user.upvoted_posts.push({ postId: post._id, upvote_dir: 1 });
+        user.save();
       })
       .catch((error) => res.json({ error }));
   });
@@ -57,7 +59,6 @@ router.get("/:postId", (req, res) => {
         res.status(404).json({ msg: "no post found with that id" })
       }
       else {
-        console.log("post: " + post);
         const comments = post.comments.sort((a, b) => b.commented_at - a.commented_at);
         res.json({
           "_id": post._id,
@@ -83,7 +84,6 @@ router.post("/:postId/comments", auth, (req, res) => {
     console.log("no post found with Id");
     res.status(400).json({ msg: "no postId found" });
   } else {
-    console.log(req.body);
     Post.update({
       _id: req.params.postId
     }, {
@@ -96,20 +96,6 @@ router.post("/:postId/comments", auth, (req, res) => {
         res.json(success);
       }
     })
-
-    // const foundPost = Post.findById(req.params.postId, (error, post) => {
-    //   if (error) {
-    //     res.status(404).json({ msg: "no post found with that ID" });
-    //   } else {
-    //     foundPost.comments
-    //     foundPost.save().then((post) => {
-    //       res.json(post);
-    //     }).catch((error) => {
-    //       res.json(error);
-    //     })
-    //   }
-    // });
-
   }
 })
 

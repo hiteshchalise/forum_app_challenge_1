@@ -47,6 +47,7 @@ router.post("/", (req, res) => {
               id: user._id,
               name: user.name,
               email: user.email,
+              upvoted_posts: user.upvoted_posts
             },
           });
         }
@@ -81,6 +82,7 @@ router.get("/refresh", (req, res) => {
               id: user._id,
               name: user.name,
               email: user.email,
+              upvoted_posts: user.upvoted_posts
             },
           });
         }
@@ -98,7 +100,7 @@ router.post("/logout", (req, res) => {
     httpOnly: true,
   });
 
-  res.json({msg: "cookie distoryed"})
+  res.json({ msg: "cookie distoryed" })
 });
 
 module.exports = router;

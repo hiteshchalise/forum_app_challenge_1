@@ -34,7 +34,7 @@
     justify-content: center;
 }
 
-.container .left-section .btn-up button {
+.container .left-section .btn-up .inactive button {
     width: 20px;
     height: 15px;
     background: none;
@@ -44,11 +44,21 @@
     background-position: center;
 }
 
-.container .left-section .btn-up button:hover {
+.container .left-section .btn-up .inactive button:hover {
     background-image: url(../../imgs/up-active.svg);
 }
 
-.container .left-section .btn-down button {
+.container .left-section .btn-up .active button {
+    width: 20px;
+    height: 15px;
+    background: none;
+    border: none;
+    background-repeat: no-repeat;
+    background-image: url(../../imgs/up-active.svg);
+    background-position: center;
+}
+
+.container .left-section .btn-down .inactive button {
     width: 20px;
     height: 15px;
     border: none;
@@ -58,8 +68,18 @@
     background-position: top center;
 }
 
-.container .left-section .btn-down button:hover {
+.container .left-section .btn-down .inactive button:hover {
     background-image: url(../../imgs/down-active.svg);
+}
+
+.container .left-section .btn-down .active button {
+    width: 20px;
+    height: 15px;
+    border: none;
+    background: none;
+    background-image: url(../../imgs/down-active.svg);
+    background-repeat: no-repeat;
+    background-position: top center;
 }
 
 .container .right-section {

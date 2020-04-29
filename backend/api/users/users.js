@@ -93,7 +93,7 @@ router.post("/", (req, res) => {
 // @access Public
 router.get("/:name", (req, res) => {
   User.findOne({ name: req.params.name }).then(user => {
-    if (!user) res.status(400).json({
+    if (!user) return res.status(400).json({
       "msg": "User Not Found"
     })
 
@@ -101,7 +101,8 @@ router.get("/:name", (req, res) => {
       user: {
         id: user._id,
         name: user.name,
-        email: user.email
+        email: user.email,
+        upvoted_posts: user.upvoted_posts
       }
     });
   })
@@ -111,7 +112,6 @@ router.get("/:name", (req, res) => {
 // @desc Register new user
 // @access Public
 router.post("/upvote", auth, (req, res) => {
-  console.log(req.body);
   const { postId, dir } = req.body
   if (!postId || !dir) {
     return res.status(400).json({ msg: "bad request, include postId or dir" });
@@ -135,7 +135,7 @@ router.post("/upvote", auth, (req, res) => {
       if (upvotedPost === undefined) {
         user.upvoted_posts.push({ postId, upvote_dir: dir });
         post.upvotes += dir;
-        res.json({ msg: `upvoted with ${dir}` })
+        res.json({ dir, upvotes: post.upvotes })
       } else {
         if (upvotedPost.upvote_dir === dir) {
           post.upvotes -= dir;
@@ -143,9 +143,8 @@ router.post("/upvote", auth, (req, res) => {
         } else {
           post.upvotes += dir;
           upvotedPost.upvote_dir += dir;
-          res.json({ msg: `upvoted with ${dir}` })
         }
-        res.json({ msg: `upvoted with ${upvotedPost.upvote_dir}` })
+        res.json({ dir: upvotedPost.upvote_dir, upvotes: post.upvotes })
       }
 
       user.save().then((result) => { console.log(result) }).catch((error) => { console.log(error) });
