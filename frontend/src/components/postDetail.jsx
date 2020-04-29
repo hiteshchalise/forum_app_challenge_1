@@ -5,6 +5,26 @@ import { useEffect, useState } from "react";
 import api from "../utils/api";
 import Comment from "./comment";
 import AddComment from "./addComment";
+import { Editor, EditorState, convertFromRaw } from 'draft-js';
+
+
+const styleMap = {
+  'SUPERSCRIPT': {
+    position: "relative",
+    top: "-0.5em",
+    fontSize: "80%"
+  }
+}
+
+const blockStyleFn = (contentBlock) => {
+  const type = contentBlock.getType();
+  if (type === 'blockquote') {
+    return 'blockquote';
+  } else if (type === 'header') {
+    return 'header';
+  }
+}
+
 
 const PostDetail = (props) => {
   const data = useLocation();
@@ -16,6 +36,11 @@ const PostDetail = (props) => {
     post_body: data.state.post.post_body,
     comments: []
   });
+
+  const convertPost = (raw) => {
+    const editorState = EditorState.createWithContent(convertFromRaw(JSON.parse(raw)))
+    return editorState;
+  }
 
   useEffect(() => {
     api.get(`/api/posts/${post._id}`).then((result) => {
@@ -77,7 +102,12 @@ const PostDetail = (props) => {
             </div>
           </div>
           <div className="content-section">
-            {post.post_body}
+            <Editor
+              editorState={convertPost(post.post_body)}
+              readOnly={true}
+              customStyleMap={styleMap}
+              blockStyleFn={blockStyleFn}
+            />
           </div>
           <div className="add-comment">
             <AddComment post={post} />
@@ -97,51 +127,4 @@ const PostDetail = (props) => {
   )
 }
 
-const cachedDetailPost = {
-  "_id": 2,
-  "post_title": "Lorem ipsum dolor sit, amet consectetur adipisicing elit.",
-  "post_body": "ChLorem ipsum dolor sit, amet consectetur adipisicing elit. Quisquam non tempore quibusdam rerum fuga molestiae et vitae, quas, cupiditate incidunt aut minus doloribus quia praesentium quis vel? Aut, nihil quis.Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quisquam non tempore quibusdam rerum fuga molestiae et vitae, quas, cupiditate incidunt aut minus doloribus quia praesentium quis vel? Aut, nihil quis.alise",
-  "posted_by": "HiteshChalise",
-  "posted_at": 1587346935571,
-  "comments": [
-    {
-      "_id": 1,
-      "comment_body": "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Odit, obcaecati voluptate nisi provident iusto voluptatem hic dolorum. Accusantium, accusamus nobis, tempora saepe architecto autem praesentium, aliquid deserunt odio ab quasi?",
-      "commented_by": "userId",
-      "commented_at": 1587346935571
-    },
-
-    {
-      "_id": 2,
-      "comment_body": "This is comment 2",
-      "commented_by": "userId",
-      "commented_at": 1587346935571
-    },
-    {
-      "_id": 3,
-      "comment_body": "This is comment 3",
-      "commented_by": "userId",
-      "commented_at": 1587346935571
-    },
-    {
-      "_id": 4,
-      "comment_body": "This is comment 1",
-      "commented_by": "userId",
-      "commented_at": 1587346935571
-    },
-
-    {
-      "_id": 5,
-      "comment_body": "This is comment 2",
-      "commented_by": "userId",
-      "commented_at": 1587346935571
-    },
-    {
-      "_id": 6,
-      "comment_body": "This is comment 3",
-      "commented_by": "userId",
-      "commented_at": 1587346935571
-    }
-  ]
-}
 export default PostDetail;

@@ -57,6 +57,7 @@ router.get("/:postId", (req, res) => {
         res.status(404).json({ msg: "no post found with that id" })
       }
       else {
+        console.log("post: " + post);
         const comments = post.comments.sort((a, b) => b.commented_at - a.commented_at);
         res.json({
           "_id": post._id,

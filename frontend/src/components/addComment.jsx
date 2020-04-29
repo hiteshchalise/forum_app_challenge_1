@@ -41,7 +41,7 @@ const AddComment = (props) => {
             </div> :
             <div>
                 <small> Comment as: {user.user.name}</small>
-                <MyEditor className="rounded-container" commentCB={commentCB} />
+                <MyEditor className="rounded-container" submitCB={commentCB} />
             </div>
     )
 }

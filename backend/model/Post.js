@@ -31,7 +31,11 @@ const PostSchema = new Schema({
             type: Date,
             default: Date.now
         }
-    }]
+    }],
+    upvotes: {
+        type: Number,
+        default: 1
+    }
 });
 
 module.exports = Post = mongoose.model('post', PostSchema);

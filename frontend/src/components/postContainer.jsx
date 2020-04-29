@@ -47,20 +47,6 @@ const PostContainer = (props) => {
     return postedAt;
   }
 
-  // const getPostPreview = () => {
-  //   const post = props.post.post_body;
-
-  //   if (props.post.post_body.length > 750) {
-  //     return <div><p>{props.post.post_body.substr(0, 750)}</p><h4>{"Continue..."}</h4></div>;
-  //   }
-  //   return <div><p>{post}</p></div>;
-  // }
-
-  // const handlePostClick = () =>{
-  //   console.log("Post Clicked: " + props.post._id);
-  //   history.push("/")
-  // }
-
   return (
     <Link
       to={{ pathname: "/postDetail", state: { post: props.post } }}

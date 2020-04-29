@@ -3,6 +3,9 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const config = require("config");
 const router = express.Router();
+const auth = require("./../../middleware/auth");
+const Post = require("../../model/Post");
+
 
 // User Model
 const User = require("../../model/User");
@@ -85,6 +88,9 @@ router.post("/", (req, res) => {
   });
 });
 
+// @route GET api/users/:name
+// @desc GET user by username
+// @access Public
 router.get("/:name", (req, res) => {
   User.findOne({ name: req.params.name }).then(user => {
     if (!user) res.status(400).json({
@@ -97,6 +103,54 @@ router.get("/:name", (req, res) => {
         name: user.name,
         email: user.email
       }
+    });
+  })
+})
+
+// @route POST api/users/upvote
+// @desc Register new user
+// @access Public
+router.post("/upvote", auth, (req, res) => {
+  console.log(req.body);
+  const { postId, dir } = req.body
+  if (!postId || !dir) {
+    return res.status(400).json({ msg: "bad request, include postId or dir" });
+  }
+
+  if (dir !== 1 && dir !== 0 && dir !== -1) {
+    return res.status(400).json({ msg: "bad request, dir is invalid" });
+  }
+
+
+  User.findById(req.user.id, (error, user) => {
+    if (error) return res.status(400).json({ msg: "no user found" });
+    Post.findById(postId, (error, post) => {
+      if (error) return res.status(400).json({ msg: "no post by Id" });
+
+      upvotedPost = user.upvoted_posts.find((upvoted_post) => {
+        if (upvoted_post.postId === postId) return true;
+        return false;
+      });
+
+      if (upvotedPost === undefined) {
+        user.upvoted_posts.push({ postId, upvote_dir: dir });
+        post.upvotes += dir;
+        res.json({ msg: `upvoted with ${dir}` })
+      } else {
+        if (upvotedPost.upvote_dir === dir) {
+          post.upvotes -= dir;
+          upvotedPost.upvote_dir -= dir;
+        } else {
+          post.upvotes += dir;
+          upvotedPost.upvote_dir += dir;
+          res.json({ msg: `upvoted with ${dir}` })
+        }
+        res.json({ msg: `upvoted with ${upvotedPost.upvote_dir}` })
+      }
+
+      user.save().then((result) => { console.log(result) }).catch((error) => { console.log(error) });
+      post.save().then((result) => { console.log(result) }).catch((error) => { console.log(error) });
+
     });
   })
 })

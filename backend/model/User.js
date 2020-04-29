@@ -16,10 +16,14 @@ const UserSchema = new Schema({
         type: String,
         require: true
     },
-    register_date:{
+    register_date: {
         type: Date,
         default: Date.now
-    }
+    },
+    upvoted_posts: [{
+        postId: String,
+        upvote_dir: Number
+    }]
 })
 
 module.exports = User = mongoose.model('user', UserSchema);
