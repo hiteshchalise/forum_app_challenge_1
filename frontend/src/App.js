@@ -1,4 +1,4 @@
-import React, { useContext, useState,  useEffect } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import Nav from "./components/nav";
 import Body from "./components/body";
 import Login from "./components/login";
@@ -9,26 +9,31 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import api from "./utils/api";
 
 import "./App.css";
-import { UserContext } from "./userContext";
+import { StoreContext } from "./storeContext";
+import { userCreator } from "./store/auth";
 
 
 const App = (props) => {
-  const [user, setUser] = useContext(UserContext);
+  const store = useContext(StoreContext);
+  const user = store.getState();
   const [loginTried, setLoginTried] = useState(false);
 
   useEffect(() => {
-    if (!user.loggedIn && !loginTried) {
+    if (!loginTried && user.name === undefined) {
       setLoginTried(true);
       api("/api/auth/refresh/", { method: "GET", withCredentials: true })
         .then((result) => {
-          setUser({ token: result.data.token, loggedIn: true, user: result.data.user });
+          console.log("App: useEffect: userState: ", store.getState());
+          const { id, name, email } = result.data.user;
+          store.dispatch(userCreator({ id, name, email, token: result.data.token }));
+          console.log("App: useEffect: userState: ", store.getState());
         })
         .catch((error) => {
           console.log(error);
-          setUser({ token: "", loggedIn: false, user: "" });
+          // setUser({ token: "", loggedIn: false, user: "" });
         });
     }
-  }, [user, setUser, loginTried, setLoginTried]);
+  }, [store, loginTried, user.name]);
 
   return (
     <Router>
@@ -44,7 +49,7 @@ const App = (props) => {
             <CreatePost />
           </Route>
           <Route path="/postDetail">
-            <PostDetail/>
+            <PostDetail />
           </Route>
           <Route exact path="/">
             <Nav />

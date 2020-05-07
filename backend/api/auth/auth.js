@@ -58,7 +58,7 @@ router.post("/", (req, res) => {
 
 router.get("/refresh", (req, res) => {
   const refreshToken = req.cookies.refreshToken;
-  console.log(refreshToken);
+  console.log("Refresh Token: ", refreshToken);
   if (!refreshToken) {
     return res
       .status(401)
@@ -100,7 +100,7 @@ router.post("/logout", (req, res) => {
     httpOnly: true,
   });
 
-  res.json({ msg: "cookie distoryed" })
+  res.json({ msg: "cookie distroyed" })
 });
 
 module.exports = router;

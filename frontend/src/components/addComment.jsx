@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { UserContext } from "../userContext";
+import { StoreContext } from "../storeContext";
 import { Link, useHistory } from "react-router-dom";
 import MyEditor from "./myEditor";
 import 'draft-js/dist/Draft.css';
@@ -8,13 +8,14 @@ import api from "../utils/api";
 
 const AddComment = (props) => {
 
-    const [user] = useContext(UserContext);
+    const store = useContext(StoreContext);
+    const user = store.getState();
     const history = useHistory();
 
     const commentCB = (comment_body) => {
         api.post(`/api/posts/${props.post._id}/comments/`, {
             "comment_body": comment_body,
-            "commented_by": user.user.name
+            "commented_by": user.name
         }, {
             headers: {
                 "x-auth-token": user.token,
@@ -40,7 +41,7 @@ const AddComment = (props) => {
                 </div>
             </div> :
             <div>
-                <small> Comment as: {user.user.name}</small>
+                <small> Comment as: {user.name}</small>
                 <MyEditor className="rounded-container" submitCB={commentCB} />
             </div>
     )

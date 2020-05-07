@@ -15,7 +15,7 @@ const User = require("../../model/User");
 // @access Public
 router.post("/", (req, res) => {
   const { name, email, password } = req.body;
-  console.log("name: " + name + " email: " + email + " password: " + password);
+  console.log("name: ", name, " email: ", email, " password: ", password);
 
   if (!name || !email || !password) {
     return res.status(400).json({

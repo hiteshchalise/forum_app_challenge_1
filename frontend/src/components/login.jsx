@@ -1,15 +1,18 @@
 import React, { useState, useContext } from "react";
 import "./style/auth.css";
 import { Link, useHistory } from "react-router-dom";
-import { UserContext } from "../userContext";
+import userCreator from "../store/auth";
+import { StoreContext } from "../storeContext";
 import { useEffect } from "react";
 
 const Login = (props) => {
-  const [user, setUser] = useContext(UserContext);
+  const store = useContext(StoreContext);
   let history = useHistory();
 
-  useEffect(()=>{
-    if(user.loggedIn){
+  const user = store.getState();
+
+  useEffect(() => {
+    if (user.name !== undefined) {
       history.push("/");
     }
   }, [user, history])
@@ -33,11 +36,16 @@ const Login = (props) => {
     })
       .then((response) => response.json())
       .then((result) => {
-        setUser({user: result.user, loggedIn: true, token: result.token});
+        console.log("result after successful login: ", result);
+        // setUser({ user: result.user, loggedIn: true, token: result.token });
+        const { id, name, email } = result.user;
+        console.log("UserState successful user dispatch: ", store.getState());
+        store.dispatch(userCreator({ id, name, email, token: result.token }));
+        console.log("userState after successful user dispatch: ", store.getState());
         history.push("/");
       })
       .catch((error) => {
-        setUser({ user: {}, loggedIn: false, token: {}});
+        // setUser({ user: {}, loggedIn: false, token: {} });
       });
   };
 

@@ -1,12 +1,14 @@
 import React, { useState, useContext, useEffect } from "react";
 import "./style/container.css";
-import { UserContext } from "../userContext";
+import { StoreContext } from "../storeContext";
 import api from "../utils/api";
 
 const Upvote = (props) => {
     const [upvoteDir, setUpvoteDir] = useState(0);
     const [upvoteCount, setUpvoteCount] = useState(props.post.upvotes);
-    const [user] = useContext(UserContext);
+    const store = useContext(StoreContext);
+
+    const user = store.getState();
 
     useEffect(() => {
         if (user.loggedIn) {

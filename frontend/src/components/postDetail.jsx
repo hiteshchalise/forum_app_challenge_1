@@ -67,7 +67,6 @@ const PostDetail = (props) => {
     } else if (timeDifference < 1000 * 60 * 60 * 24 * 365) {
       postedAt = Math.round(timeDifference / (1000 * 60 * 60 * 24)) + " Days Ago";
     }
-
     return postedAt;
   }
 

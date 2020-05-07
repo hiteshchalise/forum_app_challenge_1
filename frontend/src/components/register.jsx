@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "./style/auth.css";
 import { Link, useHistory } from "react-router-dom";
-import { UserContext } from "../userContext";
+import { StoreContext } from "../storeContext";
+import userCreator from "../store/auth";
 import { useContext } from "react";
 import api from "../utils/api";
 
@@ -14,11 +15,13 @@ const Register = (props) => {
   const [emailIsValid, setEmailIsValid] = useState(false);
   const [confirmPasswordIsValid, setConfirmPasswordIsValid] = useState(false);
 
-  const [user, setUser] = useContext(UserContext);
+  const store = useContext(StoreContext);
   let history = useHistory();
 
+  const user = store.getState();
+
   useEffect(() => {
-    if (user.loggedIn) {
+    if (user.name !== undefined) {
       history.push("/");
     }
   }, [user, history]);
@@ -33,11 +36,10 @@ const Register = (props) => {
         password: password,
       },
     }).then((result) => {
-      console.log("username: " + result.data.user.name);
-      setUser({ user: result.data.user, loggedIn: true, token: result.data.token });
+      const { id, name, email } = result.data.user;
+      store.dispatch(userCreator({ id, name, email, token: result.data.token }));
     }).catch((error) => {
       console.log(error);
-      setUser({ user: "", loggedIn: false, token: "" });
     });
   };
 

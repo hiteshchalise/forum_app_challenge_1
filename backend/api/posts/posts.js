@@ -21,7 +21,7 @@ router.get("/", (req, res) => {
 router.post("/", auth, (req, res) => {
 
   User.findById(req.user.id, (error, user) => {
-    if (error) throw error;
+    if (error) return res.status(404).json("User Not Found");
 
     const newPost = new Post({
       post_title: req.body.post_title,
@@ -48,9 +48,9 @@ router.post("/", auth, (req, res) => {
 // @desc Get post with postId
 // @access Public
 router.get("/:postId", (req, res) => {
-  console.log(req.params.postId);
+  console.log("Get request, api/posts/:postId, postId: ", req.params.postId);
   if (req.params.postId === 'undefined') {
-    console.log("here");
+    console.log("postId is undefined");
     res.status(400).json({ msg: "no postId found" });
   }
   else {
@@ -79,7 +79,7 @@ router.get("/:postId", (req, res) => {
 // @desc Post comment in post with postId
 // @access Private
 router.post("/:postId/comments", auth, (req, res) => {
-  console.log("Post request for adding comment with postId: " + req.params.postId);
+  console.log("Post request for adding comment with postId: ", req.params.postId);
   if (req.params.postId === 'undefined') {
     console.log("no post found with Id");
     res.status(400).json({ msg: "no postId found" });

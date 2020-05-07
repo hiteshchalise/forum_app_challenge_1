@@ -3,7 +3,7 @@ import "./style/create-post.css";
 import api from "../utils/api";
 import { useHistory } from "react-router-dom";
 import { useContext } from "react";
-import { UserContext } from "../userContext";
+import { StoreContext } from "../storeContext";
 
 import MyEditor from "./myEditor";
 import 'draft-js/dist/Draft.css';
@@ -12,7 +12,8 @@ import 'draft-js/dist/Draft.css';
 const CreatePost = (props) => {
     const [title, setTitle] = useState("");
     // const [body, setBody] = useState("");
-    const [user] = useContext(UserContext);
+    const store = useContext(StoreContext);
+    const user = store.getState();
 
     let history = useHistory();
 
