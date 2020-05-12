@@ -11,7 +11,7 @@ import 'draft-js/dist/Draft.css';
 
 const CreatePost = (props) => {
     const [title, setTitle] = useState("");
-    // const [body, setBody] = useState("");
+    // const [body, setBody] = useState("");  
     const store = useContext(StoreContext);
     const user = store.getState();
 

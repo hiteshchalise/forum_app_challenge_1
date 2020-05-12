@@ -1,29 +1,15 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import "./style/post-detail.css";
-import { useEffect, useState } from "react";
-import api from "../utils/api";
 import Comment from "./comment";
 import AddComment from "./addComment";
-import { Editor, EditorState, convertFromRaw } from 'draft-js';
 import Upvote from "./upvote";
 
-const styleMap = {
-  'SUPERSCRIPT': {
-    position: "relative",
-    top: "-0.5em",
-    fontSize: "80%"
-  }
-}
+import { Editor, EditorState, convertFromRaw } from 'draft-js';
+import { styleMap, blockStyleFn } from "../utils/draftJsCustomStyle"
 
-const blockStyleFn = (contentBlock) => {
-  const type = contentBlock.getType();
-  if (type === 'blockquote') {
-    return 'blockquote';
-  } else if (type === 'header') {
-    return 'header';
-  }
-}
+import api from "../utils/api";
+import convertToTimeAgo from "../utils/dateConverter";
 
 
 const PostDetail = (props) => {
@@ -44,31 +30,14 @@ const PostDetail = (props) => {
   }
 
   useEffect(() => {
-    api.get(`/api/posts/${post._id}`).then((result) => {
-      setPost(result.data);
-    }).catch((error) => {
-      console.log(error);
-    });
+    api.get(`/api/posts/${post._id}`)
+      .then((result) => {
+        setPost(result.data);
+      }).catch((error) => {
+        console.log(error);
+      });
     // setPost(cachedDetailPost);
   }, [post._id])
-
-  const getPostedAt = () => {
-    const dateNow = new Date(Date.now());
-    const postedAtDate = new Date(data.state.post.posted_at);
-
-    let postedAt = "";
-    const timeDifference = dateNow.getTime() - postedAtDate.getTime();
-    if (timeDifference < 1000 * 60) {
-      postedAt = Math.round(timeDifference / 1000) + " Seconds Ago";
-    } else if (timeDifference < 1000 * 60 * 60) {
-      postedAt = Math.round(timeDifference / 60000) + " Minutes Ago";
-    } else if (timeDifference < 1000 * 60 * 60 * 24) {
-      postedAt = Math.round(timeDifference / 3600000) + " Hours Ago";
-    } else if (timeDifference < 1000 * 60 * 60 * 24 * 365) {
-      postedAt = Math.round(timeDifference / (1000 * 60 * 60 * 24)) + " Days Ago";
-    }
-    return postedAt;
-  }
 
   return (
     // <p>Post Detail Page: {data.state.postId}</p>
@@ -88,7 +57,7 @@ const PostDetail = (props) => {
                 <small>{post.posted_by}</small>
               </div>
               <div className="posted-on">
-                <small> {getPostedAt()}</small>
+                <small> {convertToTimeAgo(data.state.post.posted_at)}</small>
               </div>
             </div>
           </div>

@@ -1,4 +1,5 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import Nav from "./components/nav";
 import Body from "./components/body";
 import Login from "./components/login";
@@ -9,31 +10,34 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import api from "./utils/api";
 
 import "./App.css";
-import { StoreContext } from "./storeContext";
 import { userCreator } from "./store/auth";
 
 
 const App = (props) => {
-  const store = useContext(StoreContext);
-  const user = store.getState();
+  const user = useSelector(state => state.user || {});
+  const dispatch = useDispatch();
   const [loginTried, setLoginTried] = useState(false);
 
   useEffect(() => {
+    console.log("User: ", user);
     if (!loginTried && user.name === undefined) {
       setLoginTried(true);
-      api("/api/auth/refresh/", { method: "GET", withCredentials: true })
+      api("/api/auth/refresh/",
+        {
+          method: "GET",
+          withCredentials: true
+        })
         .then((result) => {
-          console.log("App: useEffect: userState: ", store.getState());
-          const { id, name, email } = result.data.user;
-          store.dispatch(userCreator({ id, name, email, token: result.data.token }));
-          console.log("App: useEffect: userState: ", store.getState());
+          const { id, name, email, upvoted_posts } = result.data.user;
+          console.log("App: useEffect:", upvoted_posts);
+          dispatch(userCreator({ id, name, email, token: result.data.token, upvoted_posts }));
         })
         .catch((error) => {
           console.log(error);
           // setUser({ token: "", loggedIn: false, user: "" });
         });
     }
-  }, [store, loginTried, user.name]);
+  }, [loginTried, user, dispatch]);
 
   return (
     <Router>

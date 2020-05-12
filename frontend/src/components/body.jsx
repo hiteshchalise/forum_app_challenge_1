@@ -9,7 +9,6 @@ const Body = (props) => {
   const [items, setItems] = useState([]);
 
   useEffect(() => {
-
     api("/api/posts").then((result) => {
       setItems(result.data);
     }).catch((error) => {

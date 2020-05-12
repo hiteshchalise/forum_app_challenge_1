@@ -1,16 +1,14 @@
-import React, { useContext } from "react";
-import { StoreContext } from "../storeContext";
+import React from "react";
 import { Link, useHistory } from "react-router-dom";
 import MyEditor from "./myEditor";
 import 'draft-js/dist/Draft.css';
 import api from "../utils/api";
+import { useSelector } from "react-redux";
 
 
 const AddComment = (props) => {
-
-    const store = useContext(StoreContext);
-    const user = store.getState();
     const history = useHistory();
+    const user = useSelector(state => state.user);
 
     const commentCB = (comment_body) => {
         api.post(`/api/posts/${props.post._id}/comments/`, {
@@ -32,7 +30,7 @@ const AddComment = (props) => {
 
 
     return (
-        !user.loggedIn ?
+        user.name === undefined ?
             <div className="rounded-container flex-row" style={{ justifyContent: "space-between" }}>
                 <p> You need to be logged in to comment</p>
                 <div>

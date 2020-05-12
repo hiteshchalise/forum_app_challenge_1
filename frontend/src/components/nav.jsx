@@ -1,24 +1,23 @@
-import React, { useContext } from "react";
+import React from "react";
 import "./style/nav.css";
 import { Link } from "react-router-dom";
-import { StoreContext } from "../storeContext";
 import api from "../utils/api";
 import { userDestroyer } from "../store/auth";
+import { useSelector, useDispatch } from "react-redux";
 
 const Nav = (props) => {
-  const store = useContext(StoreContext);
-  const user = store.getState();
-  console.log("User: ", user);
+  const user = useSelector(state => state.user);
+  const dispatch = useDispatch();
 
   const onLogout = () => {
     api('/api/auth/logout', { method: "POST", withCredentials: true }).then(
       (result) => {
-        store.dispatch(userDestroyer());
+        dispatch(userDestroyer());
       }
     ).catch(
       (error) => {
         console.error(error);
-        store.dispatch(userDestroyer());
+        dispatch(userDestroyer());
       }
     );
   }

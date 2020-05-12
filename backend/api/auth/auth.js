@@ -95,7 +95,7 @@ router.get("/refresh", (req, res) => {
 
 router.post("/logout", (req, res) => {
   console.log("cookie unset");
-  res.cookie("refreshToken", "", {
+  res.cookie("refreshToken", "InValidCookie", {
     expiresIn: Date.now(),
     httpOnly: true,
   });

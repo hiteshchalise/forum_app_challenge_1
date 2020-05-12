@@ -1,21 +1,19 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import "./style/auth.css";
 import { Link, useHistory } from "react-router-dom";
 import userCreator from "../store/auth";
-import { StoreContext } from "../storeContext";
 import { useEffect } from "react";
+import { useSelector, useDispatch, shallowEqual } from "react-redux";
 
 const Login = (props) => {
-  const store = useContext(StoreContext);
+
   let history = useHistory();
+  const user = useSelector(state => state.user, shallowEqual);
+  const dispatch = useDispatch();
 
-  const user = store.getState();
-
-  useEffect(() => {
-    if (user.name !== undefined) {
-      history.push("/");
-    }
-  }, [user, history])
+  if (user.name !== undefined) {
+    history.push("/");
+  }
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -36,13 +34,9 @@ const Login = (props) => {
     })
       .then((response) => response.json())
       .then((result) => {
-        console.log("result after successful login: ", result);
-        // setUser({ user: result.user, loggedIn: true, token: result.token });
-        const { id, name, email } = result.user;
-        console.log("UserState successful user dispatch: ", store.getState());
-        store.dispatch(userCreator({ id, name, email, token: result.token }));
-        console.log("userState after successful user dispatch: ", store.getState());
-        history.push("/");
+        const { id, name, email, upvoted_posts } = result.user;
+        console.log(upvoted_posts);
+        dispatch(userCreator({ id, name, email, token: result.token, upvoted_posts }));
       })
       .catch((error) => {
         // setUser({ user: {}, loggedIn: false, token: {} });

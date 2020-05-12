@@ -10,6 +10,7 @@ router.get("/", (req, res) => {
   // Post.find({}, (error, posts) => {
   //   res.json(posts);
   // });
+  console.log("Get Request");
   Post.find({}).sort({ "posted_at": "desc" }).limit(15).exec((error, posts) => {
     res.json(posts);
   })
