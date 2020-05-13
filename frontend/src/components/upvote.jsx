@@ -7,8 +7,6 @@ const Upvote = (props) => {
     const [upvoteDir, setUpvoteDir] = useState(0);
     const [upvoteCount, setUpvoteCount] = useState(props.post.upvotes);
 
-    console.log("Upvote: upvoteDir: ", upvoteDir);
-
     // const user = store.getState();
     const user = useSelector(state => state.user);
     useEffect(() => {

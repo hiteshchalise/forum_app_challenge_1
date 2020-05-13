@@ -1,25 +1,25 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import PostContainer from "./postContainer";
-import { useEffect } from "react";
 import api from "../utils/api";
 import SideBar from "./sidebar";
 import "./style/body.css";
+import { useSelector, useDispatch } from "react-redux";
+import { addPosts } from "../store/posts";
 
 const Body = (props) => {
-  const [items, setItems] = useState([]);
+  const posts = useSelector(state => state.posts);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     api("/api/posts").then((result) => {
-      setItems(result.data);
+      dispatch(addPosts(result.data));
     }).catch((error) => {
       console.log(error);
     });
-    // when internet is down, this is for development purpose
-    // setItems(cachedPost);
   }, [])
 
   let postContainers = [];
-  items.forEach((item) => {
+  posts.forEach((item) => {
     postContainers.push(<PostContainer post={item} key={item._id} />)
   })
   return (

@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import "./style/auth.css";
 import { Link, useHistory } from "react-router-dom";
 import userCreator from "../store/auth";
-import { useEffect } from "react";
 import { useSelector, useDispatch, shallowEqual } from "react-redux";
 
 const Login = (props) => {
@@ -35,7 +34,6 @@ const Login = (props) => {
       .then((response) => response.json())
       .then((result) => {
         const { id, name, email, upvoted_posts } = result.user;
-        console.log(upvoted_posts);
         dispatch(userCreator({ id, name, email, token: result.token, upvoted_posts }));
       })
       .catch((error) => {
