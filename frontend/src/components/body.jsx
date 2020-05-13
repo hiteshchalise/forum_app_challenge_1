@@ -16,7 +16,7 @@ const Body = (props) => {
     }).catch((error) => {
       console.log(error);
     });
-  }, [])
+  }, [dispatch])
 
   let postContainers = [];
   posts.forEach((item) => {

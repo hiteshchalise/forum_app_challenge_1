@@ -1,5 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { useLocation } from "react-router-dom";
+
 import "./style/post-detail.css";
 import Comment from "./comment";
 import AddComment from "./addComment";
@@ -11,18 +13,23 @@ import { styleMap, blockStyleFn } from "../utils/draftJsCustomStyle"
 import api from "../utils/api";
 import convertToTimeAgo from "../utils/dateConverter";
 
+import { updatePostById } from "../store/posts";
+
 
 const PostDetail = (props) => {
   const data = useLocation();
-  const [post, setPost] = useState({
-    _id: data.state.post._id,
-    post_title: data.state.post.post_title,
-    posted_by: data.state.post.posted_by,
-    posted_at: data.state.post.posted_at,
-    post_body: data.state.post.post_body,
-    comments: [],
-    upvotes: data.state.post.upvotes
-  });
+  // const [post, setPost] = useState({
+  //   _id: data.state.post._id,
+  //   post_title: data.state.post.post_title,
+  //   posted_by: data.state.post.posted_by,
+  //   posted_at: data.state.post.posted_at,
+  //   post_body: data.state.post.post_body,
+  //   comments: [],
+  //   upvotes: data.state.post.upvotes
+  // });
+
+  const post = useSelector(state => state.posts.find(post => post._id === data.state.post._id))
+  const dispatch = useDispatch();
 
   const convertPost = (raw) => {
     const editorState = EditorState.createWithContent(convertFromRaw(JSON.parse(raw)))
@@ -32,12 +39,13 @@ const PostDetail = (props) => {
   useEffect(() => {
     api.get(`/api/posts/${post._id}`)
       .then((result) => {
-        setPost(result.data);
+        // setPost(result.data);
+        dispatch(updatePostById(result.data));
       }).catch((error) => {
         console.log(error);
       });
     // setPost(cachedDetailPost);
-  }, [post._id])
+  }, [post._id, dispatch])
 
   return (
     // <p>Post Detail Page: {data.state.postId}</p>

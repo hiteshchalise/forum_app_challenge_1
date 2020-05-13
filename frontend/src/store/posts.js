@@ -1,6 +1,7 @@
 
 // Action Types
 const ADD_POSTS = "addPosts";
+const UPDATE_POST_BY_ID = "updatePostById"
 
 // _id: data.state.post._id,
 //     post_title: data.state.post.post_title,
@@ -18,11 +19,22 @@ export const addPosts = (posts) => {
     }
 };
 
+export const updatePostById = (post) => {
+    return {
+        type: UPDATE_POST_BY_ID,
+        post: { ...post }
+    }
+}
+
+
 // Reducer
 const posts = (state = [], action) => {
     switch (action.type) {
         case ADD_POSTS:
             state = action.posts.map(post => ({ ...post }))
+            return state;
+        case UPDATE_POST_BY_ID:
+            state = state.map(post => post._id === action.post._id ? { ...action.post } : post);
             return state;
         default:
             return state;
