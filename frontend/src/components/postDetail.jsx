@@ -16,19 +16,10 @@ import convertToTimeAgo from "../utils/dateConverter";
 import { updatePostById } from "../store/posts";
 
 
-const PostDetail = (props) => {
+const PostDetail = () => {
   const data = useLocation();
-  // const [post, setPost] = useState({
-  //   _id: data.state.post._id,
-  //   post_title: data.state.post.post_title,
-  //   posted_by: data.state.post.posted_by,
-  //   posted_at: data.state.post.posted_at,
-  //   post_body: data.state.post.post_body,
-  //   comments: [],
-  //   upvotes: data.state.post.upvotes
-  // });
-
   const post = useSelector(state => state.posts.find(post => post._id === data.state.post._id))
+  const upvotedPosts = useSelector(state => state.user.upvoted_posts);
   const dispatch = useDispatch();
 
   const convertPost = (raw) => {
@@ -47,12 +38,16 @@ const PostDetail = (props) => {
     // setPost(cachedDetailPost);
   }, [post._id, dispatch])
 
+  const upvotedPost = upvotedPosts.find(upvotedPost => upvotedPost.postId === post._id);
   return (
     // <p>Post Detail Page: {data.state.postId}</p>
     <div className="post-detail">
       <div className="container width-70">
         <div className="left-section">
-          <Upvote post={post} />
+          <Upvote
+            upvoteDir={upvotedPost ? upvotedPost.upvote_dir : 0}
+            upvoteCount={post.upvotes}
+            postId={post._id} />
         </div>
         <div className="right-section">
           <div className="info-section">

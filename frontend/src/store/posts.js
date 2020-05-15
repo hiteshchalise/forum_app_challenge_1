@@ -1,15 +1,8 @@
 
 // Action Types
 const ADD_POSTS = "addPosts";
-const UPDATE_POST_BY_ID = "updatePostById"
-
-// _id: data.state.post._id,
-//     post_title: data.state.post.post_title,
-//         posted_by: data.state.post.posted_by,
-//             posted_at: data.state.post.posted_at,
-//                 post_body: data.state.post.post_body,
-//                     comments: [],
-//                         upvotes: data.state.post.upvotes
+const UPDATE_POST_BY_ID = "updatePostById";
+const UPDATE_POST_UPVOTE_COUNT = "updatePostUpvoteCount";
 
 // Action Creators
 export const addPosts = (posts) => {
@@ -25,7 +18,12 @@ export const updatePostById = (post) => {
         post: { ...post }
     }
 }
-
+export const updatePostUpvoteCount = (upvote) => {
+    return {
+        type: UPDATE_POST_UPVOTE_COUNT,
+        upvote
+    }
+}
 
 // Reducer
 const posts = (state = [], action) => {
@@ -35,6 +33,9 @@ const posts = (state = [], action) => {
             return state;
         case UPDATE_POST_BY_ID:
             state = state.map(post => post._id === action.post._id ? { ...action.post } : post);
+            return state;
+        case UPDATE_POST_UPVOTE_COUNT:
+            state = state.map(post => post._id === action.upvote.postId ? { ...post, upvotes: action.upvote.upvotes } : post);
             return state;
         default:
             return state;

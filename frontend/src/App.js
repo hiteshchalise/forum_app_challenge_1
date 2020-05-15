@@ -19,7 +19,6 @@ const App = (props) => {
   const [loginTried, setLoginTried] = useState(false);
 
   useEffect(() => {
-    console.log("User: ", user);
     if (!loginTried && user.name === undefined) {
       setLoginTried(true);
       api("/api/auth/refresh/",
@@ -29,7 +28,6 @@ const App = (props) => {
         })
         .then((result) => {
           const { id, name, email, upvoted_posts } = result.data.user;
-          console.log("App: useEffect:", upvoted_posts);
           dispatch(userCreator({ id, name, email, token: result.data.token, upvoted_posts }));
         })
         .catch((error) => {
