@@ -40,13 +40,14 @@ const user = (state = {
             return state;
         case UNSET_USER:
             state = {
+                upvoted_posts: []
             }
             return state;
         case UPDATE_POST_UPVOTE:
             // state = state.map(post => post._id === action.upvote.postId ? { ...action.})
             state = {
                 ...state,
-                upvoted_posts: [...state.upvoted_posts.map(post => post.postId === action.upvote.postId ? { ...post, upvote_dir: action.upvote.dir } : post)]
+                upvoted_posts: [...state.upvoted_posts.map(post => post.postId === action.upvote.postId ? { ...post, upvote_dir: action.upvote.dir, } : post)]
             };
             return state;
         default:

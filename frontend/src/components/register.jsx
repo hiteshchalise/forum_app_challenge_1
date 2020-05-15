@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import "./style/auth.css";
 import { Link, useHistory } from "react-router-dom";
-import { StoreContext } from "../storeContext";
 import userCreator from "../store/user";
-import { useContext } from "react";
 import api from "../utils/api";
+import { useSelector, shallowEqual, useDispatch } from "react-redux";
 
 const Register = (props) => {
   const [name, setName] = useState("");
@@ -15,10 +14,10 @@ const Register = (props) => {
   const [emailIsValid, setEmailIsValid] = useState(false);
   const [confirmPasswordIsValid, setConfirmPasswordIsValid] = useState(false);
 
-  const store = useContext(StoreContext);
   let history = useHistory();
 
-  const user = store.getState();
+  const user = useSelector(state => state.user, shallowEqual);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (user.name !== undefined) {
@@ -37,7 +36,7 @@ const Register = (props) => {
       },
     }).then((result) => {
       const { id, name, email } = result.data.user;
-      store.dispatch(userCreator({ id, name, email, token: result.data.token }));
+      dispatch(userCreator({ id, name, email, token: result.data.token }));
     }).catch((error) => {
       console.log(error);
     });
@@ -124,7 +123,7 @@ const Register = (props) => {
   }
 
   let invalidPasswordStyle;
-  if (password === "") {
+  if (password === "" || password.length < 6) {
     invalidPasswordStyle = invalidBorderStyle;
   } else {
     invalidPasswordStyle = {};
