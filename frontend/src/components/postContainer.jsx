@@ -5,9 +5,11 @@ import { Editor, EditorState, convertFromRaw } from 'draft-js';
 import Upvote from "./upvote";
 import convertToTimeAgo from "../utils/dateConverter";
 import { styleMap, blockStyleFn } from "../utils/draftJsCustomStyle"
+import { useSelector } from "react-redux";
 
 const PostContainer = (props) => {
   const history = useHistory();
+  const upvotedPosts = useSelector(state => state.user.upvoted_posts);
 
   const convertPost = (raw) => {
     const editorState = EditorState.createWithContent(convertFromRaw(JSON.parse(raw)))
@@ -18,10 +20,16 @@ const PostContainer = (props) => {
     history.push("/postDetail", { post: props.post })
   }
 
+  const upvotedPost = upvotedPosts.find(post => post.postId === props.post._id);
+
   return (
     <div className="container">
       <div className="left-section">
-        <Upvote post={props.post} />
+        {/* <Upvote post={props.post} /> */}
+        <Upvote
+          upvoteDir={upvotedPost ? upvotedPost.upvote_dir : 0}
+          upvoteCount={props.post.upvotes}
+          postId={props.post._id} />
       </div>
       <div className="right-section" onClick={handlePostClick}>
         <div className="info-section">

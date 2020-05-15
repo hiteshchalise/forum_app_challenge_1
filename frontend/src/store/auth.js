@@ -2,6 +2,7 @@
 // Action Types
 const SET_USER = "setUser";
 const UNSET_USER = "unsetUser";
+const UPDATE_POST_UPVOTE = "updatePostUpvote";
 
 // Action Creators
 export const userCreator = (user) => {
@@ -18,6 +19,14 @@ export const userDestroyer = () => ({
     type: UNSET_USER,
 })
 
+export const updatePostUpvote = (upvote) => {
+    return {
+        type: UPDATE_POST_UPVOTE,
+        upvote: { ...upvote }
+    }
+}
+
+
 // Reducer
 const auth = (state = {}, action) => {
     switch (action.type) {
@@ -30,6 +39,13 @@ const auth = (state = {}, action) => {
         case UNSET_USER:
             state = {
             }
+            return state;
+        case UPDATE_POST_UPVOTE:
+            // state = state.map(post => post._id === action.upvote.postId ? { ...action.})
+            state = {
+                ...state,
+                upvoted_posts: [...state.upvoted_posts.map(post => post.postId === action.upvote.postId ? { ...post, upvote_dir: action.upvote.dir } : post)]
+            };
             return state;
         default:
             return state;

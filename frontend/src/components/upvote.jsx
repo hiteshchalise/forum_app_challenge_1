@@ -1,34 +1,39 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import "./style/container.css";
 import api from "../utils/api";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { updatePostUpvote } from "../store/auth";
 
-const Upvote = (props) => {
-    const [upvoteDir, setUpvoteDir] = useState(0);
-    const [upvoteCount, setUpvoteCount] = useState(props.post.upvotes);
+const Upvote = ({ upvoteDir, upvoteCount, postId }) => {
+    // const [upvoteDir, setUpvoteDir] = useState(0);
+    // const [upvoteCount, setUpvoteCount] = useState(props.post.upvotes);
 
     // const user = store.getState();
+    console.log("UpvoteDir: ", upvoteDir, "UpvoteCount", upvoteCount, "postId: ", postId);
     const user = useSelector(state => state.user);
-    useEffect(() => {
-        if (user.name !== undefined && user.upvoted_posts !== undefined) {
-            const upvotedPost = user.upvoted_posts.find((upvoted_post) => {
-                return props.post._id === upvoted_post.postId;
-            })
-            upvotedPost === undefined ? setUpvoteDir(0) : setUpvoteDir(upvotedPost.upvote_dir);
-        }
-    }, [user, setUpvoteDir, props.post._id])
+    const dispatch = useDispatch();
+    // useEffect(() => {
+    //     if (user.name !== undefined && user.upvoted_posts !== undefined) {
+    //         const upvotedPost = user.upvoted_posts.find((upvoted_post) => {
+    //             return props.post._id === upvoted_post.postId;
+    //         })
+    //         upvotedPost === undefined ? setUpvoteDir(0) : setUpvoteDir(upvotedPost.upvote_dir);
+    //     }
+    // }, [user, setUpvoteDir, props.post._id])
 
     const handleClick = (dir) => {
         api.post("/api/users/upvote", {
-            "postId": props.post._id,
+            "postId": postId,
             "dir": dir
         }, {
             headers: {
                 "x-auth-token": user.token,
             }
         }).then((result) => {
-            setUpvoteDir(result.data.dir)
-            setUpvoteCount(result.data.upvotes)
+            console.log("Result: data: ", result.data);
+            dispatch(updatePostUpvote(result.data));
+            // setUpvoteDir(result.data.dir)
+            // setUpvoteCount(result.data.upvotes)
         }).catch((error) => {
             console.log(error);
         });

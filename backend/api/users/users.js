@@ -109,7 +109,7 @@ router.get("/:name", (req, res) => {
 })
 
 // @route POST api/users/upvote
-// @desc Register new user
+// @desc POST upvote
 // @access Public
 router.post("/upvote", auth, (req, res) => {
   const { postId, dir } = req.body
@@ -144,7 +144,7 @@ router.post("/upvote", auth, (req, res) => {
           post.upvotes += dir;
           upvotedPost.upvote_dir += dir;
         }
-        res.json({ dir: upvotedPost.upvote_dir, upvotes: post.upvotes })
+        res.json({ postId, dir: upvotedPost.upvote_dir, upvotes: post.upvotes })
       }
 
       user.save().then((result) => { console.log(result) }).catch((error) => { console.log(error) });
