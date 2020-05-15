@@ -1,18 +1,23 @@
 import React, { useState } from "react";
 import "./style/auth.css";
 import { Link, useHistory } from "react-router-dom";
-import userCreator from "../store/user";
-import { useSelector, useDispatch, shallowEqual } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { userCreator } from "../store/user";
+import { useEffect } from "react";
 
-const Login = (props) => {
+const useMountEffect = (func) => useEffect(func, []);
+
+const Login = () => {
 
   let history = useHistory();
-  const user = useSelector(state => state.user, shallowEqual);
+  const user = useSelector(state => state.user);
   const dispatch = useDispatch();
 
-  if (user.name !== undefined) {
-    history.push("/");
-  }
+  useMountEffect(() => {
+    if (user.name !== undefined) {
+      history.push("/");
+    }
+  });
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -35,9 +40,11 @@ const Login = (props) => {
       .then((result) => {
         const { id, name, email, upvoted_posts } = result.user;
         dispatch(userCreator({ id, name, email, token: result.token, upvoted_posts }));
+        history.push('/');
+        console.log("Dispached in login");
       })
       .catch((error) => {
-        // setUser({ user: {}, loggedIn: false, token: {} });
+
       });
   };
 

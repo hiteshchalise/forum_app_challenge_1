@@ -2,30 +2,21 @@ import React, { useState } from "react";
 import "./style/create-post.css";
 import api from "../utils/api";
 import { useHistory } from "react-router-dom";
-import { useContext } from "react";
-import { StoreContext } from "../storeContext";
-
 import MyEditor from "./myEditor";
 import 'draft-js/dist/Draft.css';
+import { useSelector, shallowEqual } from "react-redux";
 
 
 const CreatePost = (props) => {
     const [title, setTitle] = useState("");
-    // const [body, setBody] = useState("");  
-    const store = useContext(StoreContext);
-    const user = store.getState();
+
+    const user = useSelector(state => state.user, shallowEqual);
 
     let history = useHistory();
-
-    console.log("here");
 
     const onTitleChange = (event) => {
         setTitle(event.target.value);
     }
-
-    // const onBodyChange = (event) => {
-    //     setBody(event.target.value);
-    // }
 
     const handleSubmit = (body) => {
         console.log(user.token);
