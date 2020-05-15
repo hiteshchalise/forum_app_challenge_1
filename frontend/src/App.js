@@ -10,7 +10,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import api from "./utils/api";
 
 import "./App.css";
-import { userCreator } from "./store/auth";
+import { userCreator } from "./store/user";
 
 
 const App = (props) => {

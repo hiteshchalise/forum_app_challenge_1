@@ -2,7 +2,7 @@ import React from "react";
 import "./style/nav.css";
 import { Link } from "react-router-dom";
 import api from "../utils/api";
-import { userDestroyer } from "../store/auth";
+import { userDestroyer } from "../store/user";
 import { useSelector, useDispatch } from "react-redux";
 
 const Nav = (props) => {

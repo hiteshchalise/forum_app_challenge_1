@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./style/auth.css";
 import { Link, useHistory } from "react-router-dom";
-import userCreator from "../store/auth";
+import userCreator from "../store/user";
 import { useSelector, useDispatch, shallowEqual } from "react-redux";
 
 const Login = (props) => {

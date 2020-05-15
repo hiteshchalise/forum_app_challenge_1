@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./style/auth.css";
 import { Link, useHistory } from "react-router-dom";
 import { StoreContext } from "../storeContext";
-import userCreator from "../store/auth";
+import userCreator from "../store/user";
 import { useContext } from "react";
 import api from "../utils/api";
 

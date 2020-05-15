@@ -2,7 +2,7 @@ import React from "react";
 import "./style/container.css";
 import api from "../utils/api";
 import { useSelector, useDispatch } from "react-redux";
-import { updatePostUpvote } from "../store/auth";
+import { updatePostUpvote } from "../store/user";
 
 const Upvote = ({ upvoteDir, upvoteCount, postId }) => {
     // const [upvoteDir, setUpvoteDir] = useState(0);

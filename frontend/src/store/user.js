@@ -28,7 +28,9 @@ export const updatePostUpvote = (upvote) => {
 
 
 // Reducer
-const auth = (state = {}, action) => {
+const user = (state = {
+    upvoted_posts: []
+}, action) => {
     switch (action.type) {
         case SET_USER:
             state = {
@@ -52,4 +54,4 @@ const auth = (state = {}, action) => {
     }
 }
 
-export default auth;
+export default user;

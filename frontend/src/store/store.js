@@ -1,5 +1,5 @@
 import { createStore, combineReducers } from 'redux';
-import user from './auth';
+import user from './user';
 import posts from './posts';
 
 const store = createStore(combineReducers({ user, posts }),
