@@ -1,15 +1,24 @@
 import React from "react";
 import "./style/container.css";
 import { useHistory } from "react-router-dom";
-import { Editor, EditorState, convertFromRaw } from 'draft-js';
 import Upvote from "./upvote";
+
+import { updatePostUpvote } from "../store/user";
+import { updatePostUpvoteCount } from "../store/posts";
+
+import { Editor, EditorState, convertFromRaw } from 'draft-js';
 import convertToTimeAgo from "../utils/dateConverter";
 import { styleMap, blockStyleFn } from "../utils/draftJsCustomStyle"
-import { useSelector } from "react-redux";
+import api from "../utils/api";
+import { useSelector, useDispatch } from "react-redux";
+
 
 const PostContainer = (props) => {
   const history = useHistory();
   const upvotedPosts = useSelector(state => state.user.upvoted_posts);
+  const upvotes = useSelector(state => state.posts.find(post => post._id === props.post._id).upvotes);
+  const user = useSelector(state => state.user);
+  const dispatch = useDispatch();
 
   const convertPost = (raw) => {
     const editorState = EditorState.createWithContent(convertFromRaw(JSON.parse(raw)))
@@ -17,7 +26,23 @@ const PostContainer = (props) => {
   }
 
   const handlePostClick = () => {
-    history.push("/postDetail", { post: props.post })
+    history.push(`/post/${props.post._id}`, { post: props.post })
+  }
+
+  const handleUpvoteClick = (dir) => {
+    api.post("/api/users/upvote", {
+      "postId": props.post._id,
+      "dir": dir
+    }, {
+      headers: {
+        "x-auth-token": user.token,
+      }
+    }).then((result) => {
+      dispatch(updatePostUpvote(result.data));
+      dispatch(updatePostUpvoteCount(result.data));
+    }).catch((error) => {
+      console.log(error);
+    });
   }
 
   const upvotedPost = upvotedPosts.find(post => post.postId === props.post._id);
@@ -28,8 +53,9 @@ const PostContainer = (props) => {
         {/* <Upvote post={props.post} /> */}
         <Upvote
           upvoteDir={upvotedPost ? upvotedPost.upvote_dir : 0}
-          upvoteCount={props.post.upvotes}
-          postId={props.post._id} />
+          upvoteCount={upvotes}
+          handleClick={handleUpvoteClick}
+        />
       </div>
       <div className="right-section" onClick={handlePostClick}>
         <div className="info-section">

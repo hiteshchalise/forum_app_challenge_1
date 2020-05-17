@@ -30,6 +30,7 @@ router.post("/", (req, res) => {
           res.cookie("refreshToken", refreshToken, {
             expiresIn: Date.now() + 99999999999,
             httpOnly: true,
+            sameSite: "strict"
           });
           console.log("cookie is set");
         }
@@ -98,6 +99,7 @@ router.post("/logout", (req, res) => {
   res.cookie("refreshToken", "InValidCookie", {
     expiresIn: Date.now(),
     httpOnly: true,
+    sameSite: "strict"
   });
 
   res.json({ msg: "cookie distroyed" })

@@ -50,7 +50,7 @@ const App = (props) => {
           <Route path="/createPost">
             <CreatePost />
           </Route>
-          <Route path="/postDetail">
+          <Route path="/post/:id">
             <PostDetail />
           </Route>
           <Route exact path="/">
