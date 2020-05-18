@@ -12,8 +12,8 @@ function auth(req, res, next) {
     req.user = decoded;
     next();
   } catch (e) {
-      console.log(e);
-    res.status(400).json({ msg: "token not valid" });
+    console.log(e);
+    return res.status(400).json({ msg: "token not valid" });
   }
 }
 

@@ -23,6 +23,13 @@ const UserSchema = new Schema({
     upvoted_posts: [{
         postId: String,
         upvote_dir: Number
+    }],
+    upvoted_comments: [{
+        postId: String,
+        comments: [{
+            commentId: String,
+            upvote_dir: Number
+        }]
     }]
 })
 

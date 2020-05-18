@@ -30,6 +30,10 @@ const PostSchema = new Schema({
         commented_at: {
             type: Date,
             default: Date.now
+        },
+        upvotes: {
+            type: Number,
+            default: 1
         }
     }],
     upvotes: {

@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useLocation, useParams } from "react-router-dom";
 
 import "./style/post-detail.css";
+// import "./style/container.css";
 import Comment from "./comment";
 import AddComment from "./addComment";
 import Upvote from "./upvote";
@@ -14,12 +15,15 @@ import api from "../utils/api";
 import convertToTimeAgo from "../utils/dateConverter";
 
 import { updatePostById, addPosts } from "../store/posts";
+import { updatePostUpvote } from "../store/user";
+import { updatePostUpvoteCount } from "../store/posts";
 
 
 const PostDetail = () => {
   const data = useLocation();
   const { id } = useParams();
-  const post = useSelector(state => state.posts.find(post => post._id === id))
+  const post = useSelector(state => state.posts.find(post => post._id === id));
+  const user = useSelector(state => state.user);
   const upvotedPosts = useSelector(state => state.user.upvoted_posts);
   const dispatch = useDispatch();
 
@@ -28,12 +32,28 @@ const PostDetail = () => {
     return editorState;
   }
 
+  const handleUpvoteClick = (dir) => {
+    api.post("/api/users/upvote", {
+      "postId": id,
+      "dir": dir
+    }, {
+      headers: {
+        "x-auth-token": user.token,
+      }
+    }).then((result) => {
+      dispatch(updatePostUpvote(result.data));
+      dispatch(updatePostUpvoteCount(result.data));
+    }).catch((error) => {
+      console.log(error);
+    });
+  }
+
   useEffect(() => {
     api.get(`/api/posts/${id}`)
       .then((result) => {
         // setPost(result.data);
         dispatch(updatePostById(result.data));
-        dispatch(addPosts([{ ...result.data }]))
+        if (!post) dispatch(addPosts([{ ...result.data }]));
       }).catch((error) => {
         console.log(error);
       });
@@ -50,7 +70,8 @@ const PostDetail = () => {
             <Upvote
               upvoteDir={upvotedPost ? upvotedPost.upvote_dir : 0}
               upvoteCount={post.upvotes}
-              postId={post._id} />
+              handleClick={handleUpvoteClick}
+            />
           </div>
           <div className="right-section">
             <div className="info-section">
@@ -83,7 +104,7 @@ const PostDetail = () => {
             {comments} */}
               {post.comments !== undefined ?
                 post.comments.map(
-                  (comment) => <Comment comment={comment} key={comment._id} />
+                  (comment) => <Comment comment={comment} key={comment._id} postId={id} />
                 ) : <div className="">No Comments</div>
               }
             </div>

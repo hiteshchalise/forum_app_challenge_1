@@ -110,7 +110,7 @@ router.get("/:name", (req, res) => {
 
 // @route POST api/users/upvote
 // @desc POST upvote
-// @access Public
+// @access Private
 router.post("/upvote", auth, (req, res) => {
   const { postId, dir } = req.body
   if (!postId || !dir) {
@@ -152,6 +152,62 @@ router.post("/upvote", auth, (req, res) => {
 
     });
   })
-})
+});
+
+// @route POST api/users/upvote/comment
+// @desc POST upvote comments
+// @access Private
+router.post("/upvote/comment", auth, (req, res) => {
+  const { postId, commentId, dir } = req.body;
+  console.log("PostId: ", postId, "commentId: ", commentId, "dir: ", dir);
+
+  if (!postId || !dir || !commentId) {
+    return res.status(400).json({ msg: "bad request, include postId or dir" });
+  }
+
+  if (dir !== 1 && dir !== 0 && dir !== -1) {
+    return res.status(400).json({ msg: "bad request, dir is invalid" });
+  }
+
+  User.findById(req.user.id, (error, user) => {
+    if (error) return res.status(400).json({ msg: "no user found" });
+    Post.findById(postId, (error, post) => {
+      if (error) return res.status(400).json({ msg: "no post by Id" });
+
+      const upvotedCommentPost = user.upvoted_comments.find(upvoted_comment => upvoted_comment.postId === postId);
+      const comment = post.comments.find(comment => {
+        return comment._id.toString() === commentId
+      });
+
+      if (upvotedCommentPost === undefined) {
+        user.upvoted_comments.push({
+          postId: postId,
+          comments: [{
+            commentId: commentId,
+            upvote_dir: dir
+          }]
+        });
+        comment.upvotes += dir;
+        res.json({ postId, commentId, dir, upvotes: comment.upvotes })
+      } else {
+        const upvotedComment = upvotedCommentPost.comments.find(comment => comment.commentId === commentId);
+        console.log("UpvotedComment", upvotedComment);
+        if (upvotedComment.upvote_dir === dir) {
+          console.log("same");
+          comment.upvotes -= dir;
+          upvotedComment.upvote_dir -= dir;
+        } else {
+          console.log("different");
+          comment.upvotes += dir;
+          upvotedComment.upvote_dir += dir;
+        }
+        res.json({ postId, commentId, dir: upvotedComment.upvote_dir, upvotes: comment.upvotes });
+      }
+      user.save().then((result) => { console.log(result) }).catch((error) => { console.log(error) });
+      post.save().then((result) => { console.log(result) }).catch((error) => { console.log(error) });
+    });
+
+  });
+});
 
 module.exports = router;
