@@ -49,18 +49,21 @@ const PostDetail = () => {
   }
 
   useEffect(() => {
-    api.get(`/api/posts/${id}`)
-      .then((result) => {
-        // setPost(result.data);
-        dispatch(updatePostById(result.data));
-        if (!post) dispatch(addPosts([{ ...result.data }]));
-      }).catch((error) => {
-        console.log(error);
-      });
-    // setPost(cachedDetailPost);
+    if (!post) {
+      api.get(`/api/posts/${id}`)
+        .then((result) => {
+          // setPost(result.data);
+          console.log("PostDetail: result.data: ", result.data);
+          dispatch(updatePostById(result.data));
+          dispatch(addPosts([{ ...result.data }]));
+        }).catch((error) => {
+          console.log(error);
+        });
+    }
   }, [id, dispatch])
 
   const upvotedPost = upvotedPosts.find(upvotedPost => upvotedPost.postId === id);
+  console.log(upvotedPost);
   return (
     // <p>Post Detail Page: {data.state.postId}</p>
     !post ? <div>Sorry no post available</div> :

@@ -38,8 +38,8 @@ const Login = () => {
     })
       .then((response) => response.json())
       .then((result) => {
-        const { id, name, email, upvoted_posts } = result.user;
-        dispatch(userCreator({ id, name, email, token: result.token, upvoted_posts }));
+        const { id, name, email, upvoted_posts, upvoted_comments } = result.user;
+        dispatch(userCreator({ id, name, email, token: result.token, upvoted_posts, upvoted_comments }));
         history.push('/');
         console.log("Dispached in login");
       })

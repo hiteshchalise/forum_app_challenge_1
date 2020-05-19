@@ -27,8 +27,8 @@ const App = (props) => {
           withCredentials: true
         })
         .then((result) => {
-          const { id, name, email, upvoted_posts } = result.data.user;
-          dispatch(userCreator({ id, name, email, token: result.data.token, upvoted_posts }));
+          const { id, name, email, upvoted_posts, upvoted_comments } = result.data.user;
+          dispatch(userCreator({ id, name, email, token: result.data.token, upvoted_posts, upvoted_comments }));
         })
         .catch((error) => {
           console.log(error);

@@ -48,7 +48,8 @@ router.post("/", (req, res) => {
               id: user._id,
               name: user.name,
               email: user.email,
-              upvoted_posts: user.upvoted_posts
+              upvoted_posts: user.upvoted_posts,
+              upvoted_comments: user.upvoted_comments,
             },
           });
         }
@@ -83,7 +84,8 @@ router.get("/refresh", (req, res) => {
               id: user._id,
               name: user.name,
               email: user.email,
-              upvoted_posts: user.upvoted_posts
+              upvoted_posts: user.upvoted_posts,
+              upvoted_comments: user.upvoted_comments,
             },
           });
         }

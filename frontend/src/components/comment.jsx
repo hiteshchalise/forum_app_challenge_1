@@ -4,11 +4,15 @@ import { Editor, EditorState, convertFromRaw } from 'draft-js';
 import convertToTimeAgo from "../utils/dateConverter";
 import { styleMap, blockStyleFn } from "../utils/draftJsCustomStyle"
 import Upvote from "./upvote";
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import api from '../utils/api';
+import { updateUpvotedComment } from '../store/user';
+import { updateCommentUpvote } from '../store/posts';
 
 const Comment = (props) => {
-    const user = useSelector(state => state.user);
+    const userToken = useSelector(state => state.user.token);
+    const upvotedComments = useSelector(state => state.user.upvoted_comments);
+    const dispatch = useDispatch();
 
     const convertComment = (raw) => {
         const editorState = EditorState.createWithContent(convertFromRaw(JSON.parse(raw)))
@@ -23,26 +27,31 @@ const Comment = (props) => {
             "dir": dir
         }, {
             headers: {
-                "x-auth-token": user.token,
+                "x-auth-token": userToken,
             }
         }).then((result) => {
-            // dispatch(updatePostUpvote(result.data));
-            // dispatch(updatePostUpvoteCount(result.data));
+            dispatch(updateUpvotedComment(result.data));
+            dispatch(updateCommentUpvote(result.data));
             console.log("Comment Upvoted: ", result.data)
         }).catch((error) => {
             console.log(error);
         });
     }
 
-    // const upvotedPost = upvotedPosts.find(upvotedPost => upvotedPost.postId === id);
+    console.log(upvotedComments, userToken);
+    const upvotedComment = upvotedComments.find(
+        upvoted_comment => upvoted_comment.postId === props.postId
+    ).comments.find(
+        comment => comment.commentId === props.comment._id
+    );
 
     return (
         <div className="comment">
             <div className="container margin-0 border-0 ">
                 <div className="left-section">
                     <Upvote
-                        upvoteDir={0}
-                        upvoteCount={1}
+                        upvoteDir={upvotedComment.upvote_dir}
+                        upvoteCount={props.comment.upvotes}
                         handleClick={handleUpvoteClick}
                     />
                 </div>

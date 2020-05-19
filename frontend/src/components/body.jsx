@@ -12,6 +12,7 @@ const Body = (props) => {
 
   useEffect(() => {
     api("/api/posts").then((result) => {
+      console.log("body: result.data: ", result.data);
       dispatch(addPosts(result.data));
     }).catch((error) => {
       console.log(error);
