@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 import MyEditor from "./myEditor";
 import 'draft-js/dist/Draft.css';
 import api from "../utils/api";
@@ -8,11 +8,10 @@ import { updatePostById } from "../store/posts";
 
 
 const AddComment = (props) => {
-    const history = useHistory();
     const user = useSelector(state => state.user.auth);
     const dispatch = useDispatch();
 
-    const commentCB = (comment_body) => {
+    const commentCB = (comment_body, clearEditor) => {
         api.post(`/api/posts/${props.post._id}/comments/`, {
             "comment_body": comment_body,
             "commented_by": user.name
@@ -23,11 +22,10 @@ const AddComment = (props) => {
         }).then((result) => {
             console.log("comment added: ", result.data);
             dispatch(updatePostById(result.data));
-
-            // history.push({ pathname: "/empty" });
-            // history.replace({ pathname: "/postDetail", state: { post: props.post } })
+            clearEditor();
         }).catch((error) => {
             console.log(error);
+            return false;
         });
     }
 

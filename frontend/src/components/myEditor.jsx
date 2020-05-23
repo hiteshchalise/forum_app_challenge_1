@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Editor, EditorState, RichUtils, convertToRaw } from "draft-js";
+import { Editor, EditorState, RichUtils, convertToRaw, ContentState } from "draft-js";
 import "./style/myEditor.css"
 import { useEffect } from "react";
 
@@ -100,8 +100,13 @@ const MyEditor = (props) => {
         if (!currentContent.hasText()) {
             console.log("Empty");
         } else {
-            props.submitCB(content);
+            props.submitCB(content, clearEditor);
         }
+    }
+
+    const clearEditor = () => {
+        const newEditorState = EditorState.push(editorState, ContentState.createFromText(''));
+        setEditorState(newEditorState)
     }
 
     return (
