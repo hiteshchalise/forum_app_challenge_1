@@ -95,7 +95,6 @@ const MyEditor = (props) => {
     }
 
     const handleSubmit = () => {
-        console.log("submmit clicked")
         const currentContent = editorState.getCurrentContent();
         const content = JSON.stringify(convertToRaw(currentContent));
         if (!currentContent.hasText()) {

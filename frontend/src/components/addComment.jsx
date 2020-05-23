@@ -3,12 +3,14 @@ import { Link, useHistory } from "react-router-dom";
 import MyEditor from "./myEditor";
 import 'draft-js/dist/Draft.css';
 import api from "../utils/api";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { updatePostById } from "../store/posts";
 
 
 const AddComment = (props) => {
     const history = useHistory();
     const user = useSelector(state => state.user.auth);
+    const dispatch = useDispatch();
 
     const commentCB = (comment_body) => {
         api.post(`/api/posts/${props.post._id}/comments/`, {
@@ -19,10 +21,11 @@ const AddComment = (props) => {
                 "x-auth-token": user.token,
             }
         }).then((result) => {
-            console.log("comment added: " + result.body);
+            console.log("comment added: ", result.data);
+            dispatch(updatePostById(result.data));
 
-            history.push({ pathname: "/empty" });
-            history.replace({ pathname: "/postDetail", state: { post: props.post } })
+            // history.push({ pathname: "/empty" });
+            // history.replace({ pathname: "/postDetail", state: { post: props.post } })
         }).catch((error) => {
             console.log(error);
         });

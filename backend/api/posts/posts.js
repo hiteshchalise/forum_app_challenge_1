@@ -85,19 +85,49 @@ router.post("/:postId/comments", auth, (req, res) => {
     console.log("no post found with Id");
     res.status(400).json({ msg: "no postId found" });
   } else {
-    Post.update({
-      _id: req.params.postId
-    }, {
-      $push: { comments: req.body }
-    }, (error, success) => {
+    // Post.updateOne({
+    //   _id: req.params.postId
+    // }, {
+    //   $push: { comments: req.body }
+    // }, (error, success) => {
+    //   if (error) {
+    //     console.log("error: " + error);
+    //     return res.json({ msg: "error when wrting comment" });
+    //   } else {
+    //   }
+    // })
+    Post.findById(req.params.postId, (error, post) => {
       if (error) {
-        console.log("error: " + error);
-        res.json({ msg: "error when wrting comment" });
-      } else {
-        res.json(success);
+        return res.status(404).json({ msg: "no post found with that id" })
       }
-    })
+      else {
+        post.comments.push(req.body);
+        post.save().then(
+          () => {
+            const comments = post.comments.sort((a, b) => b.commented_at - a.commented_at);
+            return res.json({
+              "_id": post._id,
+              "post_title": post.post_title,
+              "post_body": post.post_body,
+              "posted_by": post.posted_by,
+              "posted_at": post.posted_at,
+              "_v": post._v,
+              "comments": comments,
+              "upvotes": post.upvotes
+            });
+          }
+        ).catch(
+          (error) => {
+            console.log(error);
+            return res.json({ error });
+          }
+        );
+
+      }
+    });
   }
-})
+});
+
+
 
 module.exports = router;
