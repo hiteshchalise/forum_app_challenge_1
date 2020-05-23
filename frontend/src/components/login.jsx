@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import "./style/auth.css";
 import { Link, useHistory } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { userCreator } from "../store/user";
+import { userCreator } from "../store/user/auth";
 import { useEffect } from "react";
+import { addUpvotedPosts } from "../store/user/upvotedPosts";
+import { addUpvotedComments } from "../store/user/upvotedComments";
 
 const useMountEffect = (func) => useEffect(func, []);
 
@@ -39,9 +41,10 @@ const Login = () => {
       .then((response) => response.json())
       .then((result) => {
         const { id, name, email, upvoted_posts, upvoted_comments } = result.user;
-        dispatch(userCreator({ id, name, email, token: result.token, upvoted_posts, upvoted_comments }));
+        dispatch(userCreator({ id, name, email, token: result.token }));
+        dispatch(addUpvotedComments(upvoted_comments));
+        dispatch(addUpvotedPosts(upvoted_posts));
         history.push('/');
-        console.log("Dispached in login");
       })
       .catch((error) => {
 

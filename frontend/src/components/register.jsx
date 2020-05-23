@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./style/auth.css";
 import { Link, useHistory } from "react-router-dom";
-import userCreator from "../store/user";
+import userCreator from "../store/user/auth";
 import api from "../utils/api";
 import { useSelector, shallowEqual, useDispatch } from "react-redux";
 

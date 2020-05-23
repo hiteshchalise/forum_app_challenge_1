@@ -10,11 +10,13 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import api from "./utils/api";
 
 import "./App.css";
-import { userCreator } from "./store/user";
+import { userCreator } from "./store/user/auth";
+import { addUpvotedComments } from "./store/user/upvotedComments";
+import { addUpvotedPosts } from "./store/user/upvotedPosts";
 
 
 const App = (props) => {
-  const user = useSelector(state => state.user || {});
+  const user = useSelector(state => state.user.auth);
   const dispatch = useDispatch();
   const [loginTried, setLoginTried] = useState(false);
 
@@ -28,7 +30,9 @@ const App = (props) => {
         })
         .then((result) => {
           const { id, name, email, upvoted_posts, upvoted_comments } = result.data.user;
-          dispatch(userCreator({ id, name, email, token: result.data.token, upvoted_posts, upvoted_comments }));
+          dispatch(userCreator({ id, name, email, token: result.data.token, }));
+          dispatch(addUpvotedComments(upvoted_comments));
+          dispatch(addUpvotedPosts(upvoted_posts));
         })
         .catch((error) => {
           console.log(error);

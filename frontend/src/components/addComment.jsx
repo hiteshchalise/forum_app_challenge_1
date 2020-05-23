@@ -8,7 +8,7 @@ import { useSelector } from "react-redux";
 
 const AddComment = (props) => {
     const history = useHistory();
-    const user = useSelector(state => state.user);
+    const user = useSelector(state => state.user.auth);
 
     const commentCB = (comment_body) => {
         api.post(`/api/posts/${props.post._id}/comments/`, {

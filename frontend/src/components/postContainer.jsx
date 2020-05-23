@@ -3,7 +3,7 @@ import "./style/container.css";
 import { useHistory } from "react-router-dom";
 import Upvote from "./upvote";
 
-import { updatePostUpvote } from "../store/user";
+import { updatePostUpvote } from "../store/user/upvotedPosts";
 import { updatePostUpvoteCount } from "../store/posts";
 
 import { Editor, EditorState, convertFromRaw } from 'draft-js';
@@ -11,19 +11,23 @@ import convertToTimeAgo from "../utils/dateConverter";
 import { styleMap, blockStyleFn } from "../utils/draftJsCustomStyle"
 import api from "../utils/api";
 import { useSelector, useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
 
+import { isEmpty } from "underscore";
+
+const convertPost = (raw) => {
+  const editorState = EditorState.createWithContent(convertFromRaw(JSON.parse(raw)))
+  return editorState;
+}
 
 const PostContainer = (props) => {
   const history = useHistory();
-  const upvotedPosts = useSelector(state => state.user.upvoted_posts);
+  const upvotedPosts = useSelector(state => state.user.upvotedPosts);
   const upvotes = useSelector(state => state.posts.find(post => post._id === props.post._id).upvotes);
-  const user = useSelector(state => state.user);
+  const user = useSelector(state => state.user.auth);
   const dispatch = useDispatch();
 
-  const convertPost = (raw) => {
-    const editorState = EditorState.createWithContent(convertFromRaw(JSON.parse(raw)))
-    return editorState;
-  }
+  const [upvotedPost, setUpvotedPost] = useState();
 
   const handlePostClick = () => {
     history.push(`/post/${props.post._id}`, { post: props.post })
@@ -45,7 +49,12 @@ const PostContainer = (props) => {
     });
   }
 
-  const upvotedPost = upvotedPosts.find(post => post.postId === props.post._id);
+  useEffect(() => {
+    if (!isEmpty(user)) {
+      setUpvotedPost(upvotedPosts.find(post => post.postId === props.post._id));
+    }
+  }, [user, upvotedPosts, props.post._id])
+
 
   return (
     <div className="container">

@@ -6,13 +6,18 @@ import { styleMap, blockStyleFn } from "../utils/draftJsCustomStyle"
 import Upvote from "./upvote";
 import { useSelector, useDispatch } from 'react-redux';
 import api from '../utils/api';
-import { updateUpvotedComment } from '../store/user';
+import { updateUpvotedComment } from '../store/user/upvotedComments';
 import { updateCommentUpvote } from '../store/posts';
+import { useState } from 'react';
+import { useEffect } from 'react';
+import { isEmpty } from "underscore";
 
 const Comment = (props) => {
-    const userToken = useSelector(state => state.user.token);
-    const upvotedComments = useSelector(state => state.user.upvoted_comments);
+    const user = useSelector(state => state.user.auth);
+    const upvotedComments = useSelector(state => state.user.upvotedComments);
     const dispatch = useDispatch();
+
+    const [upvotedComment, setUpvotedComment] = useState();
 
     const convertComment = (raw) => {
         const editorState = EditorState.createWithContent(convertFromRaw(JSON.parse(raw)))
@@ -27,7 +32,7 @@ const Comment = (props) => {
             "dir": dir
         }, {
             headers: {
-                "x-auth-token": userToken,
+                "x-auth-token": user.token,
             }
         }).then((result) => {
             dispatch(updateUpvotedComment(result.data));
@@ -38,19 +43,26 @@ const Comment = (props) => {
         });
     }
 
-    console.log(upvotedComments, userToken);
-    const upvotedComment = upvotedComments.find(
-        upvoted_comment => upvoted_comment.postId === props.postId
-    ).comments.find(
-        comment => comment.commentId === props.comment._id
-    );
+    useEffect(() => {
+        if (!isEmpty(user) && upvotedComments !== undefined) {
+            const upvotedComment = upvotedComments.find(
+                upvoted_comment => upvoted_comment.postId === props.postId
+            );
+            if (upvotedComment !== undefined) {
+                const comment = upvotedComment.comments.find(
+                    comment => comment.commentId === props.comment._id
+                );
+                setUpvotedComment(comment);
+            }
+        }
+    }, [user, upvotedComments, props.postId, props.comment._id]);
 
     return (
         <div className="comment">
             <div className="container margin-0 border-0 ">
                 <div className="left-section">
                     <Upvote
-                        upvoteDir={upvotedComment.upvote_dir}
+                        upvoteDir={upvotedComment ? upvotedComment.upvote_dir : 0}
                         upvoteCount={props.comment.upvotes}
                         handleClick={handleUpvoteClick}
                     />

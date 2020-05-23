@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useLocation, useParams } from "react-router-dom";
 
@@ -15,17 +15,20 @@ import api from "../utils/api";
 import convertToTimeAgo from "../utils/dateConverter";
 
 import { updatePostById, addPosts } from "../store/posts";
-import { updatePostUpvote } from "../store/user";
+import { updatePostUpvote } from "../store/user/upvotedPosts";
 import { updatePostUpvoteCount } from "../store/posts";
 
+import { isEmpty } from "underscore";
 
 const PostDetail = () => {
   const data = useLocation();
   const { id } = useParams();
   const post = useSelector(state => state.posts.find(post => post._id === id));
-  const user = useSelector(state => state.user);
-  const upvotedPosts = useSelector(state => state.user.upvoted_posts);
+  const user = useSelector(state => state.user.auth);
+  const upvotedPosts = useSelector(state => state.user.upvotedPosts);
   const dispatch = useDispatch();
+
+  const [upvotedPost, setUpvotedPost] = useState();
 
   const convertPost = (raw) => {
     const editorState = EditorState.createWithContent(convertFromRaw(JSON.parse(raw)))
@@ -55,6 +58,7 @@ const PostDetail = () => {
           // setPost(result.data);
           console.log("PostDetail: result.data: ", result.data);
           dispatch(updatePostById(result.data));
+          dispatch(updatePostUpvote(result.data));
           dispatch(addPosts([{ ...result.data }]));
         }).catch((error) => {
           console.log(error);
@@ -62,8 +66,12 @@ const PostDetail = () => {
     }
   }, [id, dispatch])
 
-  const upvotedPost = upvotedPosts.find(upvotedPost => upvotedPost.postId === id);
-  console.log(upvotedPost);
+  useEffect(() => {
+    if (!isEmpty(user) && upvotedPosts !== undefined) {
+      setUpvotedPost(upvotedPosts.find(post => post.postId === id));
+    }
+  }, [user, upvotedPosts, id])
+
   return (
     // <p>Post Detail Page: {data.state.postId}</p>
     !post ? <div>Sorry no post available</div> :
