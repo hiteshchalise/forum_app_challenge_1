@@ -15,7 +15,7 @@ import api from "../utils/api";
 import convertToTimeAgo from "../utils/dateConverter";
 
 import { updatePostById, addPosts } from "../store/posts";
-import { updatePostUpvote } from "../store/user/upvotedPosts";
+import { updatePostUpvote, addUpvotedPost } from "../store/user/upvotedPosts";
 import { updatePostUpvoteCount } from "../store/posts";
 
 import { isEmpty } from "underscore";
@@ -44,7 +44,13 @@ const PostDetail = () => {
         "x-auth-token": user.token,
       }
     }).then((result) => {
-      dispatch(updatePostUpvote(result.data));
+
+      const upvotedPost = upvotedPosts.find(upvotedPost => upvotedPost.postId === id);
+      if (upvotedPost !== undefined) {
+        dispatch(updatePostUpvote(result.data));
+      } else {
+        dispatch(addUpvotedPost(result.data));
+      }
       dispatch(updatePostUpvoteCount(result.data));
     }).catch((error) => {
       console.log(error);

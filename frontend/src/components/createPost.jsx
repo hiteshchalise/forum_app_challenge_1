@@ -4,13 +4,15 @@ import api from "../utils/api";
 import { useHistory } from "react-router-dom";
 import MyEditor from "./myEditor";
 import 'draft-js/dist/Draft.css';
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { addUpvotedPost } from "../store/user/upvotedPosts";
 
 
 const CreatePost = (props) => {
     const [title, setTitle] = useState("");
 
     const user = useSelector(state => state.user.auth);
+    const dispatch = useDispatch();
 
     let history = useHistory();
 
@@ -28,7 +30,8 @@ const CreatePost = (props) => {
                 "x-auth-token": user.token,
             }
         }).then((result) => {
-            console.log("post added: " + result.body);
+            console.log("post added: ", result);
+            dispatch(addUpvotedPost(result.data))
             history.push("/");
 
         }).catch((error) => {

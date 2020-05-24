@@ -1,12 +1,20 @@
 
 const UPDATE_POST_UPVOTE = "updatePostUpvote";
 const ADD_UPVOTED_POSTS = "addUpvotedPosts";
+const ADD_UPVOTED_POST = "addUpvotedPost";
 
 
 export const updatePostUpvote = (upvote) => {
     return {
         type: UPDATE_POST_UPVOTE,
-        upvote: { ...upvote }
+        upvote
+    }
+}
+
+export const addUpvotedPost = (upvotedPost) => {
+    return {
+        type: ADD_UPVOTED_POST,
+        upvotedPost
     }
 }
 
@@ -20,6 +28,10 @@ export const addUpvotedPosts = (upvotedPosts) => {
 
 const upvotedPost = (state = [], action) => {
     switch (action.type) {
+        case ADD_UPVOTED_POST:
+            state = [...state.map(post => ({ ...post })), { ...action.upvotedPost }];
+            return state;
+
         case ADD_UPVOTED_POSTS:
             state = action.upvotedPosts.map(upvotedPost => ({ ...upvotedPost }));
             return state;

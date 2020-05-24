@@ -37,9 +37,10 @@ router.post("/", auth, (req, res) => {
     newPost
       .save()
       .then((post) => {
-        res.json(post);
+        console.log(post);
         user.upvoted_posts.push({ postId: post._id, upvote_dir: 1 });
         user.save();
+        return res.json({ postId: post._id, upvote_dir: 1 });
       })
       .catch((error) => res.json({ error }));
   });
