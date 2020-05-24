@@ -59,6 +59,7 @@ const Comment = (props) => {
                 upvoted_comment => upvoted_comment.postId === props.postId
             );
             if (upvotedComment !== undefined) {
+                console.log("UpvotedComment: ", upvotedComment);
                 const comment = upvotedComment.comments.find(
                     comment => comment.commentId === props.comment._id
                 );

@@ -47,10 +47,10 @@ const upvotedComment = (state = [], action) => {
                                 }))]
                     }))];
             state.push({
-                comments: {
+                comments: [{
                     commentId: action.upvotedComment.commentId,
                     upvote_dir: action.upvotedComment.dir,
-                },
+                }],
                 postId: action.upvotedComment.postId
             });
             return state;
