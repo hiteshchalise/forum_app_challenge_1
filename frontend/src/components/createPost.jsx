@@ -4,13 +4,13 @@ import api from "../utils/api";
 import { useHistory } from "react-router-dom";
 import MyEditor from "./myEditor";
 import 'draft-js/dist/Draft.css';
-import { useSelector, shallowEqual } from "react-redux";
+import { useSelector } from "react-redux";
 
 
 const CreatePost = (props) => {
     const [title, setTitle] = useState("");
 
-    const user = useSelector(state => state.user, shallowEqual);
+    const user = useSelector(state => state.user.auth);
 
     let history = useHistory();
 

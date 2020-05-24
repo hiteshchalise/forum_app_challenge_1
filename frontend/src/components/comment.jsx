@@ -6,7 +6,7 @@ import { styleMap, blockStyleFn } from "../utils/draftJsCustomStyle"
 import Upvote from "./upvote";
 import { useSelector, useDispatch } from 'react-redux';
 import api from '../utils/api';
-import { updateUpvotedComment } from '../store/user/upvotedComments';
+import { updateUpvotedComment, addUpvotedCommentsComment, addUpvotedComment } from '../store/user/upvotedComments';
 import { updateCommentUpvote } from '../store/posts';
 import { useState } from 'react';
 import { useEffect } from 'react';
@@ -35,7 +35,17 @@ const Comment = (props) => {
                 "x-auth-token": user.token,
             }
         }).then((result) => {
-            dispatch(updateUpvotedComment(result.data));
+            const upvotedComment = upvotedComments.find(comment => comment.postId === result.data.postId);
+            if (upvotedComment !== undefined) {
+                const comment = upvotedComment.comments.find(comment => comment.commentId === result.data.commentId);
+                if (comment !== undefined) {
+                    dispatch(updateUpvotedComment(result.data));
+                } else {
+                    dispatch(addUpvotedCommentsComment(result.data));
+                }
+            } else {
+                dispatch(addUpvotedComment(result.data));
+            }
             dispatch(updateCommentUpvote(result.data));
             console.log("Comment Upvoted: ", result.data)
         }).catch((error) => {

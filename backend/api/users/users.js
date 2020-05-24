@@ -190,18 +190,28 @@ router.post("/upvote/comment", auth, (req, res) => {
         comment.upvotes += dir;
         res.json({ postId, commentId, dir, upvotes: comment.upvotes })
       } else {
-        const upvotedComment = upvotedCommentPost.comments.find(comment => comment.commentId === commentId);
-        console.log("UpvotedComment", upvotedComment);
-        if (upvotedComment.upvote_dir === dir) {
-          console.log("same");
-          comment.upvotes -= dir;
-          upvotedComment.upvote_dir -= dir;
-        } else {
-          console.log("different");
+        const upvotedComment = upvotedCommentPost.comments.find(
+          comment => comment.commentId === commentId
+        );
+        if (upvotedComment === undefined) {
+          upvotedCommentPost.comments.push({
+            commentId: commentId,
+            upvote_dir: dir
+          });
           comment.upvotes += dir;
-          upvotedComment.upvote_dir += dir;
+          res.json({ postId, commentId, dir: dir, upvotes: comment.upvotes })
+        } else {
+          if (upvotedComment.upvote_dir === dir) {
+            console.log("same");
+            comment.upvotes -= dir;
+            upvotedComment.upvote_dir -= dir;
+          } else {
+            console.log("different");
+            comment.upvotes += dir;
+            upvotedComment.upvote_dir += dir;
+          }
+          res.json({ postId, commentId, dir: upvotedComment.upvote_dir, upvotes: comment.upvotes });
         }
-        res.json({ postId, commentId, dir: upvotedComment.upvote_dir, upvotes: comment.upvotes });
       }
       user.save().then((result) => { console.log(result) }).catch((error) => { console.log(error) });
       post.save().then((result) => { console.log(result) }).catch((error) => { console.log(error) });
