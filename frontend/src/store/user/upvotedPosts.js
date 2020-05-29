@@ -5,8 +5,8 @@ const slice = createSlice({
     initialState: [],
     reducers: {
         updatePostUpvote: (upvotedPosts, action) => {
-            const upvotedPost = upvotedPosts.find(post => post.postId === action.payload.postId);
-            upvotedPost.upvote_dir = action.payload.dir;
+            const index = upvotedPosts.findIndex(post => post.postId === action.payload.postId);
+            upvotedPosts[index].upvote_dir = action.payload.dir;
         },
         addUpvotedPosts: (upvotedPosts, action) => {
             upvotedPosts.push(...action.payload);
