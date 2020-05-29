@@ -1,9 +1,9 @@
-import { createStore, combineReducers } from 'redux';
+import { combineReducers } from 'redux';
+import { configureStore } from '@reduxjs/toolkit';
 import user from './user';
 import posts from './posts';
 
-const store = createStore(combineReducers({ user, posts }),
-    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
-console.log("Store: State:", store.getState());
+const reducer = combineReducers({ user, posts });
+const store = configureStore({ reducer })
 
 export default store;
