@@ -61,10 +61,6 @@ const PostDetail = () => {
     if (!post) {
       api.get(`/api/posts/${id}`)
         .then((result) => {
-          // setPost(result.data);
-          console.log("PostDetail: result.data: ", result.data);
-          dispatch(updatePostById(result.data));
-          dispatch(updatePostUpvote(result.data));
           dispatch(addPosts([{ ...result.data }]));
         }).catch((error) => {
           console.log(error);
