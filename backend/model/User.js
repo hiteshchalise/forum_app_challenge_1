@@ -67,4 +67,4 @@ UserSchema.methods.generateAuthToken = function () {
 //TODO: name of model from user to User maybe?
 const User = mongoose.model('user', UserSchema);
 module.exports.User = User;
-module.exports.validate = validateUser;
+module.exports.validateUser = validateUser;
