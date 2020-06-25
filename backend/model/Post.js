@@ -1,3 +1,4 @@
+const Joi = require('@hapi/joi');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
@@ -42,4 +43,14 @@ const PostSchema = new Schema({
     }
 });
 
-module.exports = Post = mongoose.model('post', PostSchema);
+function validatePost(post) {
+    const schema = Joi.object({
+        post_title: Joi.string().required(),
+        post_body: Joi.string().required()
+    });
+    Joi.validate(post, schema);
+}
+
+const Post = mongoose.model('post', PostSchema);
+module.exports.Post = Post;
+module.exports.validatePost = validatePost;
