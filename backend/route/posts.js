@@ -1,8 +1,8 @@
 const express = require("express");
 const uuid = require("uuid");
-const Post = require("../../model/Post");
-const User = require("../../model/User");
-const auth = require("./../../middleware/auth");
+const Post = require("../model/Post");
+const User = require("../model/User");
+const auth = require("../middleware/auth");
 
 const router = express.Router();
 

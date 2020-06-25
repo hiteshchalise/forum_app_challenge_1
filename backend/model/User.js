@@ -31,6 +31,24 @@ const UserSchema = new Schema({
             upvote_dir: Number
         }]
     }]
-})
+});
 
-module.exports = User = mongoose.model('user', UserSchema);
+UserSchema.methods.generateRefreshToken = function () {
+    const refreshToken = jwt.sign(
+        { id: this._id },
+        config.get("REFRESH_TOKEN")
+    );
+    return refreshToken;
+}
+
+UserSchema.methods.generateAuthToken = function () {
+    const authToken = jwt.sign(
+        { id: this._id },
+        config.get("ACCESS_TOKEN_SECRET"),
+        { expiresIn: 3600 });
+    return authToken;
+}
+
+//TODO: name of model from user to User maybe?
+const User = mongoose.model('user', UserSchema);
+module.exports = User;
