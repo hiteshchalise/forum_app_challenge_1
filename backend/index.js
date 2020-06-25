@@ -1,3 +1,4 @@
+require('express-async-errors');
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
@@ -9,13 +10,14 @@ const app = express();
 app.use(cors({
   origin: 'http://localhost:3000',
   credentials: true
-  }));
+}));
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-const db = config.get("mongoURI") ;
+const db = config.get("mongoURI");
+
 mongoose
-  .connect(db, {useNewUrlParser: true, useUnifiedTopology:true, useCreateIndex:true})
+  .connect(db, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true })
   .then(() => console.log("mongodb Connected"))
   .catch((error) => console.log(error));
 
