@@ -1,3 +1,4 @@
+const Joi = require('@hapi/joi');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
@@ -5,16 +6,21 @@ const UserSchema = new Schema({
     name: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        maxlength: 255
     },
     email: {
         type: String,
         require: true,
         unique: true,
+        match: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+        maxlength: 255
     },
     password: {
         type: String,
-        require: true
+        require: true,
+        minlength: 6,
+        maxlength: 1024
     },
     register_date: {
         type: Date,
@@ -32,6 +38,15 @@ const UserSchema = new Schema({
         }]
     }]
 });
+
+function validateUser(user) {
+    const schema = {
+        name: Joi.string().max(255).required(),
+        email: Joi.string().max(255).pattern(new RegExp('^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$')).required().email(),
+        password: Joi.string().min(6).max(1024).required()
+    };
+    return Joi.validate(user, schema);
+}
 
 UserSchema.methods.generateRefreshToken = function () {
     const refreshToken = jwt.sign(
@@ -51,4 +66,5 @@ UserSchema.methods.generateAuthToken = function () {
 
 //TODO: name of model from user to User maybe?
 const User = mongoose.model('user', UserSchema);
-module.exports = User;
+module.exports.User = User;
+module.exports.validate = validateUser;
