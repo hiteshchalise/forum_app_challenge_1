@@ -1,6 +1,8 @@
 const Joi = require('@hapi/joi');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const jwt = require('jsonwebtoken');
+const config = require('config');
 
 const UserSchema = new Schema({
     name: {
@@ -40,12 +42,12 @@ const UserSchema = new Schema({
 });
 
 function validateUser(user) {
-    const schema = {
+    const schema = Joi.object({
         name: Joi.string().max(255).required(),
         email: Joi.string().max(255).pattern(new RegExp('^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$')).required().email(),
         password: Joi.string().min(6).max(1024).required()
-    };
-    return Joi.validate(user, schema);
+    });
+    return schema.validate(user);
 }
 
 UserSchema.methods.generateRefreshToken = function () {

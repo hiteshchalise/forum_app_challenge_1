@@ -8,17 +8,19 @@ const config = require("config");
 const router = express.Router();
 
 const validateAuth = (req) => {
-  const schema = {
+  const schema = Joi.object({
     email: Joi.string().max(255).pattern(new RegExp('^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$')).required().email(),
     password: Joi.string().min(6).max(1024).required()
-  };
-  return Joi.validate(req, schema);
+  });
+
+  return schema.validate(req);
 }
 
 // @route POST api/auth/
 // @desc Authenticate user
 // @access Public
 router.post("/", async (req, res) => {
+  const { email, password } = req.body;
   const { error } = validateAuth(req.body);
   if (error) return res.status(400).json({ msg: error.details[0].message });
 

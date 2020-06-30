@@ -48,7 +48,7 @@ function validatePost(post) {
         post_title: Joi.string().required(),
         post_body: Joi.string().required()
     });
-    Joi.validate(post, schema);
+    return schema.validate(post);
 }
 
 const Post = mongoose.model('post', PostSchema);
