@@ -1,7 +1,8 @@
 const express = require("express");
-const uuid = require("uuid");
-const { Post, validatePost } = require("../model/Post");
+const _ = require("lodash");
+const { Post, validatePost, validateComment } = require("../model/Post");
 const { User, validateUser } = require("../model/User");
+const validateObjectId = require("../middleware/validateObjectId");
 const auth = require("../middleware/auth");
 
 const router = express.Router();
@@ -12,6 +13,17 @@ router.get("/", async (req, res) => {
     .limit(15);
 
   res.json(posts);
+});
+
+// @route GET api/posts/:postId
+// @desc Get post with postId
+// @access Public
+router.get("/:postId", validateObjectId, async (req, res) => {
+  const post = await Post.findById(req.params.postId);
+  if (!post) return res.status(404).json({ msg: "no post found with that id" })
+
+  post.comments.sort((a, b) => b.commented_at - a.commented_at);
+  res.json(_.pick(post, ["_id", "post_title", "post_body", "posted_by", "posted_at", "comments", "upvotes"]));
 });
 
 // @route POST api/posts/
@@ -39,21 +51,13 @@ router.post("/", auth, async (req, res) => {
   return res.json({ postId: post._id, upvote_dir: 1 });
 });
 
-// @route GET api/posts/:postId
-// @desc Get post with postId
-// @access Public
-router.get("/:postId", async (req, res) => {
-  const post = await Post.findById(req.params.postId);
-  if (!post) return res.status(404).json({ msg: "no post found with that id" })
-
-  post.comments.sort((a, b) => b.commented_at - a.commented_at);
-  res.json(_.pick(post, [_id, post_title, post_body, posted_by, posted_at, comments, upvotes]));
-});
-
 // @route Post api/posts/:postId/comments/
 // @desc Post comment in post with postId
 // @access Private
 router.post("/:postId/comments", auth, async (req, res) => {
+  const { error } = validateComment(req.body);
+  if (error) return res.status(400).json({ msg: error.details[0].message })
+
   const post = await Post.findById(req.params.postId);
   if (!post) return res.status(404).json({ msg: "no post found with that id" });
 
@@ -62,7 +66,7 @@ router.post("/:postId/comments", auth, async (req, res) => {
 
   post.comments.sort((a, b) => b.commented_at - a.commented_at);
 
-  return res.json(_.pick(post, [_id, post_title, post_body, posted_by, posted_at, comments, upvotes]));
+  return res.json(_.pick(post, ["_id", "post_title", "post_body", "posted_by", "posted_at", "comments", "upvotes"]));
 });
 
 module.exports = router;

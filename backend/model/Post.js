@@ -51,6 +51,14 @@ function validatePost(post) {
     return schema.validate(post);
 }
 
+function validateComment(comment) {
+    const schema = Joi.object({
+        comment_body: Joi.string().required()
+    });
+    return schema.validate(comment);
+}
+
 const Post = mongoose.model('post', PostSchema);
 module.exports.Post = Post;
 module.exports.validatePost = validatePost;
+module.exports.validateComment = validateComment;

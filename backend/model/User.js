@@ -53,7 +53,7 @@ function validateUser(user) {
 UserSchema.methods.generateRefreshToken = function () {
     const refreshToken = jwt.sign(
         { id: this._id },
-        config.get("REFRESH_TOKEN")
+        config.get("REFRESH_TOKEN_SECRET")
     );
     return refreshToken;
 }
