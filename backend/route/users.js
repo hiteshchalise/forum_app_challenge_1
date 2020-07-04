@@ -4,10 +4,10 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const config = require("config");
 const Joi = require('@hapi/joi');
-Joi.objectId = require('joi-objectid');
+Joi.objectId = require('joi-objectid')(Joi);
 const router = express.Router();
 const auth = require("../middleware/auth");
-const Post = require("../model/Post");
+const { Post } = require("../model/Post");
 const { User, validateUser } = require("../model/User");
 
 // @route POST api/users
@@ -34,7 +34,7 @@ router.post("/", async (req, res) => {
     httpOnly: true
   }).json({
     authToken,
-    user: _.pick(newUser, ['_id', 'name', 'email'])
+    user: _.pick(user, ['_id', 'name', 'email'])
   });
 });
 
@@ -43,11 +43,9 @@ router.post("/", async (req, res) => {
 // @access Public
 router.get("/:name", async (req, res) => {
   const user = await User.findOne({ name: req.params.name });
-  if (!user) return res.status(400).json({ "msg": "User Not Found" })
+  if (!user) return res.status(404).json({ "msg": "User Not Found" })
 
-  res.json({
-    user: _.pick(user, ['_id', 'name', 'email', 'upvoted_posts'])
-  });
+  res.json(_.pick(user, ['_id', 'name', 'email', 'upvoted_posts']));
 });
 
 // @route POST api/users/upvote
@@ -57,9 +55,10 @@ router.post("/upvote", auth, async (req, res) => {
   const { postId, dir } = req.body;
   const schema = Joi.object({
     postId: Joi.objectId().required(),
-    dir: Joi.valid([1, 0, -1]).required()
+    dir: Joi.valid(1, 0, -1).required()
   });
-  Joi.validate(req.body, schema);
+  const { error } = schema.validate(req.body);
+  if (error) return res.status(400).json({ msg: error.details[0].message });
 
   const user = await User.findById(req.user.id);
   if (!user) return res.status(400).json({ msg: "no user found" });
@@ -67,25 +66,16 @@ router.post("/upvote", auth, async (req, res) => {
   const post = await Post.findById(postId);
   if (!post) return res.status(400).json({ msg: "no post by Id" });
 
-  const upvotedPost = user.upvoted_posts.find((upvoted_post) => {
-    if (upvoted_post.postId === postId) return true;
-    return false;
-  });
+  const upvotedPost = user.upvoted_posts.find(upvoted_post => upvoted_post.postId === postId);
 
-  if (!upvotedPost === undefined) {
+  if (!upvotedPost) {
     user.upvoted_posts.push({ postId, upvote_dir: dir });
     post.upvotes += dir;
-    res.json({ dir, upvotes: post.upvotes })
-  } else {
-    if (upvotedPost.upvote_dir === dir) {
-      post.upvotes -= dir;
-      upvotedPost.upvote_dir -= dir;
-    } else {
-      post.upvotes += dir;
-      upvotedPost.upvote_dir += dir;
-    }
-    res.json({ postId, dir: upvotedPost.upvote_dir, upvotes: post.upvotes })
+  } else if (upvotedPost.upvote_dir !== dir) {
+    post.upvotes += dir - (upvotedPost.upvote_dir);
+    upvotedPost.upvote_dir = dir;
   }
+  res.json({ upvotes: post.upvotes });
 
   await user.save();
   await post.save();
@@ -99,10 +89,10 @@ router.post("/upvote/comment", auth, async (req, res) => {
   const schema = Joi.object({
     postId: Joi.objectId().required(),
     commentId: Joi.objectId().required(),
-    dir: Joi.valid([1, 0, -1]).required()
+    dir: Joi.valid(1, 0, -1).required()
   });
-  Joi.validate(req.body, schema);
-
+  const { error } = Joi.validate(req.body, schema);
+  if (error) return res.status(400).json({ msg: "invalid body" });
   const user = await User.findById(req.user.id);
   if (!user) return res.status(400).json({ msg: "no user found" });
   const post = await Post.findById(postId);

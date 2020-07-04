@@ -5,26 +5,28 @@ const { Post } = require('../../model/Post');
 const { User } = require('../../model/User');
 
 describe('api/posts', () => {
-    beforeEach(() => { mongoDB.connect(); });
+    beforeEach(() => {
+        mongoDB.connect();
+    });
     afterEach(async (done) => {
-        await Post.remove({});
-        await User.remove({});
+        await User.deleteMany({});
+        await Post.deleteMany({});
         mongoDB.disconnect(done);
     })
 
 
     describe("GET /", () => {
         it("should return at most 15 posts", async () => {
-            await Post.insertMany([
-                { title: "title 1", body: "body 1" },
-                { title: "title 2", body: "body 2" }
-            ])
+            const posts = await Post.insertMany([
+                { post_title: "title 1", post_body: "body 1" },
+                { post_title: "title 2", post_body: "body 2" },
+            ]);
 
             const res = await request(server).get("/api/posts");
             expect(res.status).toBe(200);
             expect(res.body.length).toBe(2);
-            expect(res.body.some(post => post.title === "title 1" && post.body === "body 1"));
-            expect(res.body.some(post => post.title === "title 2" && post.body === "body 2"));
+            expect(res.body.some(post => post.post_title === "title 1" && post.post_body === "body 1"));
+            expect(res.body.some(post => post.post_title === "title 2" && post.post_body === "body 2"));
             expect(res.body.length < 15).toBeTruthy();
         });
     });
@@ -41,7 +43,6 @@ describe('api/posts', () => {
             const res = await request(server).get("/api/posts/" + post._id);
 
             expect(res.status).toBe(200);
-            ["_id", "post_title", "post_body", "posted_by", "posted_at", "comments", "upvotes"];
             expect(res.body).toHaveProperty("post_title", post.post_title);
             expect(res.body).toHaveProperty("post_body", post.post_body);
             expect(res.body).toHaveProperty("posted_by", post.posted_by);
@@ -163,7 +164,7 @@ describe('api/posts', () => {
         it("should save comment if it is valid", async () => {
             const res = await exec();
 
-            post = await Post.findOne({ _id: post._id });
+            post = await Post.findOne({ _id: post._id }).exec();
             expect(res.status).toBe(200);
             expect(post.comments).not.toBeNull();
             expect(post.comments.length === 1).toBeTruthy();
