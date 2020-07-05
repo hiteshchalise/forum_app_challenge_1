@@ -91,12 +91,12 @@ router.post("/upvote/comment", auth, async (req, res) => {
     commentId: Joi.objectId().required(),
     dir: Joi.valid(1, 0, -1).required()
   });
-  const { error } = Joi.validate(req.body, schema);
+  const { error } = schema.validate(req.body);
   if (error) return res.status(400).json({ msg: "invalid body" });
   const user = await User.findById(req.user.id);
   if (!user) return res.status(400).json({ msg: "no user found" });
   const post = await Post.findById(postId);
-  if (error) return res.status(400).json({ msg: "no post by Id" });
+  if (!post) return res.status(400).json({ msg: "no post by Id" });
 
   const upvotedCommentPost = user.upvoted_comments.find(
     upvoted_comment => upvoted_comment.postId === postId
@@ -105,7 +105,7 @@ router.post("/upvote/comment", auth, async (req, res) => {
     return comment._id.toString() === commentId
   });
 
-  if (upvotedCommentPost === undefined) {
+  if (!upvotedCommentPost) {
     user.upvoted_comments.push({
       postId: postId,
       comments: [{
@@ -114,27 +114,24 @@ router.post("/upvote/comment", auth, async (req, res) => {
       }]
     });
     comment.upvotes += dir;
-    res.json({ postId, commentId, dir, upvotes: comment.upvotes })
+    res.json({ upvotes: comment.upvotes })
   } else {
     const upvotedComment = upvotedCommentPost.comments.find(
       comment => comment.commentId === commentId
     );
-    if (upvotedComment === undefined) {
+    if (!upvotedComment) {
       upvotedCommentPost.comments.push({
         commentId: commentId,
         upvote_dir: dir
       });
       comment.upvotes += dir;
-      res.json({ postId, commentId, dir: dir, upvotes: comment.upvotes })
+      res.json({ upvotes: comment.upvotes })
     } else {
-      if (upvotedComment.upvote_dir === dir) {
-        comment.upvotes -= dir;
-        upvotedComment.upvote_dir -= dir;
-      } else {
-        comment.upvotes += dir;
-        upvotedComment.upvote_dir += dir;
+      if (upvotedComment.upvote_dir !== dir) {
+        comment.upvotes += dir - upvotedComment.upvote_dir;
+        upvotedComment.upvote_dir = dir;
       }
-      res.json({ postId, commentId, dir: upvotedComment.upvote_dir, upvotes: comment.upvotes });
+      res.json({ upvotes: comment.upvotes });
     }
   }
   await user.save();
