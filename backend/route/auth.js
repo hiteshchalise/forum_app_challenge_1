@@ -45,11 +45,12 @@ router.post("/", async (req, res) => {
 
 router.get("/refresh", async (req, res) => {
   const refreshToken = req.cookies.refreshToken;
-  if (!refreshToken) return res.status(401).json({ msg: "Invalid refreshtoken" });
+  if (!refreshToken) return res.status(401).json({ msg: "Empty refreshToken" });
 
-  const { id } = jwt.verify(refreshToken, config.get("REFRESH_TOKEN"));
+  const { id } = jwt.verify(refreshToken, config.get("REFRESH_TOKEN_SECRET"));
+
   const user = await User.findOne({ _id: id });
-  if (!user) return res.status(400).json({ msg: "No user found" });
+  if (!user) return res.status(404).json({ msg: "No user found" });
 
   const authToken = user.generateAuthToken();
   return res.json({
@@ -59,13 +60,13 @@ router.get("/refresh", async (req, res) => {
 });
 
 router.post("/logout", (req, res) => {
-  res.cookie("refreshToken", "InValidCookie", {
+  res.cookie("refreshToken", "InvalidCookie", {
     expiresIn: Date.now(),
     httpOnly: true,
     sameSite: "strict"
   });
 
-  res.json({ msg: "cookie distroyed" })
+  res.json({ msg: "cookie destroyed" })
 });
 
 module.exports = router;
