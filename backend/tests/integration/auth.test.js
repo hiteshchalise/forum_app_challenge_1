@@ -1,6 +1,6 @@
 const request = require('supertest');
-const mongoDB = require('../../mongoDB');
-const server = require('../../app');
+const mongoDB = require('../../startup/mongoDB');
+const server = require('../../startup/app');
 const { Post } = require('../../model/Post');
 const { User } = require('../../model/User');
 const bcrypt = require('bcryptjs');
