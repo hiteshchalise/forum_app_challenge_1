@@ -161,6 +161,12 @@ describe('api/posts', () => {
             expect(res.status).toBe(404);
         });
 
+        it("should return 404 when valid postId is in params, but post not found", async () => {
+            postId = new Post()._id;
+            const res = await exec();
+            expect(res.status).toBe(404);
+        })
+
         it("should save comment if it is valid", async () => {
             const res = await exec();
 
