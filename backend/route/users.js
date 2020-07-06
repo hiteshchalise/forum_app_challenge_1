@@ -18,7 +18,10 @@ router.post("/", async (req, res) => {
   if (error) return res.status(400).json({ msg: error.details[0].message });
 
   let user = await User.findOne({ email: req.body.email });
-  if (user) return res.status(400).json({ msg: "User Already Exists" });
+  if (user) return res.status(400).json({ msg: "Email not unique" });
+
+  user = await User.findOne({ name: req.body.name });
+  if (user) return res.status(400).json({ msg: "Username not unique" })
 
   user = new User(_.pick(req.body, ['name', 'email', 'password']));
   const salt = await bcrypt.genSalt(10);
@@ -61,10 +64,10 @@ router.post("/upvote", auth, async (req, res) => {
   if (error) return res.status(400).json({ msg: error.details[0].message });
 
   const user = await User.findById(req.user.id);
-  if (!user) return res.status(400).json({ msg: "no user found" });
+  if (!user) return res.status(401).json({ msg: "no user found" });
 
   const post = await Post.findById(postId);
-  if (!post) return res.status(400).json({ msg: "no post by Id" });
+  if (!post) return res.status(404).json({ msg: "no post by Id" });
 
   const upvotedPost = user.upvoted_posts.find(upvoted_post => upvoted_post.postId === postId);
 
@@ -94,9 +97,9 @@ router.post("/upvote/comment", auth, async (req, res) => {
   const { error } = schema.validate(req.body);
   if (error) return res.status(400).json({ msg: "invalid body" });
   const user = await User.findById(req.user.id);
-  if (!user) return res.status(400).json({ msg: "no user found" });
+  if (!user) return res.status(401).json({ msg: "no user found" });
   const post = await Post.findById(postId);
-  if (!post) return res.status(400).json({ msg: "no post by Id" });
+  if (!post) return res.status(404).json({ msg: "no post by Id" });
 
   const upvotedCommentPost = user.upvoted_comments.find(
     upvoted_comment => upvoted_comment.postId === postId

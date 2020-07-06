@@ -63,7 +63,7 @@ describe('api/users', () => {
             expect(res.status).toBe(400);
         });
 
-        it("should send 400 error when user already exists", async () => {
+        it("should send 400 error when email is not unique", async () => {
             const newUser = new User({
                 name: "username",
                 email: "username@gmail.com",
@@ -76,7 +76,7 @@ describe('api/users', () => {
             expect(res.status).toBe(400);
         });
 
-        it("should send 500 error when username is not unique", async () => {
+        it("should send 400 error when username is not unique", async () => {
             const newUser = new User({
                 name: "username",
                 email: "uniqueEmail@gmail.com",
@@ -86,7 +86,7 @@ describe('api/users', () => {
 
             const res = await exec();
 
-            expect(res.status).toBe(500);
+            expect(res.status).toBe(400);
         });
 
         it("should save user when proper input is provided", async () => {
@@ -172,7 +172,7 @@ describe('api/users', () => {
             expect(res.status).toBe(400);
         });
 
-        it("should return 400 when user not found", async () => {
+        it("should return 401 when valid token is sent but user is not found", async () => {
             const newUser = new User({
                 name: "new",
                 email: "new@gmail.com",
@@ -182,15 +182,15 @@ describe('api/users', () => {
 
             const res = await exec();
 
-            expect(res.status).toBe(400);
+            expect(res.status).toBe(401);
         });
 
-        it("should return 400 when post not found", async () => {
+        it("should return 404 when post not found", async () => {
             body.postId = "5f001703a068ec32e6c03fa0";
 
             const res = await exec();
 
-            expect(res.status).toBe(400);
+            expect(res.status).toBe(404);
         });
 
         it("should push new entry on user.upvoted_posts with upvote_dir 1 & postId.. should increase post upvote count", async () => {
@@ -412,7 +412,7 @@ describe('api/users', () => {
             expect(res.status).toBe(400);
         });
 
-        it("should return 400 when user not found", async () => {
+        it("should return 401 when user not found", async () => {
             const newUser = new User({
                 name: "new",
                 email: "new@gmail.com",
@@ -422,15 +422,15 @@ describe('api/users', () => {
 
             const res = await exec();
 
-            expect(res.status).toBe(400);
+            expect(res.status).toBe(401);
         });
 
-        it("should return 400 when post not found", async () => {
+        it("should return 404 when post not found", async () => {
             body.postId = "5f001703a068ec32e6c03fa0";
 
             const res = await exec();
 
-            expect(res.status).toBe(400);
+            expect(res.status).toBe(404);
         });
 
         it("should push new entry on user.upvoted_comments.. should increase comment upvote count", async () => {

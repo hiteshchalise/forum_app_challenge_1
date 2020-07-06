@@ -8,7 +8,7 @@
         "server": "nodemon index",
         "client": "cd .. && cd frontend && npm start",
         "dev": "concurrently \"npm run server\" \"npm run client\"",
-        "test": "NODE_ENV=test jest --watchAll --verbose"
+        "test": "NODE_ENV=test jest --runInBand --watchAll --verbose"
     },
     "author": "Hitesh Chalise",
     "license": "ISC",
