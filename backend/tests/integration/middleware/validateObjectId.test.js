@@ -18,11 +18,12 @@ describe("validateObjectId middleware", () => {
         const res = await request(server).get("/api/posts/invalidPostId");
         expect(res.status).toBe(404);
     });
+
     it("should return 200 when valid postId is sent", async () => {
         const post = new Post({ post_title: "title", post_body: "body" });
         await post.save();
         const res = await request(server).get("/api/posts/" + post._id);
 
         expect(res.status).toBe(200);
-    })
+    });
 })
