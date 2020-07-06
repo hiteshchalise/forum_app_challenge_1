@@ -2,7 +2,6 @@ const request = require('supertest');
 const mongoDB = require('../../../startup/mongoDB');
 const server = require('../../../startup/app');
 const { Post } = require('../../../model/Post');
-const { User } = require('../../../model/User');
 
 describe("validateObjectId middleware", () => {
     beforeEach(() => {
