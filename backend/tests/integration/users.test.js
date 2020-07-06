@@ -204,6 +204,7 @@ describe('api/users', () => {
                 upvoted_post.postId === post._id.toString()
                 && upvoted_post.upvote_dir === 1)).toBeTruthy();
             expect(post.upvotes).toBe(1);
+            expect(res.body).toHaveProperty("upvotes", post.upvotes);
         });
 
         it("should have no effect if post is already upvoted and upvote direction is same 1", async () => {
@@ -218,6 +219,7 @@ describe('api/users', () => {
             expect(user.upvoted_posts.some(upvoted_post =>
                 upvoted_post.upvote_dir === upvote_dir && upvoted_post.postId === post._id.toString())).toBeTruthy();
             expect(post.upvotes).toBe(0);
+            expect(res.body).toHaveProperty("upvotes", post.upvotes);
 
         });
 
@@ -235,6 +237,8 @@ describe('api/users', () => {
             expect(user.upvoted_posts.some(upvoted_post =>
                 upvoted_post.upvote_dir === upvote_dir && upvoted_post.postId === post._id.toString())).toBeTruthy();
             expect(post.upvotes).toBe(0);
+            expect(res.body).toHaveProperty("upvotes", post.upvotes);
+
         });
 
         it("should have no effect if post is already upvoted and upvote direction is same 0", async () => {
@@ -251,6 +255,7 @@ describe('api/users', () => {
             expect(user.upvoted_posts.some(upvoted_post =>
                 upvoted_post.upvote_dir === upvote_dir && upvoted_post.postId === post._id.toString())).toBeTruthy();
             expect(post.upvotes).toBe(0);
+            expect(res.body).toHaveProperty("upvotes", post.upvotes);
         });
 
         it("should increase upvote count by 2 if previously downvoted(dir=-1) post is upvoted (dir=1) ", async () => {
@@ -269,6 +274,7 @@ describe('api/users', () => {
             expect(user.upvoted_posts.some(upvoted_post =>
                 upvoted_post.upvote_dir === body.dir && upvoted_post.postId === post._id.toString())).toBeTruthy();
             expect(post.upvotes - previousUpvoteCount).toBe(2);
+            expect(res.body).toHaveProperty("upvotes", post.upvotes);
         });
 
         it("should increase upvote count by 1 if previously upvoted_post with dir=0 is upvoted(dir=1)", async () => {
@@ -287,6 +293,8 @@ describe('api/users', () => {
             expect(user.upvoted_posts.some(upvoted_post =>
                 upvoted_post.upvote_dir === body.dir && upvoted_post.postId === post._id.toString())).toBeTruthy();
             expect(post.upvotes - previousUpvoteCount).toBe(1);
+            expect(res.body).toHaveProperty("upvotes", post.upvotes);
+
         });
 
         it("should decrease upvote count by 1 if previously upvoted_post with dir=0 is downvoted(dir=-1)", async () => {
@@ -304,6 +312,8 @@ describe('api/users', () => {
             expect(user.upvoted_posts.some(upvoted_post =>
                 upvoted_post.upvote_dir === body.dir && upvoted_post.postId === post._id.toString())).toBeTruthy();
             expect(post.upvotes - previousUpvoteCount).toBe(-1);
+            expect(res.body).toHaveProperty("upvotes", post.upvotes);
+
         });
 
         it("should decrease upvote count by 2 if previously upvoted_post with dir=1 is downvoted(dir=-1)", async () => {
@@ -321,6 +331,8 @@ describe('api/users', () => {
             expect(user.upvoted_posts.some(upvoted_post =>
                 upvoted_post.upvote_dir === body.dir && upvoted_post.postId === post._id.toString())).toBeTruthy();
             expect(post.upvotes - previousUpvoteCount).toBe(-2);
+            expect(res.body).toHaveProperty("upvotes", post.upvotes);
+
         });
 
         it("should decrease upvote count by 1 if preiously upvoted_post with dir=1 is canceled(dir=0)", async () => {
@@ -338,6 +350,8 @@ describe('api/users', () => {
             expect(user.upvoted_posts.some(upvoted_post =>
                 upvoted_post.upvote_dir === body.dir && upvoted_post.postId === post._id.toString())).toBeTruthy();
             expect(post.upvotes - previousUpvoteCount).toBe(-1);
+            expect(res.body).toHaveProperty("upvotes", post.upvotes);
+
         });
 
         it("should increase upvote count by 1 if preiously downvoted post with dir=-1 is canceled(dir=0)", async () => {
@@ -355,6 +369,8 @@ describe('api/users', () => {
             expect(user.upvoted_posts.some(upvoted_post =>
                 upvoted_post.upvote_dir === body.dir && upvoted_post.postId === post._id.toString())).toBeTruthy();
             expect(post.upvotes - previousUpvoteCount).toBe(1);
+            expect(res.body).toHaveProperty("upvotes", post.upvotes);
+
         });
     });
 
@@ -445,6 +461,8 @@ describe('api/users', () => {
                 && user.upvoted_comments[0].comments[0].commentId === post.comments[0]._id.toString()
                 && user.upvoted_comments[0].comments[0].upvote_dir === 1).toBeTruthy();
             expect(post.comments[0].upvotes).toBe(1);
+            expect(res.body).toHaveProperty("upvotes", post.comments[0].upvotes);
+
         });
 
         it("should push new entry on user.upvoted_comments.comments if user.upvoted_comments on a post already exists.. should increase comment upvote count", async () => {
@@ -465,6 +483,7 @@ describe('api/users', () => {
                 && user.upvoted_comments[0].comments[0].commentId === post.comments[0]._id.toString()
                 && user.upvoted_comments[0].comments[0].upvote_dir === 1).toBeTruthy();
             expect(post.comments[0].upvotes).toBe(1);
+            expect(res.body).toHaveProperty("upvotes", post.comments[0].upvotes);
 
         });
 
@@ -486,6 +505,8 @@ describe('api/users', () => {
                 && user.upvoted_comments[0].comments[0].commentId === post.comments[0]._id.toString()
                 && user.upvoted_comments[0].comments[0].upvote_dir === 1).toBeTruthy();
             expect(post.comments[0].upvotes).toBe(0);
+            expect(res.body).toHaveProperty("upvotes", post.comments[0].upvotes);
+
         });
 
         it("should have no effect if comment is already upvoted and upvote direction is same -1", async () => {
@@ -507,6 +528,8 @@ describe('api/users', () => {
                 && user.upvoted_comments[0].comments[0].commentId === post.comments[0]._id.toString()
                 && user.upvoted_comments[0].comments[0].upvote_dir === -1).toBeTruthy();
             expect(post.comments[0].upvotes).toBe(0);
+            expect(res.body).toHaveProperty("upvotes", post.comments[0].upvotes);
+
         });
 
 
@@ -530,6 +553,8 @@ describe('api/users', () => {
                 && user.upvoted_comments[0].comments[0].commentId === post.comments[0]._id.toString()
                 && user.upvoted_comments[0].comments[0].upvote_dir === 1).toBeTruthy();
             expect(post.comments[0].upvotes - previousUpvoteCount).toBe(2);
+            expect(res.body).toHaveProperty("upvotes", post.comments[0].upvotes);
+
         });
 
         it("should increase upvote count by 1 if previously upvoted comment with dir=0 is upvoted(dir=1)", async () => {
@@ -552,6 +577,8 @@ describe('api/users', () => {
                 && user.upvoted_comments[0].comments[0].commentId === post.comments[0]._id.toString()
                 && user.upvoted_comments[0].comments[0].upvote_dir === 1).toBeTruthy();
             expect(post.comments[0].upvotes - previousUpvoteCount).toBe(1);
+            expect(res.body).toHaveProperty("upvotes", post.comments[0].upvotes);
+
         });
 
         it("should decrease upvote count by 1 if previously neutral comment with dir=0 is downvoted(dir=-1)", async () => {
@@ -574,6 +601,8 @@ describe('api/users', () => {
                 && user.upvoted_comments[0].comments[0].commentId === post.comments[0]._id.toString()
                 && user.upvoted_comments[0].comments[0].upvote_dir === -1).toBeTruthy();
             expect(post.comments[0].upvotes - previousUpvoteCount).toBe(-1);
+            expect(res.body).toHaveProperty("upvotes", post.comments[0].upvotes);
+
         });
 
         it("should decrease upvote count by 2 if previously upvoted comment with dir=1 is downvoted(dir=-1)", async () => {
@@ -596,6 +625,8 @@ describe('api/users', () => {
                 && user.upvoted_comments[0].comments[0].commentId === post.comments[0]._id.toString()
                 && user.upvoted_comments[0].comments[0].upvote_dir === -1).toBeTruthy();
             expect(post.comments[0].upvotes - previousUpvoteCount).toBe(-2);
+            expect(res.body).toHaveProperty("upvotes", post.comments[0].upvotes);
+
         });
 
         it("should decrease upvote count by 1 if preiously upvoted_post with dir=1 is canceled(dir=0)", async () => {
@@ -618,6 +649,8 @@ describe('api/users', () => {
                 && user.upvoted_comments[0].comments[0].commentId === post.comments[0]._id.toString()
                 && user.upvoted_comments[0].comments[0].upvote_dir === 0).toBeTruthy();
             expect(post.comments[0].upvotes - previousUpvoteCount).toBe(-1);
+            expect(res.body).toHaveProperty("upvotes", post.comments[0].upvotes);
+
         });
 
         it("should increase upvote count by 1 if preiously downvoted post with dir=-1 is canceled(dir=0)", async () => {
@@ -640,6 +673,8 @@ describe('api/users', () => {
                 && user.upvoted_comments[0].comments[0].commentId === post.comments[0]._id.toString()
                 && user.upvoted_comments[0].comments[0].upvote_dir === 0).toBeTruthy();
             expect(post.comments[0].upvotes - previousUpvoteCount).toBe(1);
+            expect(res.body).toHaveProperty("upvotes", post.comments[0].upvotes);
+
         });
     });
 });

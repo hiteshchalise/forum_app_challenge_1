@@ -117,7 +117,6 @@ router.post("/upvote/comment", auth, async (req, res) => {
       }]
     });
     comment.upvotes += dir;
-    res.json({ upvotes: comment.upvotes })
   } else {
     const upvotedComment = upvotedCommentPost.comments.find(
       comment => comment.commentId === commentId
@@ -128,15 +127,14 @@ router.post("/upvote/comment", auth, async (req, res) => {
         upvote_dir: dir
       });
       comment.upvotes += dir;
-      res.json({ upvotes: comment.upvotes })
     } else {
       if (upvotedComment.upvote_dir !== dir) {
         comment.upvotes += dir - upvotedComment.upvote_dir;
         upvotedComment.upvote_dir = dir;
       }
-      res.json({ upvotes: comment.upvotes });
     }
   }
+  res.json({ upvotes: comment.upvotes });
   await user.save();
   await post.save();
 });
