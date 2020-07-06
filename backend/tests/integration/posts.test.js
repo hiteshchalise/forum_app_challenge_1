@@ -36,7 +36,14 @@ describe('api/posts', () => {
             const post = new Post({
                 post_title: "title1",
                 post_body: "body1",
-                posted_by: "username"
+                posted_by: "username",
+                comments: [{
+                    comment_body: "body1",
+                    commented_by: "username"
+                }, {
+                    comment_body: "body2",
+                    commented_by: "username"
+                }]
             });
             await post.save();
 
@@ -127,7 +134,14 @@ describe('api/posts', () => {
             post = new Post({
                 post_title: "title1",
                 post_body: "body1",
-                posted_by: "username"
+                posted_by: "username",
+                comments: [{
+                    comment_body: "body1",
+                    commented_by: "username"
+                }, {
+                    comment_body: "body2",
+                    commented_by: "username"
+                }]
             });
             user = new User({
                 name: "username",
@@ -173,7 +187,7 @@ describe('api/posts', () => {
             post = await Post.findOne({ _id: post._id }).exec();
             expect(res.status).toBe(200);
             expect(post.comments).not.toBeNull();
-            expect(post.comments.length === 1).toBeTruthy();
+            expect(post.comments.length).toBe(3);
             expect(res.body).toHaveProperty("post_title", post.post_title);
             expect(res.body).toHaveProperty("post_body", post.post_body);
             expect(res.body).toHaveProperty("posted_by", user.name);
