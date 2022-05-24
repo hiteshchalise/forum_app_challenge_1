@@ -4,8 +4,8 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "start": "node index",
-        "server": "nodemon index",
+        "start": "NODE_ENV=production node index",
+        "server": "NODE_ENV=development nodemon index",
         "client": "cd .. && cd frontend && npm start",
         "dev": "concurrently \"npm run server\" \"npm run client\"",
         "test": "NODE_ENV=test jest --runInBand --watchAll --verbose"
