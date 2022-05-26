@@ -4,12 +4,15 @@ const server = require('../../../startup/app')
 const { Post } = require('../../../model/Post')
 
 describe('validateObjectId middleware', () => {
-  beforeEach(() => {
-    mongoDB.connect()
+  beforeAll(async () => {
+    await mongoDB.connect()
   })
 
-  afterEach(async (done) => {
+  beforeEach(async () => {
     await Post.deleteMany({})
+  })
+
+  afterAll((done) => {
     mongoDB.disconnect(done)
   })
 

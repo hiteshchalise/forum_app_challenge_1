@@ -3,14 +3,22 @@ const mongoDB = require('../../startup/mongoDB')
 const server = require('../../startup/app')
 const { Post } = require('../../model/Post')
 const { User } = require('../../model/User')
+const { Comment } = require('../../model/Comment')
+const { mongoose } = require('../../startup/mongoDB')
+const api = request(server)
 
 describe('api/posts', () => {
-  beforeEach(() => {
-    mongoDB.connect()
+  beforeAll(async () => {
+    await mongoDB.connect()
   })
-  afterEach(async (done) => {
+
+  beforeEach(async () => {
     await User.deleteMany({})
     await Post.deleteMany({})
+    await Comment.deleteMany({})
+  })
+
+  afterAll((done) => {
     mongoDB.disconnect(done)
   })
 
@@ -22,7 +30,7 @@ describe('api/posts', () => {
         { post_title: 'title 2', post_body: 'body 2' },
       ])
 
-      const res = await request(server).get('/api/posts')
+      const res = await api.get('/api/posts')
       expect(res.status).toBe(200)
       expect(res.body.length).toBe(2)
       expect(res.body.some(post => post.post_title === 'title 1' && post.post_body === 'body 1'))
@@ -33,39 +41,36 @@ describe('api/posts', () => {
 
   describe('GET /:postId', () => {
     it('should return post if valid postId', async () => {
+
+      const userId = new mongoose.Types.ObjectId()
+
       const post = new Post({
         post_title: 'title1',
         post_body: 'body1',
-        posted_by: 'username',
-        comments: [{
-          comment_body: 'body1',
-          commented_by: 'username'
-        }, {
-          comment_body: 'body2',
-          commented_by: 'username'
-        }]
+        posted_by: userId,
+        comments: []
       })
       await post.save()
 
-      const res = await request(server).get('/api/posts/' + post._id)
+      const res = await api.get('/api/posts/' + post._id)
 
       expect(res.status).toBe(200)
       expect(res.body).toHaveProperty('post_title', post.post_title)
       expect(res.body).toHaveProperty('post_body', post.post_body)
-      expect(res.body).toHaveProperty('posted_by', post.posted_by)
+      expect(res.body).toHaveProperty('posted_by', post.posted_by.toString())
       expect(res.body).toHaveProperty('upvotes', post.upvotes)
 
     })
 
     it('should return 404 if invalid postId is passed', async () => {
-      const res = await request(server).get('/api/posts/1')
+      const res = await api.get('/api/posts/1')
 
       expect(res.status).toBe(404)
     })
 
     it('should return 404 if no post with postId found', async () => {
       const validPostId = '5efb4ad85108c33d672daa9d'
-      const res = await request(server).get('/api/posts/' + validPostId)
+      const res = await api.get('/api/posts/' + validPostId)
 
       expect(res.status).toBe(404)
     })
@@ -76,7 +81,7 @@ describe('api/posts', () => {
     let post
 
     const exec = async () => {
-      return await request(server)
+      return await api
         .post('/api/posts')
         .set('x-auth-token', token)
         .send(post)
@@ -111,7 +116,7 @@ describe('api/posts', () => {
       const res = await exec()
 
       post = await Post.findOne({ post_title: 'title1' })
-      expect(res.status).toBe(200)
+      expect(res.status).toBe(201)
       expect(post).not.toBeNull()
     })
   })
@@ -122,38 +127,63 @@ describe('api/posts', () => {
     let comment
     let post
     let user
+    let firstComment
+    let secondComment
 
     const exec = async () => {
-      return await request(server)
+      return await api
         .post('/api/posts/' + postId + '/comments')
         .set('x-auth-token', token)
         .send(comment)
     }
 
     beforeEach(async () => {
-      post = new Post({
-        post_title: 'title1',
-        post_body: 'body1',
-        posted_by: 'username',
-        comments: [{
-          comment_body: 'body1',
-          commented_by: 'username'
-        }, {
-          comment_body: 'body2',
-          commented_by: 'username'
-        }]
-      })
+      const userId = new mongoose.Types.ObjectId()
       user = new User({
+        _id: userId,
         name: 'username',
         email: 'username@gmail.com',
         password: 'hehehe'
       })
+
+      const firstCommentId = new mongoose.Types.ObjectId()
+      firstComment = new Comment({
+        _id: firstCommentId,
+        comment_body: 'this is comment 1',
+        commented_by: userId
+      })
+
+      const secondCommentId = new mongoose.Types.ObjectId()
+      secondComment = new Comment({
+        _id: secondCommentId,
+        comment_body: 'this is comment 2',
+        commented_by: userId
+      })
+
+      const generatedPostId = new mongoose.Types.ObjectId()
+      firstComment.commented_to = generatedPostId
+      secondComment.commented_to = generatedPostId
+
+      post = new Post({
+        _id: generatedPostId,
+        post_title: 'title1',
+        post_body: 'body1',
+        posted_by: userId,
+        comments: [{
+          _id: firstCommentId
+        }, {
+          _id: secondCommentId
+        }]
+      })
       await user.save()
       await post.save()
+      await firstComment.save()
+      await secondComment.save()
+
+      postId = generatedPostId
       token = user.generateAuthToken()
-      postId = post._id
       comment = {
-        comment_body: 'comment body'
+        comment_body: 'this should be thrid comment'
       }
     })
 
@@ -185,12 +215,12 @@ describe('api/posts', () => {
       const res = await exec()
 
       post = await Post.findOne({ _id: post._id }).exec()
-      expect(res.status).toBe(200)
+      expect(res.status).toBe(201)
       expect(post.comments).not.toBeNull()
       expect(post.comments.length).toBe(3)
       expect(res.body).toHaveProperty('post_title', post.post_title)
       expect(res.body).toHaveProperty('post_body', post.post_body)
-      expect(res.body).toHaveProperty('posted_by', user.name)
+      expect(res.body).toHaveProperty('posted_by', user._id.toString())
     })
   })
 
@@ -201,28 +231,33 @@ describe('api/posts', () => {
     let user
 
     const exec = async () => {
-      return await request(server)
-        .post('/api/users/upvote/')
+      return await api
+        .post('/api/posts/upvote/')
         .set('x-auth-token', token)
         .send(body)
     }
 
     beforeEach(async () => {
-      post = new Post({
-        post_title: 'title1',
-        post_body: 'body1',
-        posted_by: 'username'
-      })
+      const userId = new mongoose.Types.ObjectId()
       user = new User({
+        _id: userId,
         name: 'username',
         email: 'username@gmail.com',
         password: 'hehehe'
       })
+      const postId = new mongoose.Types.ObjectId()
+      user.voted_posts.push({ _id: postId, dir: 1 })
       await user.save()
+      post = new Post({
+        _id: postId,
+        post_title: 'title1',
+        post_body: 'body1',
+        posted_by: user._id
+      })
       await post.save()
       token = user.generateAuthToken()
       body = {
-        postId: post._id,
+        postId,
         dir: 1
       }
     })
@@ -266,39 +301,24 @@ describe('api/posts', () => {
       expect(res.status).toBe(404)
     })
 
-    it('should push new entry on user.upvoted_posts with upvote_dir 1 & postId.. should increase post upvote count', async () => {
-
-      const res = await exec()
-
-      user = await User.findOne({ email: 'username@gmail.com' })
-      post = await Post.findOne({ _id: post._id })
-      expect(res.status).toBe(200)
-      expect(user.upvoted_posts.some(upvoted_post =>
-        upvoted_post.postId === post._id.toString()
-        && upvoted_post.upvote_dir === 1)).toBeTruthy()
-      expect(post.upvotes).toBe(1)
-      expect(res.body).toHaveProperty('upvotes', post.upvotes)
-    })
-
     it('should have no effect if post is already upvoted and upvote direction is same 1', async () => {
-      const upvote_dir = 1
-      user.upvoted_posts.push({ postId: post._id, upvote_dir })
-      await user.save()
-
+      const dir = 1
       const res = await exec()
 
       user = await User.findOne({ _id: user._id })
+      post = await Post.findOne({ _id: post._id })
       expect(res.status).toBe(200)
-      expect(user.upvoted_posts.some(upvoted_post =>
-        upvoted_post.upvote_dir === upvote_dir && upvoted_post.postId === post._id.toString())).toBeTruthy()
-      expect(post.upvotes).toBe(0)
+      expect(user.voted_posts.some(upvoted_post =>
+        upvoted_post.dir === dir && upvoted_post._id.toString() === post._id.toString())).toBeTruthy()
+      expect(post.upvotes).toBe(1)
       expect(res.body).toHaveProperty('upvotes', post.upvotes)
 
     })
 
     it('should have no effect if post is already upvoted and upvote direction is same -1', async () => {
-      const upvote_dir = -1
-      user.upvoted_posts.push({ postId: post._id, upvote_dir })
+      const dir = -1
+      user.voted_posts.map(votedPost => votedPost._id === post._id ? votedPost.dir = dir : votedPost)
+
       await user.save()
       body.dir = -1
 
@@ -306,17 +326,19 @@ describe('api/posts', () => {
 
       user = await User.findOne({ _id: user._id })
       post = await Post.findOne({ _id: post._id })
+
       expect(res.status).toBe(200)
-      expect(user.upvoted_posts.some(upvoted_post =>
-        upvoted_post.upvote_dir === upvote_dir && upvoted_post.postId === post._id.toString())).toBeTruthy()
-      expect(post.upvotes).toBe(0)
+      expect(user.voted_posts.some(upvoted_post =>
+        upvoted_post.dir === dir && upvoted_post._id.toString() === post._id.toString())).toBeTruthy()
+      expect(post.upvotes).toBe(1)
       expect(res.body).toHaveProperty('upvotes', post.upvotes)
 
     })
 
     it('should have no effect if post is already upvoted and upvote direction is same 0', async () => {
-      const upvote_dir = 0
-      user.upvoted_posts.push({ postId: post._id, upvote_dir })
+      const dir = 0
+      user.voted_posts.map(votedPost => votedPost._id === post._id ? votedPost.dir = dir : votedPost)
+
       await user.save()
       body.dir = 0
 
@@ -325,17 +347,17 @@ describe('api/posts', () => {
       user = await User.findOne({ _id: user._id })
       post = await Post.findOne({ _id: post._id })
       expect(res.status).toBe(200)
-      expect(user.upvoted_posts.some(upvoted_post =>
-        upvoted_post.upvote_dir === upvote_dir && upvoted_post.postId === post._id.toString())).toBeTruthy()
-      expect(post.upvotes).toBe(0)
+      expect(user.voted_posts.some(upvoted_post =>
+        upvoted_post.dir === dir && upvoted_post._id.toString() === post._id.toString())).toBeTruthy()
+      expect(post.upvotes).toBe(1)
       expect(res.body).toHaveProperty('upvotes', post.upvotes)
     })
 
     it('should increase upvote count by 2 if previously downvoted(dir=-1) post is upvoted (dir=1) ', async () => {
+      user.voted_posts.map(votedPost => votedPost._id === post._id ? votedPost.dir = -1 : votedPost)
 
-      const upvote_dir = -1
-      user.upvoted_posts.push({ postId: post._id, upvote_dir })
       await user.save()
+
       body.dir = 1
       const previousUpvoteCount = post.upvotes
 
@@ -343,16 +365,17 @@ describe('api/posts', () => {
 
       user = await User.findOne({ _id: user._id })
       post = await Post.findOne({ _id: post._id })
+
       expect(res.status).toBe(200)
-      expect(user.upvoted_posts.some(upvoted_post =>
-        upvoted_post.upvote_dir === body.dir && upvoted_post.postId === post._id.toString())).toBeTruthy()
+      expect(user.voted_posts.some(upvoted_post =>
+        upvoted_post.dir === body.dir && upvoted_post._id.toString() === post._id.toString())).toBeTruthy()
       expect(post.upvotes - previousUpvoteCount).toBe(2)
       expect(res.body).toHaveProperty('upvotes', post.upvotes)
     })
 
     it('should increase upvote count by 1 if previously upvoted_post with dir=0 is upvoted(dir=1)', async () => {
-      const upvote_dir = 0
-      user.upvoted_posts.push({ postId: post._id, upvote_dir })
+      user.voted_posts.map(votedPost => votedPost._id === post._id ? votedPost.dir = -0 : votedPost)
+
       await user.save()
       body.dir = 1
       const previousUpvoteCount = post.upvotes
@@ -363,15 +386,15 @@ describe('api/posts', () => {
       post = await Post.findOne({ _id: post._id })
 
       expect(res.status).toBe(200)
-      expect(user.upvoted_posts.some(upvoted_post =>
-        upvoted_post.upvote_dir === body.dir && upvoted_post.postId === post._id.toString())).toBeTruthy()
+      expect(user.voted_posts.some(upvoted_post =>
+        upvoted_post.dir === body.dir && upvoted_post._id.toString() === post._id.toString())).toBeTruthy()
       expect(post.upvotes - previousUpvoteCount).toBe(1)
       expect(res.body).toHaveProperty('upvotes', post.upvotes)
 
     })
 
     it('should decrease upvote count by 1 if previously upvoted_post with dir=0 is downvoted(dir=-1)', async () => {
-      user.upvoted_posts.push({ postId: post._id, upvote_dir: 0 })
+      user.voted_posts.map(votedPost => votedPost._id === post._id ? votedPost.dir = 0 : votedPost)
       await user.save()
       body.dir = -1
       const previousUpvoteCount = post.upvotes
@@ -382,16 +405,14 @@ describe('api/posts', () => {
       post = await Post.findOne({ _id: post._id })
 
       expect(res.status).toBe(200)
-      expect(user.upvoted_posts.some(upvoted_post =>
-        upvoted_post.upvote_dir === body.dir && upvoted_post.postId === post._id.toString())).toBeTruthy()
+      expect(user.voted_posts.some(upvoted_post =>
+        upvoted_post.dir === body.dir && upvoted_post._id.toString() === post._id.toString())).toBeTruthy()
       expect(post.upvotes - previousUpvoteCount).toBe(-1)
       expect(res.body).toHaveProperty('upvotes', post.upvotes)
 
     })
 
     it('should decrease upvote count by 2 if previously upvoted_post with dir=1 is downvoted(dir=-1)', async () => {
-      user.upvoted_posts.push({ postId: post._id, upvote_dir: 1 })
-      await user.save()
       body.dir = -1
       const previousUpvoteCount = post.upvotes
 
@@ -401,16 +422,14 @@ describe('api/posts', () => {
       post = await Post.findOne({ _id: post._id })
 
       expect(res.status).toBe(200)
-      expect(user.upvoted_posts.some(upvoted_post =>
-        upvoted_post.upvote_dir === body.dir && upvoted_post.postId === post._id.toString())).toBeTruthy()
+      expect(user.voted_posts.some(upvoted_post =>
+        upvoted_post.dir === body.dir && upvoted_post._id.toString() === post._id.toString())).toBeTruthy()
       expect(post.upvotes - previousUpvoteCount).toBe(-2)
       expect(res.body).toHaveProperty('upvotes', post.upvotes)
 
     })
 
     it('should decrease upvote count by 1 if preiously upvoted_post with dir=1 is canceled(dir=0)', async () => {
-      user.upvoted_posts.push({ postId: post._id, upvote_dir: 1 })
-      await user.save()
       body.dir = 0
       const previousUpvoteCount = post.upvotes
 
@@ -420,15 +439,15 @@ describe('api/posts', () => {
       post = await Post.findOne({ _id: post._id })
 
       expect(res.status).toBe(200)
-      expect(user.upvoted_posts.some(upvoted_post =>
-        upvoted_post.upvote_dir === body.dir && upvoted_post.postId === post._id.toString())).toBeTruthy()
+      expect(user.voted_posts.some(voted_post =>
+        voted_post.dir === body.dir && voted_post._id.toString() === post._id.toString())).toBeTruthy()
       expect(post.upvotes - previousUpvoteCount).toBe(-1)
       expect(res.body).toHaveProperty('upvotes', post.upvotes)
 
     })
 
     it('should increase upvote count by 1 if preiously downvoted post with dir=-1 is canceled(dir=0)', async () => {
-      user.upvoted_posts.push({ postId: post._id, upvote_dir: -1 })
+      user.voted_posts.map(votedPost => votedPost._id === post._id ? votedPost.dir = -1 : votedPost)
       await user.save()
       body.dir = 0
       const previousUpvoteCount = post.upvotes
@@ -439,315 +458,315 @@ describe('api/posts', () => {
       post = await Post.findOne({ _id: post._id })
 
       expect(res.status).toBe(200)
-      expect(user.upvoted_posts.some(upvoted_post =>
-        upvoted_post.upvote_dir === body.dir && upvoted_post.postId === post._id.toString())).toBeTruthy()
+      expect(user.voted_posts.some(voted_post =>
+        voted_post.dir === body.dir && voted_post._id.toString() === post._id.toString())).toBeTruthy()
       expect(post.upvotes - previousUpvoteCount).toBe(1)
       expect(res.body).toHaveProperty('upvotes', post.upvotes)
 
     })
   })
 
-  describe('Post /upvote/comment', () => {
-    let token, body, post, user, comment
+  // describe('Post /upvote/comment', () => {
+  //   let token, body, post, user, comment
 
-    const exec = async () => {
-      return await request(server)
-        .post('/api/users/upvote/comment')
-        .set('x-auth-token', token)
-        .send(body)
-    }
+  //   const exec = async () => {
+  //     return await api
+  //       .post('/api/users/upvote/comment')
+  //       .set('x-auth-token', token)
+  //       .send(body)
+  //   }
 
-    beforeEach(async () => {
-      comment = {
-        comment_body: 'comment',
-        commented_by: 'username'
-      }
-      post = new Post({
-        post_title: 'title1',
-        post_body: 'body1',
-        posted_by: 'username'
-      })
-      post.comments.push(comment)
-      user = new User({
-        name: 'username',
-        email: 'username@gmail.com',
-        password: 'hehehe'
-      })
+  //   beforeEach(async () => {
+  //     comment = {
+  //       comment_body: 'comment',
+  //       commented_by: 'username'
+  //     }
+  //     post = new Post({
+  //       post_title: 'title1',
+  //       post_body: 'body1',
+  //       posted_by: 'username'
+  //     })
+  //     post.comments.push(comment)
+  //     user = new User({
+  //       name: 'username',
+  //       email: 'username@gmail.com',
+  //       password: 'hehehe'
+  //     })
 
-      await user.save()
-      await post.save()
-      token = user.generateAuthToken()
-      body = {
-        postId: post._id,
-        commentId: post.comments[0]._id,
-        dir: 1
-      }
-    })
+  //     await user.save()
+  //     await post.save()
+  //     token = user.generateAuthToken()
+  //     body = {
+  //       _id: post._id,
+  //       commentId: post.comments[0]._id,
+  //       dir: 1
+  //     }
+  //   })
 
-    it('should return 401 error when user is not logged in', async () => {
-      token = ''
-      const res = await exec()
-      expect(res.status).toBe(401)
-    })
-    it('should return 400 when invalid postId is sent', async () => {
-      body.postId = ''
-      const res = await exec()
-      expect(res.status).toBe(400)
-    })
+  //   it('should return 401 error when user is not logged in', async () => {
+  //     token = ''
+  //     const res = await exec()
+  //     expect(res.status).toBe(401)
+  //   })
+  //   it('should return 400 when invalid postId is sent', async () => {
+  //     body.postId = ''
+  //     const res = await exec()
+  //     expect(res.status).toBe(400)
+  //   })
 
-    it('should return 400 when invalid dir is sent', async () => {
-      body.dir = 2
-      const res = await exec()
-      expect(res.status).toBe(400)
-    })
+  //   it('should return 400 when invalid dir is sent', async () => {
+  //     body.dir = 2
+  //     const res = await exec()
+  //     expect(res.status).toBe(400)
+  //   })
 
-    it('should return 401 when user not found', async () => {
-      const newUser = new User({
-        name: 'new',
-        email: 'new@gmail.com',
-        password: 'password'
-      })
-      token = newUser.generateAuthToken()
+  //   it('should return 401 when user not found', async () => {
+  //     const newUser = new User({
+  //       name: 'new',
+  //       email: 'new@gmail.com',
+  //       password: 'password'
+  //     })
+  //     token = newUser.generateAuthToken()
 
-      const res = await exec()
+  //     const res = await exec()
 
-      expect(res.status).toBe(401)
-    })
+  //     expect(res.status).toBe(401)
+  //   })
 
-    it('should return 404 when post not found', async () => {
-      body.postId = '5f001703a068ec32e6c03fa0'
+  //   it('should return 404 when post not found', async () => {
+  //     body.postId = '5f001703a068ec32e6c03fa0'
 
-      const res = await exec()
+  //     const res = await exec()
 
-      expect(res.status).toBe(404)
-    })
+  //     expect(res.status).toBe(404)
+  //   })
 
-    it('should push new entry on user.upvoted_comments.. should increase comment upvote count', async () => {
+  //   it('should push new entry on user.upvoted_comments.. should increase comment upvote count', async () => {
 
-      const res = await exec()
+  //     const res = await exec()
 
-      user = await User.findOne({ email: 'username@gmail.com' })
-      post = await Post.findOne({ _id: post._id })
+  //     user = await User.findOne({ email: 'username@gmail.com' })
+  //     post = await Post.findOne({ _id: post._id })
 
-      expect(res.status).toBe(200)
-      expect(user.upvoted_comments[0].postId === post._id.toString()
-        && user.upvoted_comments[0].comments[0].commentId === post.comments[0]._id.toString()
-        && user.upvoted_comments[0].comments[0].upvote_dir === 1).toBeTruthy()
-      expect(post.comments[0].upvotes).toBe(1)
-      expect(res.body).toHaveProperty('upvotes', post.comments[0].upvotes)
+  //     expect(res.status).toBe(200)
+  //     expect(user.upvoted_comments[0].postId === post._id.toString()
+  //       && user.upvoted_comments[0].comments[0].commentId === post.comments[0]._id.toString()
+  //       && user.upvoted_comments[0].comments[0].dir === 1).toBeTruthy()
+  //     expect(post.comments[0].upvotes).toBe(1)
+  //     expect(res.body).toHaveProperty('upvotes', post.comments[0].upvotes)
 
-    })
+  //   })
 
-    it('should push new entry on user.upvoted_comments.comments if user.upvoted_comments on a post already exists.. should increase comment upvote count', async () => {
+  //   it('should push new entry on user.upvoted_comments.comments if user.upvoted_comments on a post already exists.. should increase comment upvote count', async () => {
 
-      // upvoted_comments are stored based on postId, multiple comments on same post are stored within same postId, this test covers condition where user.upvoted_comments already has entry of postId but not for this particular comment.
+  //     // upvoted_comments are stored based on postId, multiple comments on same post are stored within same postId, this test covers condition where user.upvoted_comments already has entry of postId but not for this particular comment.
 
-      user.upvoted_comments.push({
-        postId: post._id, comments: []
-      })
-      await user.save()
+  //     user.upvoted_comments.push({
+  //       postId: post._id, comments: []
+  //     })
+  //     await user.save()
 
-      const res = await exec()
+  //     const res = await exec()
 
-      user = await User.findOne({ _id: user._id })
-      post = await Post.findOne({ _id: post._id })
-      expect(res.status).toBe(200)
-      expect(user.upvoted_comments[0].postId === post._id.toString()
-        && user.upvoted_comments[0].comments[0].commentId === post.comments[0]._id.toString()
-        && user.upvoted_comments[0].comments[0].upvote_dir === 1).toBeTruthy()
-      expect(post.comments[0].upvotes).toBe(1)
-      expect(res.body).toHaveProperty('upvotes', post.comments[0].upvotes)
+  //     user = await User.findOne({ _id: user._id })
+  //     post = await Post.findOne({ _id: post._id })
+  //     expect(res.status).toBe(200)
+  //     expect(user.upvoted_comments[0].postId === post._id.toString()
+  //       && user.upvoted_comments[0].comments[0].commentId === post.comments[0]._id.toString()
+  //       && user.upvoted_comments[0].comments[0].dir === 1).toBeTruthy()
+  //     expect(post.comments[0].upvotes).toBe(1)
+  //     expect(res.body).toHaveProperty('upvotes', post.comments[0].upvotes)
 
-    })
+  //   })
 
-    it('should have no effect if commment is already upvoted and upvote direction is same 1', async () => {
-      user.upvoted_comments.push({
-        postId: post._id, comments: [{
-          commentId: post.comments[0]._id,
-          upvote_dir: 1
-        }]
-      })
-      await user.save()
+  //   it('should have no effect if commment is already upvoted and upvote direction is same 1', async () => {
+  //     user.upvoted_comments.push({
+  //       postId: post._id, comments: [{
+  //         commentId: post.comments[0]._id,
+  //         dir: 1
+  //       }]
+  //     })
+  //     await user.save()
 
-      const res = await exec()
+  //     const res = await exec()
 
-      user = await User.findOne({ _id: user._id })
-      post = await Post.findOne({ _id: post._id })
-      expect(res.status).toBe(200)
-      expect(user.upvoted_comments[0].postId === post._id.toString()
-        && user.upvoted_comments[0].comments[0].commentId === post.comments[0]._id.toString()
-        && user.upvoted_comments[0].comments[0].upvote_dir === 1).toBeTruthy()
-      expect(post.comments[0].upvotes).toBe(0)
-      expect(res.body).toHaveProperty('upvotes', post.comments[0].upvotes)
+  //     user = await User.findOne({ _id: user._id })
+  //     post = await Post.findOne({ _id: post._id })
+  //     expect(res.status).toBe(200)
+  //     expect(user.upvoted_comments[0].postId === post._id.toString()
+  //       && user.upvoted_comments[0].comments[0].commentId === post.comments[0]._id.toString()
+  //       && user.upvoted_comments[0].comments[0].dir === 1).toBeTruthy()
+  //     expect(post.comments[0].upvotes).toBe(0)
+  //     expect(res.body).toHaveProperty('upvotes', post.comments[0].upvotes)
 
-    })
+  //   })
 
-    it('should have no effect if comment is already upvoted and upvote direction is same -1', async () => {
-      body.dir = -1
-      user.upvoted_comments.push({
-        postId: post._id, comments: [{
-          commentId: post.comments[0]._id,
-          upvote_dir: -1
-        }]
-      })
-      await user.save()
+  //   it('should have no effect if comment is already upvoted and upvote direction is same -1', async () => {
+  //     body.dir = -1
+  //     user.upvoted_comments.push({
+  //       postId: post._id, comments: [{
+  //         commentId: post.comments[0]._id,
+  //         dir: -1
+  //       }]
+  //     })
+  //     await user.save()
 
-      const res = await exec()
+  //     const res = await exec()
 
-      user = await User.findOne({ _id: user._id })
-      post = await Post.findOne({ _id: post._id })
-      expect(res.status).toBe(200)
-      expect(user.upvoted_comments[0].postId === post._id.toString()
-        && user.upvoted_comments[0].comments[0].commentId === post.comments[0]._id.toString()
-        && user.upvoted_comments[0].comments[0].upvote_dir === -1).toBeTruthy()
-      expect(post.comments[0].upvotes).toBe(0)
-      expect(res.body).toHaveProperty('upvotes', post.comments[0].upvotes)
+  //     user = await User.findOne({ _id: user._id })
+  //     post = await Post.findOne({ _id: post._id })
+  //     expect(res.status).toBe(200)
+  //     expect(user.upvoted_comments[0].postId === post._id.toString()
+  //       && user.upvoted_comments[0].comments[0].commentId === post.comments[0]._id.toString()
+  //       && user.upvoted_comments[0].comments[0].dir === -1).toBeTruthy()
+  //     expect(post.comments[0].upvotes).toBe(0)
+  //     expect(res.body).toHaveProperty('upvotes', post.comments[0].upvotes)
 
-    })
+  //   })
 
 
-    it('should increase upvote count by 2 if previously downvoted(dir=-1) comment is upvoted (dir=1) ', async () => {
-      body.dir = 1
-      user.upvoted_comments.push({
-        postId: post._id, comments: [{
-          commentId: post.comments[0]._id,
-          upvote_dir: -1
-        }]
-      })
-      await user.save()
-      const previousUpvoteCount = post.comments[0].upvotes
+  //   it('should increase upvote count by 2 if previously downvoted(dir=-1) comment is upvoted (dir=1) ', async () => {
+  //     body.dir = 1
+  //     user.upvoted_comments.push({
+  //       postId: post._id, comments: [{
+  //         commentId: post.comments[0]._id,
+  //         dir: -1
+  //       }]
+  //     })
+  //     await user.save()
+  //     const previousUpvoteCount = post.comments[0].upvotes
 
-      const res = await exec()
+  //     const res = await exec()
 
-      user = await User.findOne({ _id: user._id })
-      post = await Post.findOne({ _id: post._id })
-      expect(res.status).toBe(200)
-      expect(user.upvoted_comments[0].postId === post._id.toString()
-        && user.upvoted_comments[0].comments[0].commentId === post.comments[0]._id.toString()
-        && user.upvoted_comments[0].comments[0].upvote_dir === 1).toBeTruthy()
-      expect(post.comments[0].upvotes - previousUpvoteCount).toBe(2)
-      expect(res.body).toHaveProperty('upvotes', post.comments[0].upvotes)
+  //     user = await User.findOne({ _id: user._id })
+  //     post = await Post.findOne({ _id: post._id })
+  //     expect(res.status).toBe(200)
+  //     expect(user.upvoted_comments[0].postId === post._id.toString()
+  //       && user.upvoted_comments[0].comments[0].commentId === post.comments[0]._id.toString()
+  //       && user.upvoted_comments[0].comments[0].dir === 1).toBeTruthy()
+  //     expect(post.comments[0].upvotes - previousUpvoteCount).toBe(2)
+  //     expect(res.body).toHaveProperty('upvotes', post.comments[0].upvotes)
 
-    })
+  //   })
 
-    it('should increase upvote count by 1 if previously upvoted comment with dir=0 is upvoted(dir=1)', async () => {
-      body.dir = 1
-      user.upvoted_comments.push({
-        postId: post._id, comments: [{
-          commentId: post.comments[0]._id,
-          upvote_dir: 0
-        }]
-      })
-      await user.save()
+  //   it('should increase upvote count by 1 if previously upvoted comment with dir=0 is upvoted(dir=1)', async () => {
+  //     body.dir = 1
+  //     user.upvoted_comments.push({
+  //       postId: post._id, comments: [{
+  //         commentId: post.comments[0]._id,
+  //         dir: 0
+  //       }]
+  //     })
+  //     await user.save()
 
-      const res = await exec()
-      const previousUpvoteCount = post.comments[0].upvotes
+  //     const res = await exec()
+  //     const previousUpvoteCount = post.comments[0].upvotes
 
-      user = await User.findOne({ _id: user._id })
-      post = await Post.findOne({ _id: post._id })
-      expect(res.status).toBe(200)
-      expect(user.upvoted_comments[0].postId === post._id.toString()
-        && user.upvoted_comments[0].comments[0].commentId === post.comments[0]._id.toString()
-        && user.upvoted_comments[0].comments[0].upvote_dir === 1).toBeTruthy()
-      expect(post.comments[0].upvotes - previousUpvoteCount).toBe(1)
-      expect(res.body).toHaveProperty('upvotes', post.comments[0].upvotes)
+  //     user = await User.findOne({ _id: user._id })
+  //     post = await Post.findOne({ _id: post._id })
+  //     expect(res.status).toBe(200)
+  //     expect(user.upvoted_comments[0].postId === post._id.toString()
+  //       && user.upvoted_comments[0].comments[0].commentId === post.comments[0]._id.toString()
+  //       && user.upvoted_comments[0].comments[0].dir === 1).toBeTruthy()
+  //     expect(post.comments[0].upvotes - previousUpvoteCount).toBe(1)
+  //     expect(res.body).toHaveProperty('upvotes', post.comments[0].upvotes)
 
-    })
+  //   })
 
-    it('should decrease upvote count by 1 if previously neutral comment with dir=0 is downvoted(dir=-1)', async () => {
-      body.dir = -1
-      user.upvoted_comments.push({
-        postId: post._id, comments: [{
-          commentId: post.comments[0]._id,
-          upvote_dir: 0
-        }]
-      })
-      await user.save()
+  //   it('should decrease upvote count by 1 if previously neutral comment with dir=0 is downvoted(dir=-1)', async () => {
+  //     body.dir = -1
+  //     user.upvoted_comments.push({
+  //       postId: post._id, comments: [{
+  //         commentId: post.comments[0]._id,
+  //         dir: 0
+  //       }]
+  //     })
+  //     await user.save()
 
-      const res = await exec()
-      const previousUpvoteCount = post.comments[0].upvotes
+  //     const res = await exec()
+  //     const previousUpvoteCount = post.comments[0].upvotes
 
-      user = await User.findOne({ _id: user._id })
-      post = await Post.findOne({ _id: post._id })
-      expect(res.status).toBe(200)
-      expect(user.upvoted_comments[0].postId === post._id.toString()
-        && user.upvoted_comments[0].comments[0].commentId === post.comments[0]._id.toString()
-        && user.upvoted_comments[0].comments[0].upvote_dir === -1).toBeTruthy()
-      expect(post.comments[0].upvotes - previousUpvoteCount).toBe(-1)
-      expect(res.body).toHaveProperty('upvotes', post.comments[0].upvotes)
+  //     user = await User.findOne({ _id: user._id })
+  //     post = await Post.findOne({ _id: post._id })
+  //     expect(res.status).toBe(200)
+  //     expect(user.upvoted_comments[0].postId === post._id.toString()
+  //       && user.upvoted_comments[0].comments[0].commentId === post.comments[0]._id.toString()
+  //       && user.upvoted_comments[0].comments[0].dir === -1).toBeTruthy()
+  //     expect(post.comments[0].upvotes - previousUpvoteCount).toBe(-1)
+  //     expect(res.body).toHaveProperty('upvotes', post.comments[0].upvotes)
 
-    })
+  //   })
 
-    it('should decrease upvote count by 2 if previously upvoted comment with dir=1 is downvoted(dir=-1)', async () => {
-      body.dir = -1
-      user.upvoted_comments.push({
-        postId: post._id, comments: [{
-          commentId: post.comments[0]._id,
-          upvote_dir: 1
-        }]
-      })
-      await user.save()
+  //   it('should decrease upvote count by 2 if previously upvoted comment with dir=1 is downvoted(dir=-1)', async () => {
+  //     body.dir = -1
+  //     user.upvoted_comments.push({
+  //       postId: post._id, comments: [{
+  //         commentId: post.comments[0]._id,
+  //         dir: 1
+  //       }]
+  //     })
+  //     await user.save()
 
-      const res = await exec()
-      const previousUpvoteCount = post.comments[0].upvotes
+  //     const res = await exec()
+  //     const previousUpvoteCount = post.comments[0].upvotes
 
-      user = await User.findOne({ _id: user._id })
-      post = await Post.findOne({ _id: post._id })
-      expect(res.status).toBe(200)
-      expect(user.upvoted_comments[0].postId === post._id.toString()
-        && user.upvoted_comments[0].comments[0].commentId === post.comments[0]._id.toString()
-        && user.upvoted_comments[0].comments[0].upvote_dir === -1).toBeTruthy()
-      expect(post.comments[0].upvotes - previousUpvoteCount).toBe(-2)
-      expect(res.body).toHaveProperty('upvotes', post.comments[0].upvotes)
+  //     user = await User.findOne({ _id: user._id })
+  //     post = await Post.findOne({ _id: post._id })
+  //     expect(res.status).toBe(200)
+  //     expect(user.upvoted_comments[0].postId === post._id.toString()
+  //       && user.upvoted_comments[0].comments[0].commentId === post.comments[0]._id.toString()
+  //       && user.upvoted_comments[0].comments[0].dir === -1).toBeTruthy()
+  //     expect(post.comments[0].upvotes - previousUpvoteCount).toBe(-2)
+  //     expect(res.body).toHaveProperty('upvotes', post.comments[0].upvotes)
 
-    })
+  //   })
 
-    it('should decrease upvote count by 1 if preiously upvoted_post with dir=1 is canceled(dir=0)', async () => {
-      body.dir = 0
-      user.upvoted_comments.push({
-        postId: post._id, comments: [{
-          commentId: post.comments[0]._id,
-          upvote_dir: 1
-        }]
-      })
-      await user.save()
+  //   it('should decrease upvote count by 1 if preiously upvoted_post with dir=1 is canceled(dir=0)', async () => {
+  //     body.dir = 0
+  //     user.upvoted_comments.push({
+  //       postId: post._id, comments: [{
+  //         commentId: post.comments[0]._id,
+  //         dir: 1
+  //       }]
+  //     })
+  //     await user.save()
 
-      const res = await exec()
-      const previousUpvoteCount = post.comments[0].upvotes
+  //     const res = await exec()
+  //     const previousUpvoteCount = post.comments[0].upvotes
 
-      user = await User.findOne({ _id: user._id })
-      post = await Post.findOne({ _id: post._id })
-      expect(res.status).toBe(200)
-      expect(user.upvoted_comments[0].postId === post._id.toString()
-        && user.upvoted_comments[0].comments[0].commentId === post.comments[0]._id.toString()
-        && user.upvoted_comments[0].comments[0].upvote_dir === 0).toBeTruthy()
-      expect(post.comments[0].upvotes - previousUpvoteCount).toBe(-1)
-      expect(res.body).toHaveProperty('upvotes', post.comments[0].upvotes)
+  //     user = await User.findOne({ _id: user._id })
+  //     post = await Post.findOne({ _id: post._id })
+  //     expect(res.status).toBe(200)
+  //     expect(user.upvoted_comments[0].postId === post._id.toString()
+  //       && user.upvoted_comments[0].comments[0].commentId === post.comments[0]._id.toString()
+  //       && user.upvoted_comments[0].comments[0].dir === 0).toBeTruthy()
+  //     expect(post.comments[0].upvotes - previousUpvoteCount).toBe(-1)
+  //     expect(res.body).toHaveProperty('upvotes', post.comments[0].upvotes)
 
-    })
+  //   })
 
-    it('should increase upvote count by 1 if preiously downvoted post with dir=-1 is canceled(dir=0)', async () => {
-      body.dir = 0
-      user.upvoted_comments.push({
-        postId: post._id, comments: [{
-          commentId: post.comments[0]._id,
-          upvote_dir: -1
-        }]
-      })
-      await user.save()
+  //   it('should increase upvote count by 1 if preiously downvoted post with dir=-1 is canceled(dir=0)', async () => {
+  //     body.dir = 0
+  //     user.upvoted_comments.push({
+  //       postId: post._id, comments: [{
+  //         commentId: post.comments[0]._id,
+  //         dir: -1
+  //       }]
+  //     })
+  //     await user.save()
 
-      const res = await exec()
-      const previousUpvoteCount = post.comments[0].upvotes
+  //     const res = await exec()
+  //     const previousUpvoteCount = post.comments[0].upvotes
 
-      user = await User.findOne({ _id: user._id })
-      post = await Post.findOne({ _id: post._id })
-      expect(res.status).toBe(200)
-      expect(user.upvoted_comments[0].postId === post._id.toString()
-        && user.upvoted_comments[0].comments[0].commentId === post.comments[0]._id.toString()
-        && user.upvoted_comments[0].comments[0].upvote_dir === 0).toBeTruthy()
-      expect(post.comments[0].upvotes - previousUpvoteCount).toBe(1)
-      expect(res.body).toHaveProperty('upvotes', post.comments[0].upvotes)
+  //     user = await User.findOne({ _id: user._id })
+  //     post = await Post.findOne({ _id: post._id })
+  //     expect(res.status).toBe(200)
+  //     expect(user.upvoted_comments[0].postId === post._id.toString()
+  //       && user.upvoted_comments[0].comments[0].commentId === post.comments[0]._id.toString()
+  //       && user.upvoted_comments[0].comments[0].dir === 0).toBeTruthy()
+  //     expect(post.comments[0].upvotes - previousUpvoteCount).toBe(1)
+  //     expect(res.body).toHaveProperty('upvotes', post.comments[0].upvotes)
 
-    })
-  })
+  //   })
+  // })
 })

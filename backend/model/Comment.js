@@ -7,7 +7,8 @@ const commentSchema = new Schema({
     require: true
   },
   commented_by: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
     require: true
   },
   commented_to: {

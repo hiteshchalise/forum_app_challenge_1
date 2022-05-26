@@ -7,6 +7,10 @@ const api = request(server)
 
 describe('api/users', () => {
 
+  beforeAll(async () => {
+    await mongoDB.connect()
+  })
+
   beforeEach(async () => {
     await User.deleteMany({})
     // await Post.deleteMany({});
@@ -123,6 +127,6 @@ describe('api/users', () => {
 })
 
 
-afterAll(async () => {
-  mongoDB.disconnect()
+afterAll((done) => {
+  mongoDB.disconnect(done)
 })

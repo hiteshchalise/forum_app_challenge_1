@@ -5,9 +5,9 @@ const db = config.get('mongoURI')
 module.exports = {
   mongoose,
   connect: () => {
-    mongoose.connect(db)
+    return mongoose.connect(db)
   },
-  disconnect: () => {
-    mongoose.connection.close()
+  disconnect: (done) => {
+    mongoose.disconnect(done)
   }
 }

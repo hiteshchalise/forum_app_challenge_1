@@ -3,15 +3,22 @@ const mongoDB = require('../../../startup/mongoDB')
 const server = require('../../../startup/app')
 const { Post } = require('../../../model/Post')
 const { User } = require('../../../model/User')
+const { Comment } = require('../../../model/Comment')
 
 describe('auth middleware', () => {
 
-  beforeEach(() => {
-    mongoDB.connect()
+
+  beforeAll(async () => {
+    await mongoDB.connect()
   })
-  afterEach(async (done) => {
+
+  beforeEach(async () => {
     await User.deleteMany({})
     await Post.deleteMany({})
+    await Comment.deleteMany({})
+  })
+
+  afterAll((done) => {
     mongoDB.disconnect(done)
   })
 
@@ -49,9 +56,9 @@ describe('auth middleware', () => {
     expect(res.status).toBe(400)
   })
 
-  it('should return 200 if token is valid', async () => {
+  it('should return 201 if token is valid', async () => {
     await user.save()
     const res = await exec()
-    expect(res.status).toBe(200)
+    expect(res.status).toBe(201)
   })
 })
