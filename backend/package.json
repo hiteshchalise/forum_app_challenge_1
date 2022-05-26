@@ -8,7 +8,8 @@
         "server": "NODE_ENV=development nodemon index",
         "client": "cd .. && cd frontend && npm start",
         "dev": "concurrently \"npm run server\" \"npm run client\"",
-        "test": "NODE_ENV=test jest --runInBand --watchAll --verbose"
+        "test": "NODE_ENV=test jest --runInBand --verbose --forceExit",
+        "lint": "eslint ."
     },
     "author": "Hitesh Chalise",
     "license": "ISC",
@@ -29,6 +30,7 @@
         "uuid": "^8.3.2"
     },
     "devDependencies": {
+        "eslint": "^8.14.0",
         "nodemon": "^2.0.16",
         "supertest": "^6.2.3"
     },

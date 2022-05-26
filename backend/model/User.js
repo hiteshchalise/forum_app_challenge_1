@@ -1,8 +1,8 @@
-const Joi = require('@hapi/joi');
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
-const jwt = require('jsonwebtoken');
-const config = require('config');
+const Joi = require('@hapi/joi')
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
+const jwt = require('jsonwebtoken')
+const config = require('config')
 
 const userSchema = new Schema({
   name: {
@@ -32,23 +32,37 @@ const userSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Post'
   }],
-  upvoted_posts: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Post'
+  voted_posts: [{
+    _id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Post'
+    },
+    dir: {
+      type: Number,
+      min: -1,
+      max: 1
+    }
   }],
-  upvoted_comments: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Comment'
+  voted_comments: [{
+    _id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Comment'
+    },
+    dir: {
+      type: Number,
+      min: -1,
+      max: 1
+    }
   }]
-});
+})
 
 function validateUser(user) {
   const schema = Joi.object({
     name: Joi.string().max(255).required(),
-    email: Joi.string().max(255).pattern(new RegExp('^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$')).required().email(),
+    email: Joi.string().max(255).pattern(new RegExp('^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,4}$')).required().email(),
     password: Joi.string().min(6).max(1024).required()
-  });
-  return schema.validate(user);
+  })
+  return schema.validate(user)
 }
 
 
@@ -64,11 +78,11 @@ userSchema.set('toJSON', {
 userSchema.methods.generateAuthToken = function () {
   const authToken = jwt.sign(
     { id: this._id },
-    config.get("ACCESS_TOKEN_SECRET"),
-    { expiresIn: 3600 });
-  return authToken;
+    config.get('ACCESS_TOKEN_SECRET'),
+    { expiresIn: 3600 })
+  return authToken
 }
 
-const User = mongoose.model('User', userSchema);
-module.exports.User = User;
-module.exports.validateUser = validateUser;
+const User = mongoose.model('User', userSchema)
+module.exports.User = User
+module.exports.validateUser = validateUser
