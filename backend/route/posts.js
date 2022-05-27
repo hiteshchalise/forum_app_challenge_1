@@ -65,11 +65,21 @@ router.post('/:postId/comments', auth, async (req, res) => {
   const post = await Post.findById(req.params.postId)
   if (!post) return res.status(404).json({ error: 'no post found with that id' })
 
-  const comment = await Comment({ ...req.body })
+  const user = await User.findById(req.user.id)
+  if (!user) return res.status(400).json({ error: 'User not found' })
+
+  const comment = new Comment({
+    comment_body: req.body.comment_body,
+    commented_by: user._id,
+    commented_to: post._id
+  })
   await comment.save()
 
   post.comments.push(comment._id)
   await post.save()
+
+  user.voted_comments.push({ _id: comment._id, dir: 1 })
+  await user.save()
 
   await post.populate('comments')
   post.comments.sort((a, b) => b.commented_at - a.commented_at)
@@ -128,12 +138,13 @@ router.post('/upvote/comment', auth, async (req, res) => {
     dir: Joi.valid(1, 0, -1).required()
   })
   const { error } = schema.validate(req.body)
-  if (error) return res.status(400).json({ msg: 'invalid body' })
+  if (error) return res.status(400).json({ error: 'invalid body' })
 
   const user = await User.findById(req.user.id)
-  if (!user) return res.status(401).json({ msg: 'no user found' })
+  if (!user) return res.status(401).json({ error: 'no user found' })
+
   const comment = await Comment.findById(commentId)
-  if (!comment) return res.status(404).json({ msg: 'no post by Id' })
+  if (!comment) return res.status(404).json({ error: 'no comment found for id.' })
 
   const votedComment = user.voted_comments.find(
     votedComment => votedComment._id.toString() === commentId

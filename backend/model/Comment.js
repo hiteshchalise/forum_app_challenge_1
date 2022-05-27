@@ -21,7 +21,7 @@ const commentSchema = new Schema({
   },
   upvotes: {
     type: Number,
-    default: 0
+    default: 1
   }
 })
 
