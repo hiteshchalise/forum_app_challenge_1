@@ -3,7 +3,7 @@ import {
   LoadingOverlay,
 } from '@mantine/core';
 import { useQuery } from 'react-query';
-import { getPosts } from '../services/posts';
+import { getPosts } from '../../services/posts';
 import PostItem from './PostItem';
 
 export default function PostDisplay() {

@@ -6,7 +6,7 @@ import {
   MediaQuery,
   useMantineTheme,
 } from '@mantine/core';
-import PostsDisplay from './PostsDisplay';
+import PostsDisplay from './posts/PostsDisplay';
 
 export default function Home() {
   const theme = useMantineTheme();
