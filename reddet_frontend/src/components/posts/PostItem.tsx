@@ -1,6 +1,7 @@
 import {
   Box, Grid, Space,
 } from '@mantine/core';
+import { ReactEventHandler } from 'react';
 import IPost from '../../types/postType';
 import PostHeader from './PostHeader';
 import PostBody from './PostBody';
@@ -12,6 +13,10 @@ interface PostItemProps {
 }
 
 export default function PostItem({ post }: PostItemProps) {
+  const handleClick: ReactEventHandler = (ev) => {
+    console.log('clicked');
+  };
+
   return (
     <>
       <Box
@@ -24,6 +29,7 @@ export default function PostItem({ post }: PostItemProps) {
               theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[2],
           },
         })}
+        onClick={handleClick}
       >
         <Grid>
           <Grid.Col
