@@ -9,6 +9,9 @@ const Joi = require('@hapi/joi')
 
 const router = express.Router()
 
+// @route GET api/posts/
+// @desc Get all posts
+// @access Public
 router.get('/', async (req, res) => {
   const posts = await Post.find({})
     .populate('comments')
@@ -70,7 +73,11 @@ router.post('/:postId/comments', auth, async (req, res) => {
 
   const comment = new Comment({
     comment_body: req.body.comment_body,
-    commented_by: user._id,
+    commented_by: {
+      _id: user._id,
+      name: user.name,
+      email: user.email
+    },
     commented_to: post._id
   })
   await comment.save()

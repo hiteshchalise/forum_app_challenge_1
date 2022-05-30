@@ -7,9 +7,17 @@ const commentSchema = new Schema({
     require: true
   },
   commented_by: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    require: true
+    _id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      require: true
+    },
+    name: {
+      type: String
+    },
+    email: {
+      type: String
+    }
   },
   commented_to: {
     type: mongoose.Schema.Types.ObjectId,
