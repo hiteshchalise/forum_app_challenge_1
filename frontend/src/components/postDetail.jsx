@@ -101,14 +101,14 @@ const PostDetail = () => {
                 </div>
               </div>
             </div>
-            <div className="content-section">
+            {/* <div className="content-section">
               <Editor
                 editorState={convertPost(post.post_body)}
                 readOnly={true}
                 customStyleMap={styleMap}
                 blockStyleFn={blockStyleFn}
               />
-            </div>
+            </div> */}
             <div className="add-comment">
               <AddComment post={post} />
             </div>
