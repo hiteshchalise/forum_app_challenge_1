@@ -1,7 +1,6 @@
 import {
-  Grid, Paper, ScrollArea, Text,
+  Grid,
 } from '@mantine/core';
-import PostBody from 'components/posts/PostBody';
 import PostFooter from 'components/posts/PostFooter';
 import PostHeader from 'components/posts/PostHeader';
 import UpvoteSection from 'components/posts/UpvoteSection';

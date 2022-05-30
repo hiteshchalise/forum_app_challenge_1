@@ -1,5 +1,5 @@
 import {
-  Box, Button, Container, Group, Space,
+  Box, Button, Container, Space,
 } from '@mantine/core';
 
 export default function CommentInputSection() {

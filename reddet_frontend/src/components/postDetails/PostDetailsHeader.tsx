@@ -1,5 +1,4 @@
 import {
-  Box,
   Button,
   Container, createStyles, Divider, Space, Text,
 } from '@mantine/core';
@@ -7,13 +6,14 @@ import CloseIcon from 'assets/CloseIcon';
 import DocumentIcon from 'assets/DocumentIcon';
 import DownvoteLogo from 'assets/DownvoteLogo';
 import UpvoteLogo from 'assets/UpvoteLogo';
+import { ReactEventHandler } from 'react';
 import { IPostDetail } from 'types/postType';
 
 interface IPostDetailsHeaderProps {
   postData: IPostDetail
 }
 
-const useStyles = createStyles((theme) => ({
+const useStyles = createStyles(() => ({
   header: {
     paddingLeft: '4%',
     paddingRight: '4%',
@@ -24,11 +24,11 @@ const useStyles = createStyles((theme) => ({
 
 export default function PostDetailsHeader({ postData }: IPostDetailsHeaderProps) {
   const { classes } = useStyles();
-  const handleUpvote = () => {
-    console.log('upvote!!');
+  const handleUpvote: ReactEventHandler = (ev) => {
+    ev.stopPropagation();
   };
-  const handleDownvote = () => {
-    console.log('upvote!!');
+  const handleDownvote: ReactEventHandler = (ev) => {
+    ev.stopPropagation();
   };
   return (
     <>
