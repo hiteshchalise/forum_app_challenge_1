@@ -5,6 +5,7 @@ import {
   Text,
   MediaQuery,
   useMantineTheme,
+  Space,
 } from '@mantine/core';
 import MainLogo from 'assets/MainLogo';
 import { ErrorBoundary } from 'react-error-boundary';
@@ -37,8 +38,10 @@ export default function Home() {
       header={(
         <Header height={70} p="md">
           <div style={{ display: 'flex', alignItems: 'center', height: '100%' }}>
+            <Space w="lg" />
             <MainLogo />
-            <Text size="xl" weight={500}>Reddet: A clone of reddit</Text>
+            <Space w="lg" />
+            <Text size="xl" weight={500}>Reddet:  A clone of reddit</Text>
           </div>
         </Header>
       )}
