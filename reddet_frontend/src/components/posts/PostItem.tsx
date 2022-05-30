@@ -2,6 +2,7 @@ import {
   Box, Grid, Space,
 } from '@mantine/core';
 import { ReactEventHandler } from 'react';
+import { useNavigate } from 'react-router-dom';
 import IPost from '../../types/postType';
 import PostHeader from './PostHeader';
 import PostBody from './PostBody';
@@ -13,8 +14,12 @@ interface PostItemProps {
 }
 
 export default function PostItem({ post }: PostItemProps) {
+  const navigate = useNavigate();
+
   const handleClick: ReactEventHandler = (ev) => {
-    console.log('clicked');
+    ev.stopPropagation();
+    // eslint-disable-next-line no-underscore-dangle
+    navigate(`/posts/${post._id}`);
   };
 
   return (

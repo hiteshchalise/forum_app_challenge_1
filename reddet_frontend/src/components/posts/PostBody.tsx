@@ -2,7 +2,7 @@ import {
   Container, Space, Spoiler, Text,
 } from '@mantine/core';
 import {
-  ForwardedRef, ReactEventHandler, RefObject, useRef, useState,
+  ReactEventHandler, RefObject, useRef, useState,
 } from 'react';
 
 interface IPostBodyProps {
@@ -12,10 +12,18 @@ interface IPostBodyProps {
 
 export default function PostBody({ post_title, post_body }: IPostBodyProps) {
   const controlRef = useRef() as RefObject<HTMLButtonElement>;
+  const [spoilerVisible, setSpoilerVisible] = useState(false);
 
   const handleSpoilerClick: ReactEventHandler = (e) => {
-    e.stopPropagation();
-    controlRef.current?.click();
+    // Clicking the post_body will trigger this event,
+    // we'll only stop propagation on actual button click,
+    // this triggers default behaviour of Spoiler component
+    // and setSpoilerVisible, else parent component's
+    // event will be triggered and open's post details.
+    if (e.target === controlRef.current) {
+      e.stopPropagation();
+      setSpoilerVisible(!spoilerVisible);
+    }
   };
 
   return (

@@ -5,13 +5,22 @@ import {
   Text,
   MediaQuery,
   useMantineTheme,
+  Image,
 } from '@mantine/core';
+import MainLogo from 'assets/MainLogo';
+import { ErrorBoundary } from 'react-error-boundary';
 import PostsDisplay from './posts/PostsDisplay';
+
+function ErrorFallback() {
+  return <div>Something went wrong!!</div>;
+}
 
 export default function Home() {
   const theme = useMantineTheme();
   return (
+
     <AppShell
+      padding={48}
       styles={{
         main: {
           background: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0],
@@ -29,12 +38,15 @@ export default function Home() {
       header={(
         <Header height={70} p="md">
           <div style={{ display: 'flex', alignItems: 'center', height: '100%' }}>
-            <Text>Reddet: A clone of reddit</Text>
+            <MainLogo />
+            <Text size="xl" weight={500}>Reddet: A clone of reddit</Text>
           </div>
         </Header>
       )}
     >
-      <PostsDisplay />
+      <ErrorBoundary FallbackComponent={ErrorFallback}>
+        <PostsDisplay />
+      </ErrorBoundary>
     </AppShell>
   );
 }

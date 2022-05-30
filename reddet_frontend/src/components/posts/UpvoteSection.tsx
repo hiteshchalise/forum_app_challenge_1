@@ -10,12 +10,10 @@ interface IUpvoteProps {
 export default function UpvoteSection({ upvotes }: IUpvoteProps) {
   const handleUpvote: ReactEventHandler = (e) => {
     e.stopPropagation();
-    console.log('upvote!!!');
   };
 
   const handleDownvote: ReactEventHandler = (e) => {
     e.stopPropagation();
-    console.log('downvote!!!');
   };
 
   return (
