@@ -29,27 +29,29 @@ export default function PostDetailsMain({ postData }: IPostDetailsBodyProps) {
   };
 
   return (
-    <Grid>
-      <Grid.Col
-        span={1}
-      >
-        <UpvoteSection
-          upvotes={postData.upvotes}
-          handleUpvote={handleUpvote}
-          handleDownvote={handleDownvote}
-          activeState={2}
-        />
-      </Grid.Col>
-      <Grid.Col span={11} pr="lg">
-        <PostHeader posted_at={postData.posted_at} postedBy="u/hiteshchalise" />
-        <PostContent post_title={postData.post_title} post_body={postData.post_body} />
-        <PostFooter
-          commentLength={postData.comments.length}
-          onCommentClicked={handleCommentClicked}
-        />
-        <CommentInputSection />
-        <CommentSection />
-      </Grid.Col>
-    </Grid>
+    <>
+      <Grid>
+        <Grid.Col
+          span={1}
+        >
+          <UpvoteSection
+            upvotes={postData.upvotes}
+            handleUpvote={handleUpvote}
+            handleDownvote={handleDownvote}
+            activeState={2}
+          />
+        </Grid.Col>
+        <Grid.Col span={11} pr="lg">
+          <PostHeader posted_at={postData.posted_at} postedBy="u/hiteshchalise" />
+          <PostContent post_title={postData.post_title} post_body={postData.post_body} />
+          <PostFooter
+            commentLength={postData.comments.length}
+            onCommentClicked={handleCommentClicked}
+          />
+          <CommentInputSection />
+        </Grid.Col>
+      </Grid>
+      <CommentSection comments={postData.comments} />
+    </>
   );
 }
