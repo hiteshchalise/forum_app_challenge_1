@@ -6,7 +6,7 @@ import Loading from 'components/Loading';
 import { useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
 import { getPostDetails } from 'services/posts';
-import PostDetailsBody from './PostDetailBody';
+import PostDetailsMain from './PostDetailMain';
 import PostDetailsHeader from './PostDetailsHeader';
 
 const useStyles = createStyles((theme) => ({
@@ -18,6 +18,8 @@ const useStyles = createStyles((theme) => ({
   },
   body: {
     paddingTop: '32',
+    paddingLeft: '0',
+    paddingRight: '0',
     backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[9] : theme.colors.gray[0],
   },
   sidePane: {
@@ -52,7 +54,7 @@ function PostDetailContainer() {
         <PostDetailsHeader postData={query.data} />
       </Container>
       <Container className={classes.body}>
-        <PostDetailsBody postData={query.data} />
+        <PostDetailsMain postData={query.data} />
       </Container>
     </Stack>
   );

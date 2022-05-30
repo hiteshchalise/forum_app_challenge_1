@@ -3,24 +3,30 @@ import { ReactEventHandler } from 'react';
 import UpvoteLogo from '../../assets/UpvoteLogo';
 import DownvoteLogo from '../../assets/DownvoteLogo';
 
-interface IUpvoteProps {
-  upvotes: number
+enum ActiveState {
+  Up = 1,
+  Neutral,
+  Down,
 }
 
-export default function UpvoteSection({ upvotes }: IUpvoteProps) {
-  const handleUpvote: ReactEventHandler = (e) => {
-    e.stopPropagation();
-  };
+interface IUpvoteProps {
+  upvotes: number,
+  handleUpvote: ReactEventHandler
+  handleDownvote: ReactEventHandler,
+  activeState: ActiveState
+}
 
-  const handleDownvote: ReactEventHandler = (e) => {
-    e.stopPropagation();
-  };
-
+export default function UpvoteSection({
+  upvotes,
+  handleUpvote,
+  handleDownvote,
+  activeState,
+}: IUpvoteProps) {
   return (
     <Stack spacing="xs" align="center" justify="flex-start" pt="sm">
-      <UpvoteLogo active onClickListener={handleUpvote} />
+      <UpvoteLogo active={activeState === 1} onClickListener={handleUpvote} />
       {upvotes}
-      <DownvoteLogo active onClickListener={handleDownvote} />
+      <DownvoteLogo active={activeState === 3} onClickListener={handleDownvote} />
     </Stack>
   );
 }

@@ -22,6 +22,18 @@ export default function PostItem({ post }: PostItemProps) {
     navigate(`/posts/${post._id}`);
   };
 
+  const handleUpvote: ReactEventHandler = (ev) => {
+    ev.stopPropagation();
+  };
+
+  const handleDownvote: ReactEventHandler = (ev) => {
+    ev.stopPropagation();
+  };
+
+  const handleCommentClicked: ReactEventHandler = (ev) => {
+    ev.stopPropagation();
+  };
+
   return (
     <>
       <Box
@@ -45,24 +57,20 @@ export default function PostItem({ post }: PostItemProps) {
               borderBottomLeftRadius: theme.radius.md,
             })}
           >
-            <UpvoteSection upvotes={post.upvotes} />
+            <UpvoteSection
+              upvotes={post.upvotes}
+              handleDownvote={handleDownvote}
+              handleUpvote={handleUpvote}
+              activeState={3}
+            />
           </Grid.Col>
           <Grid.Col span={11}>
-            <Grid>
-              <Grid.Col span={12}>
-                <PostHeader posted_at={post.posted_at} postedBy="u/hiteshchalise" />
-              </Grid.Col>
-            </Grid>
-            <Grid>
-              <Grid.Col span={12} p={0} pr="xs">
-                <PostBody post_title={post.post_title} post_body={post.post_body} />
-              </Grid.Col>
-            </Grid>
-            <Grid>
-              <Grid.Col span={12}>
-                <PostFooter commentLength={post.comments.length} />
-              </Grid.Col>
-            </Grid>
+            <PostHeader posted_at={post.posted_at} postedBy="u/hiteshchalise" />
+            <PostBody post_title={post.post_title} post_body={post.post_body} />
+            <PostFooter
+              commentLength={post.comments.length}
+              onCommentClicked={handleCommentClicked}
+            />
           </Grid.Col>
         </Grid>
       </Box>
