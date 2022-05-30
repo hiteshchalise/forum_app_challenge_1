@@ -1,14 +1,18 @@
 import {
-  Button, createStyles, Grid,
+  createStyles, Grid,
 } from '@mantine/core';
 import { ReactEventHandler } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { PostDetailContainer } from './PostDetailContainer';
+import PostDetailContainer from './PostDetailContainer';
 
-export const useStyles = createStyles((theme) => ({
-
+const useStyles = createStyles(() => ({
   sidePane: {
     cursor: 'pointer',
+    margin: 0,
+    padding: 0,
+  },
+  midPane: {
+    padding: 0,
   },
 }));
 
@@ -24,7 +28,8 @@ export default function PostDetails() {
     <Grid
       sx={(theme) => ({
         backgroundColor: theme.colors.gray[9],
-        width: '100vw',
+        margin: 0,
+        padding: 0,
       })}
     >
       <Grid.Col
@@ -34,6 +39,7 @@ export default function PostDetails() {
       />
       <Grid.Col
         span={10}
+        className={classes.midPane}
       >
         <PostDetailContainer />
       </Grid.Col>

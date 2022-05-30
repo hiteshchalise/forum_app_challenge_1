@@ -1,10 +1,15 @@
-import { Container, createStyles, Stack } from '@mantine/core';
+import {
+  Box,
+  Container, createStyles, Stack,
+} from '@mantine/core';
+import Loading from 'components/Loading';
+import { useQuery } from 'react-query';
+import { useParams } from 'react-router-dom';
+import { getPostDetails } from 'services/posts';
 import PostDetailsBody from './PostDetailBody';
 import PostDetailsHeader from './PostDetailsHeader';
 
-const contentPaddingHorizontal = '32';
-
-export const useStyles = createStyles((theme) => ({
+const useStyles = createStyles((theme) => ({
   header: {
     color: theme.colors.gray[0],
     backgroundColor: theme.colors.dark[9],
@@ -18,24 +23,39 @@ export const useStyles = createStyles((theme) => ({
   sidePane: {
     cursor: 'pointer',
   },
+  container: {
+    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[9] : theme.colors.gray[2],
+    height: '100vh',
+  },
 }));
 
-export function PostDetailContainer() {
+function PostDetailContainer() {
   const { classes } = useStyles();
+  const { postId } = useParams();
+  const query = useQuery(['posts', postId], () => getPostDetails(postId as string));
+
+  if (query.isLoading) {
+    return (
+      <Box className={classes.container}>
+        <Loading />
+      </Box>
+    );
+  }
+
+  if (!query.data) return null;
 
   return (
     <Stack
-      sx={(theme) => ({
-        backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[9] : theme.colors.gray[2],
-        height: '100vh',
-      })}
+      className={classes.container}
     >
       <Container className={classes.header}>
-        <PostDetailsHeader />
+        <PostDetailsHeader postData={query.data} />
       </Container>
       <Container className={classes.body}>
-        <PostDetailsBody />
+        <PostDetailsBody postData={query.data} />
       </Container>
     </Stack>
   );
 }
+
+export default PostDetailContainer;

@@ -1,4 +1,4 @@
-import IComment from './commentType';
+import IComment, { ICommentDetail } from './commentType';
 
 export default interface IPost {
   _id: string,
@@ -7,4 +7,8 @@ export default interface IPost {
   posted_at: string,
   comments: IComment[]
   upvotes: number,
+}
+
+export interface IPostDetail extends IPost {
+  comments: ICommentDetail[],
 }

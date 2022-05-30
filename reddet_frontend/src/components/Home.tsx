@@ -5,7 +5,6 @@ import {
   Text,
   MediaQuery,
   useMantineTheme,
-  Image,
 } from '@mantine/core';
 import MainLogo from 'assets/MainLogo';
 import { ErrorBoundary } from 'react-error-boundary';
