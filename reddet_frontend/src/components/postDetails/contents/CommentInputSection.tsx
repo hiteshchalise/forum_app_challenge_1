@@ -1,6 +1,7 @@
 import {
-  Box, Button, Container, Space,
+  Container,
 } from '@mantine/core';
+import LoginSignupButtons from 'components/LoginSignupButtons';
 
 export default function CommentInputSection() {
   return (
@@ -18,15 +19,7 @@ export default function CommentInputSection() {
       })}
     >
       Log in or Sign up to leave a comment.
-      <Box sx={{
-        display: 'flex',
-        flexDirection: 'row',
-      }}
-      >
-        <Button radius="xl" variant="outline">Log In</Button>
-        <Space w="sm" />
-        <Button radius="xl" variant="filled">Sign Up</Button>
-      </Box>
+      <LoginSignupButtons />
     </Container>
   );
 }

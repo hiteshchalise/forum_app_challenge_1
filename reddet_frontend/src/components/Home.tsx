@@ -9,6 +9,7 @@ import {
 } from '@mantine/core';
 import MainLogo from 'assets/MainLogo';
 import { ErrorBoundary } from 'react-error-boundary';
+import LoginSignupButtons from './LoginSignupButtons';
 import PostsDisplay from './posts/PostsDisplay';
 
 function ErrorFallback() {
@@ -36,12 +37,13 @@ export default function Home() {
         </MediaQuery>
       )}
       header={(
-        <Header height={70} p="md">
+        <Header height={70} p="md" px="lg">
           <div style={{ display: 'flex', alignItems: 'center', height: '100%' }}>
             <Space w="lg" />
             <MainLogo />
             <Space w="lg" />
             <Text size="xl" weight={500}>Reddet:  A clone of reddit</Text>
+            <LoginSignupButtons />
           </div>
         </Header>
       )}
