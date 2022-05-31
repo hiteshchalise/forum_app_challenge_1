@@ -27,7 +27,7 @@ const useStyles = createStyles((theme) => ({
   },
   container: {
     backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[9] : theme.colors.gray[2],
-    height: '100vh',
+    minHeight: '100vh',
   },
 }));
 
@@ -38,7 +38,7 @@ function PostDetailContainer() {
 
   if (query.isLoading) {
     return (
-      <Box className={classes.container}>
+      <Box className={classes.container} sx={{ height: '100vh' }}>
         <Loading />
       </Box>
     );

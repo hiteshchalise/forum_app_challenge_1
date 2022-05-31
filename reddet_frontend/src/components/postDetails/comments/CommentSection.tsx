@@ -29,9 +29,11 @@ function CommentContainer({ comment }: ICommentContainerProps) {
     <Box
       sx={(theme) => ({
         display: 'flex',
-        flexWrap: 'wrap',
+        flexWrap: 'nowrap',
         justifyContent: 'flex-start',
         paddingLeft: theme.spacing.md,
+        paddingRight: theme.spacing.md,
+        paddingBottom: theme.spacing.md,
       })}
     >
       <Avatar

@@ -41,7 +41,7 @@ export default function PostDetailsMain({ postData }: IPostDetailsBodyProps) {
           />
         </Grid.Col>
         <Grid.Col span={11} pr="lg">
-          <PostHeader posted_at={postData.posted_at} postedBy="u/hiteshchalise" />
+          <PostHeader posted_at={postData.posted_at} postedBy={postData.posted_by.name} />
           <PostContent post_title={postData.post_title} post_body={postData.post_body} />
           <PostFooter
             commentLength={postData.comments.length}
