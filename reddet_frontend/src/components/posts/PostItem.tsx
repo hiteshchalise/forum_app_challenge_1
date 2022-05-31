@@ -65,7 +65,7 @@ export default function PostItem({ post }: PostItemProps) {
             />
           </Grid.Col>
           <Grid.Col span={11}>
-            <PostHeader posted_at={post.posted_at} postedBy="u/hiteshchalise" />
+            <PostHeader posted_at={post.posted_at} postedBy={post.posted_by.name} />
             <PostBody post_title={post.post_title} post_body={post.post_body} />
             <PostFooter
               commentLength={post.comments.length}

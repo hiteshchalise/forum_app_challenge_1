@@ -9,7 +9,7 @@ import {
 } from '@mantine/core';
 import MainLogo from 'assets/MainLogo';
 import { ErrorBoundary } from 'react-error-boundary';
-import LoginSignupButtons from './LoginSignupButtons';
+import AuthButtons from './AuthButtons';
 import PostsDisplay from './posts/PostsDisplay';
 
 function ErrorFallback() {
@@ -43,7 +43,7 @@ export default function Home() {
             <MainLogo />
             <Space w="lg" />
             <Text size="xl" weight={500}>Reddet:  A clone of reddit</Text>
-            <LoginSignupButtons />
+            <AuthButtons />
           </div>
         </Header>
       )}

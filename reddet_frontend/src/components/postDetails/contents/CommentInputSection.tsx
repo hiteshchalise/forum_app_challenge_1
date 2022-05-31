@@ -1,7 +1,7 @@
 import {
   Container,
 } from '@mantine/core';
-import LoginSignupButtons from 'components/LoginSignupButtons';
+import AuthButtons from 'components/AuthButtons';
 
 export default function CommentInputSection() {
   return (
@@ -19,7 +19,7 @@ export default function CommentInputSection() {
       })}
     >
       Log in or Sign up to leave a comment.
-      <LoginSignupButtons />
+      <AuthButtons />
     </Container>
   );
 }

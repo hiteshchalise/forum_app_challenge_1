@@ -22,14 +22,14 @@ router.post('/', async (req, res) => {
   const { error } = validateAuth(req.body)
   if (error) {
     console.log('error ', error)
-    return res.status(400).json({ msg: error.details[0].message })
+    return res.status(400).json({ error: error.details[0].message })
   }
 
   const user = await User.findOne({ email })
-  if (!user) return res.status(400).json({ msg: 'No user by that email' })
+  if (!user) return res.status(400).json({ error: 'No user by that email' })
 
   const isValid = await bcrypt.compare(password, user.password)
-  if (!isValid) return res.status(400).json({ msg: 'Invalid Credential' })
+  if (!isValid) return res.status(400).json({ error: 'Invalid Credential' })
 
   // const refreshToken = user.generateRefreshToken();
   const authToken = user.generateAuthToken()
