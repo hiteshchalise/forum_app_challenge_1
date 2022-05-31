@@ -21,6 +21,8 @@ const useStyles = createStyles((theme) => ({
     paddingLeft: '0',
     paddingRight: '0',
     backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[9] : theme.colors.gray[0],
+    margin: theme.spacing.lg,
+    maxWidth: '100%',
   },
   sidePane: {
     cursor: 'pointer',
