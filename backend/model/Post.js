@@ -12,8 +12,12 @@ const postSchema = new Schema({
     require: true
   },
   posted_by: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
+    _id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User'
+    },
+    name: String,
+    email: String,
   },
   posted_at: {
     type: Date,

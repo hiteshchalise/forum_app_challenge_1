@@ -48,7 +48,11 @@ router.post('/', auth, async (req, res) => {
   const newPost = new Post({
     post_title: req.body.post_title,
     post_body: req.body.post_body,
-    posted_by: user._id,
+    posted_by: {
+      id: user._id,
+      name: user.name,
+      email: user.email
+    },
   })
 
   const post = await newPost.save()
