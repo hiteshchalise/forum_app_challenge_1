@@ -8,6 +8,7 @@ import {
   Space,
 } from '@mantine/core';
 import MainLogo from 'assets/MainLogo';
+import { useAuth } from 'providers/authProvider';
 import { ErrorBoundary } from 'react-error-boundary';
 import AuthButtons from './AuthButtons';
 import PostsDisplay from './posts/PostsDisplay';
@@ -18,8 +19,9 @@ function ErrorFallback() {
 
 export default function Home() {
   const theme = useMantineTheme();
-  return (
+  const auth = useAuth();
 
+  return (
     <AppShell
       padding={48}
       styles={{
@@ -43,7 +45,8 @@ export default function Home() {
             <MainLogo />
             <Space w="lg" />
             <Text size="xl" weight={500}>Reddet:  A clone of reddit</Text>
-            <AuthButtons />
+            {auth?.data?.user ? <div>{auth.data.user.name}</div>
+              : <AuthButtons />}
           </div>
         </Header>
       )}

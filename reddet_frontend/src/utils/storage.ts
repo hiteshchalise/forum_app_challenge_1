@@ -1,20 +1,36 @@
+import IComment from 'types/commentType';
+import IPost from 'types/postType';
+
 const STORAGE_PREFIX = 'reddet_react_';
 
+export interface IAuth {
+  token: string,
+  user: {
+    id: string,
+    name: string,
+    email: string,
+    register_date: string,
+    posts: IPost[],
+    voted_posts: IPost[],
+    voted_comments: IComment[]
+  }
+}
+
 const storage = {
-  getToken: () => {
-    const token = JSON.parse(
-      window.localStorage.getItem(`${STORAGE_PREFIX}token`) as string,
-    ) as string;
-    return token;
-  },
-  setToken: (token: string) => {
+  setUser: (auth: IAuth) => {
     window.localStorage.setItem(
-      `${STORAGE_PREFIX}token`,
-      JSON.stringify(token),
+      `${STORAGE_PREFIX}auth`,
+      JSON.stringify(auth),
     );
   },
-  clearToken: () => {
-    window.localStorage.removeItem(`${STORAGE_PREFIX}token`);
+  getAuth: () => {
+    const auth = JSON.parse(
+      window.localStorage.getItem(`${STORAGE_PREFIX}auth`) as string,
+    ) as IAuth;
+    return auth;
+  },
+  clearAuth: () => {
+    window.localStorage.removeItem(`${STORAGE_PREFIX}auth`);
   },
 };
 

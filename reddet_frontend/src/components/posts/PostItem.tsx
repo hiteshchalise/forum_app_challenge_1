@@ -30,8 +30,7 @@ export default function PostItem({ post }: PostItemProps) {
     ev.stopPropagation();
   };
 
-  const handleCommentClicked: ReactEventHandler = (ev) => {
-    ev.stopPropagation();
+  const handleCommentClicked: ReactEventHandler = () => {
   };
 
   return (

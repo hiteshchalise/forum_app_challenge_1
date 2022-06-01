@@ -10,7 +10,7 @@ import LogInForm from './auth/LogInForm';
 import SignupForm from './auth/SignUpForm';
 
 export default function AuthButtons() {
-  const [mode, setMode] = useState<'login' | 'register' | 'close'>('close');
+  const [mode, setMode] = useState<'login' | 'register' | 'close' | 'success'>('close');
 
   const handleLoginClick: ReactEventHandler = (ev) => {
     ev.stopPropagation();
@@ -41,7 +41,7 @@ export default function AuthButtons() {
         overflow="inside"
       >
         <LogInForm
-          onSuccess={() => { setMode('close'); }}
+          onSuccess={() => { setMode('success'); }}
         />
       </Modal>
       <Modal
@@ -51,7 +51,7 @@ export default function AuthButtons() {
         overflow="inside"
       >
         <SignupForm
-          onSuccess={() => { setMode('close'); }}
+          onSuccess={() => { setMode('success'); }}
         />
       </Modal>
     </Box>

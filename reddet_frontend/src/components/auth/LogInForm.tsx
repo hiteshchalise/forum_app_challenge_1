@@ -47,11 +47,12 @@ export default function LogInForm({ onSuccess }: ILoginFormProps) {
   type FormValues = typeof form.values;
 
   const handleLoginSubmit = (values: FormValues) => {
-    console.log('here');
     loginUserMutation.mutate({ ...values });
   };
 
-  if (loginUserMutation.isSuccess) onSuccess();
+  useEffect(() => {
+    if (loginUserMutation.isSuccess) onSuccess();
+  }, [loginUserMutation.isSuccess, onSuccess]);
 
   return (
     <Box sx={{ maxWidth: 300 }} mx="auto">

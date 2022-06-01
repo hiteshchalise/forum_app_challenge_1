@@ -4,7 +4,7 @@ import config from '../config/config';
 
 /* eslint-disable no-param-reassign */
 const authRequestInterceptor = (axiosRequestConfig: AxiosRequestConfig) => {
-  const token = storage.getToken();
+  const token = storage.getAuth() ? storage.getAuth().token : null;
   if (axiosRequestConfig.headers === undefined) axiosRequestConfig.headers = {};
   if (token) {
     axiosRequestConfig.headers.post['x-auth-token'] = `${token}`;

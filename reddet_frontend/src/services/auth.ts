@@ -1,4 +1,5 @@
 import Axios, { AxiosError } from 'axios';
+import { useAuth } from 'providers/authProvider';
 import { useMutation, useQueryClient } from 'react-query';
 import { getErrorMessage } from 'types/errorTypes';
 import {
@@ -30,12 +31,27 @@ async function registerUser(data: IRegisterUser): Promise<IRegisterUserResponse>
 
 const useRegisterUserMutation = () => {
   const queryClient = useQueryClient();
+  const auth = useAuth();
 
   return useMutation(
     (data: IRegisterUser) => registerUser(data),
     {
       onSuccess: (data) => {
-        storage.setToken(data.authToken);
+        const user = {
+          token: data.authToken,
+          user: {
+            // eslint-disable-next-line no-underscore-dangle
+            id: data.user._id,
+            name: data.user.name,
+            email: data.user.email,
+            register_date: '',
+            posts: [],
+            voted_posts: [],
+            voted_comments: [],
+          },
+        };
+        storage.setUser(user);
+        auth?.setAuthData({ ...user });
         queryClient.setQueryData(['user'], data.user);
       },
     },
@@ -64,12 +80,27 @@ async function loginUser(data: ILoginUser): Promise<ILoginUserResponse> {
 
 export const useLoginUserMutation = () => {
   const queryClient = useQueryClient();
+  const auth = useAuth();
 
   return useMutation(
     (data: ILoginUser) => loginUser(data),
     {
       onSuccess: (data) => {
-        storage.setToken(data.authToken);
+        const user = {
+          token: data.authToken,
+          user: {
+            // eslint-disable-next-line no-underscore-dangle
+            id: data.user._id,
+            name: data.user.name,
+            email: data.user.email,
+            register_date: '',
+            posts: [],
+            voted_posts: [],
+            voted_comments: [],
+          },
+        };
+        storage.setUser(user);
+        auth?.setAuthData({ ...user });
         queryClient.setQueryData(['user'], data.user);
       },
     },
