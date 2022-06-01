@@ -56,6 +56,7 @@ router.post('/', auth, async (req, res) => {
   })
 
   const post = await newPost.save()
+  user.posts = user.posts.concat({ _id: post._id })
   user.voted_posts = user.voted_posts.concat({ _id: post._id, dir: 1 })
   await user.save()
 
