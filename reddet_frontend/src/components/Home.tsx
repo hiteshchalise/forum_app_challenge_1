@@ -11,6 +11,7 @@ import MainLogo from 'assets/MainLogo';
 import { useAuth } from 'providers/authProvider';
 import { ErrorBoundary } from 'react-error-boundary';
 import AuthButtons from './AuthButtons';
+import LoggedInUserDisplay from './LoggedInUserDisplay';
 import PostsDisplay from './posts/PostsDisplay';
 
 function ErrorFallback() {
@@ -45,8 +46,12 @@ export default function Home() {
             <MainLogo />
             <Space w="lg" />
             <Text size="xl" weight={500}>Reddet:  A clone of reddit</Text>
-            {auth?.data?.user ? <div>{auth.data.user.name}</div>
-              : <AuthButtons />}
+            {
+              auth?.data
+              && auth.data.user
+              && <LoggedInUserDisplay user={auth.data.user} />
+            }
+            {(!auth?.isLoading && !(auth?.data && auth.data.user)) && <AuthButtons />}
           </div>
         </Header>
       )}

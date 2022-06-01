@@ -5,6 +5,7 @@ import storage, { IAuth } from 'utils/storage';
 
 interface IAuthContextType {
   data: IAuth | null,
+  isLoading: boolean,
   setAuthData: ((authData: IAuth) => void)
   removeAuthData: () => void,
 }
@@ -17,9 +18,11 @@ interface IAuthProviderProp {
 
 export function useProvideAuth() {
   const [auth, setAuth] = useState<IAuth | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     setAuth(storage.getAuth());
+    setIsLoading(false);
   }, []);
 
   function setAuthData(authData: IAuth) {
@@ -32,6 +35,7 @@ export function useProvideAuth() {
 
   return {
     data: auth,
+    isLoading,
     setAuthData,
     removeAuthData,
   } as IAuthContextType;
