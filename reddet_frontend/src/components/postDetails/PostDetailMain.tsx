@@ -54,7 +54,7 @@ export default function PostDetailsMain({ postData, activeState }: IPostDetailsB
             commentLength={postData.comments.length}
             onCommentClicked={handleCommentClicked}
           />
-          <CommentInputSection postId={postData._id} />
+          <CommentInputSection />
         </Grid.Col>
       </Grid>
       <CommentSection comments={postData.comments} user={userQuery.data} />

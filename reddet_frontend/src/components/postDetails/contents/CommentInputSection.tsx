@@ -5,6 +5,7 @@ import {
 import RichTextEditor from '@mantine/rte';
 import AuthButtons from 'components/AuthButtons';
 import { ReactEventHandler, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import useCommentMutation from 'services/comments';
 import storage, { IAuth } from 'utils/storage';
 
@@ -35,12 +36,14 @@ function CommentInput({ name, onSubmit }: { name: string, onSubmit: (value: stri
   );
 }
 
-export default function CommentInputSection({ postId }: { postId: string }) {
+export default function CommentInputSection() {
   const mutation = useCommentMutation();
+  const { postId } = useParams();
 
   const auth: IAuth | null = storage.getAuth();
 
   const handleSubmit = (text: string) => {
+    if (!postId) return;
     mutation.mutate({ postId, value: text });
   };
 

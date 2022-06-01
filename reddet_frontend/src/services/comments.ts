@@ -36,11 +36,12 @@ export const useCommentMutation = () => {
   return useMutation(
     (data: { postId: string, value: string }) => submitComment(data.postId, data.value),
     {
-      onSuccess: (response, variables) => {
+      onSuccess: async (response, variables) => {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         const { _id, ...rest } = response;
         const postBody = { id: _id, ...rest };
         queryClient.setQueryData(['posts', variables.postId], postBody);
+        await queryClient.invalidateQueries(['user']);
       },
     },
   );
