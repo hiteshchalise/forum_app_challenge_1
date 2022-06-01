@@ -8,6 +8,7 @@ import DownvoteLogo from 'assets/DownvoteLogo';
 import UpvoteLogo from 'assets/UpvoteLogo';
 import { VoteActiveState } from 'components/posts/UpvoteSection';
 import { ReactEventHandler } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { IPostDetail } from 'types/postType';
 
 interface IPostDetailsHeaderProps {
@@ -26,6 +27,7 @@ const useStyles = createStyles(() => ({
 
 export default function PostDetailsHeader({ postData, activeState }: IPostDetailsHeaderProps) {
   const { classes } = useStyles();
+  const navigate = useNavigate();
   const handleUpvote: ReactEventHandler = (ev) => {
     ev.stopPropagation();
   };
@@ -80,6 +82,7 @@ export default function PostDetailsHeader({ postData, activeState }: IPostDetail
           leftIcon={<CloseIcon />}
           variant="white"
           compact
+          onClick={() => { navigate(-1); }}
         >
           Close
 
