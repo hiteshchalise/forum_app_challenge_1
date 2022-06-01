@@ -27,7 +27,7 @@ export default function PostDisplay({ user }: { user: IUserResponse | undefined 
     <>
       {
         data.map((item) => {
-          let activeState: VoteActiveState; // 1 for up 2 for neutral 3 for down
+          let activeState: VoteActiveState;
           if (!user || (user && user.voted_posts.length === 0)) {
             activeState = VoteActiveState.Neutral;
           } else if (user.voted_posts.find(((post) => post._id === item._id))) {

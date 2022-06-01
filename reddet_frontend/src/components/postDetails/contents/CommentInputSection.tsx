@@ -7,6 +7,7 @@ import AuthButtons from 'components/AuthButtons';
 import { useAuth } from 'providers/authProvider';
 import { ReactEventHandler, useState } from 'react';
 import useCommentMutation from 'services/comments';
+import storage, { IAuth } from 'utils/storage';
 
 function CommentInput({ name, onSubmit }: { name: string, onSubmit: (value: string) => void }) {
   const [value, setValue] = useState('');
@@ -36,11 +37,9 @@ function CommentInput({ name, onSubmit }: { name: string, onSubmit: (value: stri
 }
 
 export default function CommentInputSection({ postId }: { postId: string }) {
-  const auth = useAuth();
   const mutation = useCommentMutation();
 
-  const displayLoggedInUser = auth?.data && auth.data.user;
-  const displayAuthButtons = !auth?.isLoading && !displayLoggedInUser;
+  const auth: IAuth | null = storage.getAuth();
 
   const handleSubmit = (text: string) => {
     mutation.mutate({ postId, value: text });
@@ -60,20 +59,15 @@ export default function CommentInputSection({ postId }: { postId: string }) {
         justifyContent: 'space-between',
       })}
     >
-      {
-        auth?.data
-        && auth.data.user
-        && <CommentInput name={auth.data.user.name} onSubmit={handleSubmit} />
-      }
-      {
-        displayAuthButtons ? (
+      {auth?.user && <CommentInput name={auth.user.name} onSubmit={handleSubmit} />}
+      {!auth?.user
+        && (
           <>
             Log in or Sign up to leave a comment.
             <Space h="sm" />
             <AuthButtons />
           </>
-        ) : null
-      }
+        )}
     </Container>
   );
 }

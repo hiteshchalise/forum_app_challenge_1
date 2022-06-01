@@ -6,11 +6,13 @@ import CloseIcon from 'assets/CloseIcon';
 import DocumentIcon from 'assets/DocumentIcon';
 import DownvoteLogo from 'assets/DownvoteLogo';
 import UpvoteLogo from 'assets/UpvoteLogo';
+import { VoteActiveState } from 'components/posts/UpvoteSection';
 import { ReactEventHandler } from 'react';
 import { IPostDetail } from 'types/postType';
 
 interface IPostDetailsHeaderProps {
-  postData: IPostDetail
+  postData: IPostDetail,
+  activeState: VoteActiveState
 }
 
 const useStyles = createStyles(() => ({
@@ -22,7 +24,7 @@ const useStyles = createStyles(() => ({
   },
 }));
 
-export default function PostDetailsHeader({ postData }: IPostDetailsHeaderProps) {
+export default function PostDetailsHeader({ postData, activeState }: IPostDetailsHeaderProps) {
   const { classes } = useStyles();
   const handleUpvote: ReactEventHandler = (ev) => {
     ev.stopPropagation();
@@ -44,12 +46,12 @@ export default function PostDetailsHeader({ postData }: IPostDetailsHeaderProps)
         />
         <Space w="lg" />
         <UpvoteLogo
-          active={false}
+          active={activeState === 1}
           onClickListener={handleUpvote}
         />
         <Text px="sm">{postData.upvotes}</Text>
         <DownvoteLogo
-          active={false}
+          active={activeState === 3}
           onClickListener={handleDownvote}
         />
         <Space w="lg" />

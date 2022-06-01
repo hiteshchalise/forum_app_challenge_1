@@ -1,11 +1,15 @@
+/* eslint-disable no-underscore-dangle */
 import {
   Box,
   Container, createStyles, Stack,
 } from '@mantine/core';
 import Loading from 'components/Loading';
+import { VoteActiveState } from 'components/posts/UpvoteSection';
+import { useAuth } from 'providers/authProvider';
 import { useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
 import { getPostDetails } from 'services/posts';
+import useUserQuery from 'services/user';
 import PostDetailsMain from './PostDetailMain';
 import PostDetailsHeader from './PostDetailsHeader';
 
@@ -36,6 +40,8 @@ const useStyles = createStyles((theme) => ({
 function PostDetailContainer() {
   const { classes } = useStyles();
   const { postId } = useParams();
+  const auth = useAuth();
+  const userQuery = useUserQuery(auth?.data?.user.id);
   const query = useQuery(['posts', postId], () => getPostDetails(postId as string));
 
   if (query.isLoading) {
@@ -47,13 +53,24 @@ function PostDetailContainer() {
   }
 
   if (!query.data) return null;
+  let activeState: VoteActiveState;
+  if (!userQuery.data || userQuery.data.voted_posts.length === 0) {
+    activeState = VoteActiveState.Neutral;
+  } else if (userQuery.data && userQuery.data.voted_posts.find((post) => post._id === postId)) {
+    activeState = VoteActiveState.Up;
+  } else {
+    activeState = VoteActiveState.Down;
+  }
 
   return (
     <Stack
       className={classes.container}
     >
       <Container className={classes.header}>
-        <PostDetailsHeader postData={query.data} />
+        <PostDetailsHeader
+          postData={query.data}
+          activeState={activeState}
+        />
       </Container>
       <Container className={classes.body}>
         <PostDetailsMain postData={query.data} />
