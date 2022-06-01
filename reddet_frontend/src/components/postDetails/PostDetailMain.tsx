@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import {
   Grid,
 } from '@mantine/core';
@@ -47,7 +48,7 @@ export default function PostDetailsMain({ postData }: IPostDetailsBodyProps) {
             commentLength={postData.comments.length}
             onCommentClicked={handleCommentClicked}
           />
-          <CommentInputSection />
+          <CommentInputSection postId={postData._id} />
         </Grid.Col>
       </Grid>
       <CommentSection comments={postData.comments} />

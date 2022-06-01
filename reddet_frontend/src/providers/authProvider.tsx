@@ -30,6 +30,7 @@ export function useProvideAuth() {
   }
 
   function removeAuthData() {
+    storage.clearAuth();
     setAuth(null);
   }
 

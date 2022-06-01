@@ -9,6 +9,7 @@ import {
 } from '@mantine/core';
 import MainLogo from 'assets/MainLogo';
 import { useAuth } from 'providers/authProvider';
+import { useEffect } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import AuthButtons from './AuthButtons';
 import LoggedInUserDisplay from './LoggedInUserDisplay';
@@ -21,6 +22,9 @@ function ErrorFallback() {
 export default function Home() {
   const theme = useMantineTheme();
   const auth = useAuth();
+
+  const hasUser = auth?.data && auth.data.user;
+  const displayAuthButtons = !auth?.isLoading && !hasUser;
 
   return (
     <AppShell
@@ -51,7 +55,7 @@ export default function Home() {
               && auth.data.user
               && <LoggedInUserDisplay user={auth.data.user} />
             }
-            {(!auth?.isLoading && !(auth?.data && auth.data.user)) && <AuthButtons />}
+            {displayAuthButtons && <AuthButtons />}
           </div>
         </Header>
       )}

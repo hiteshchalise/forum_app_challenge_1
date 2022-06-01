@@ -2,7 +2,10 @@ import {
   Text, Space,
   Avatar,
   Box,
+  Menu,
 } from '@mantine/core';
+import { useAuth } from 'providers/authProvider';
+import { Logout } from 'tabler-icons-react';
 
 export interface ILoggedInUserDisplayProps {
   user: {
@@ -11,6 +14,12 @@ export interface ILoggedInUserDisplayProps {
 }
 
 export default function LoggedInUserDisplay({ user }: ILoggedInUserDisplayProps) {
+  const auth = useAuth();
+
+  const handleLogout = () => {
+    auth?.removeAuthData();
+  };
+
   return (
     <Box sx={(theme) => ({
       marginLeft: 'auto',
@@ -28,7 +37,27 @@ export default function LoggedInUserDisplay({ user }: ILoggedInUserDisplayProps)
     >
       <Avatar radius="xl" color="red">{user.name.substring(0, 2)}</Avatar>
       <Space w="sm" />
-      <Text>{user.name}</Text>
+
+      <Menu
+        control={<Text size="sm" styles="bold">{user.name}</Text>}
+        sx={{
+          '&:Hover': {
+            cursor: 'pointer',
+          },
+        }}
+      >
+        <Menu.Label>
+          Logged in as:
+          {' '}
+          {user.name}
+        </Menu.Label>
+        <Menu.Item
+          icon={<Logout size={24} color="gray" />}
+          onClick={handleLogout}
+        >
+          Log Out
+        </Menu.Item>
+      </Menu>
     </Box>
   );
 }

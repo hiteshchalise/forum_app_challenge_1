@@ -1,6 +1,7 @@
 import {
   Avatar, Badge, Box, Container, Space, Stack, Text,
 } from '@mantine/core';
+import RichTextEditor from '@mantine/rte';
 import DownvoteLogo from 'assets/DownvoteLogo';
 import UpvoteLogo from 'assets/UpvoteLogo';
 import moment from 'moment';
@@ -13,6 +14,20 @@ interface ICommentSectionProps {
 
 interface ICommentContainerProps {
   comment: ICommentDetail
+}
+
+function CommentDisplay({ commentBody }: { commentBody: string }) {
+  return (
+    <RichTextEditor
+      sx={(theme) => ({
+        backgroundColor: theme.fn.rgba(theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[2], 0.8),
+        border: 0,
+      })}
+      readOnly
+      value={commentBody}
+      onChange={() => { }}
+    />
+  );
 }
 
 function CommentContainer({ comment }: ICommentContainerProps) {
@@ -31,9 +46,7 @@ function CommentContainer({ comment }: ICommentContainerProps) {
         display: 'flex',
         flexWrap: 'nowrap',
         justifyContent: 'flex-start',
-        paddingLeft: theme.spacing.md,
-        paddingRight: theme.spacing.md,
-        paddingBottom: theme.spacing.md,
+        padding: theme.spacing.md,
       })}
     >
       <Avatar
@@ -42,9 +55,12 @@ function CommentContainer({ comment }: ICommentContainerProps) {
       >
         {comment.commented_by.name.substring(0, 2)}
       </Avatar>
-      <Space w="md" />
+      <Space w="sm" />
       <Stack
-        sx={(theme) => ({ paddingTop: theme.spacing.xs })}
+        sx={(theme) => ({
+          paddingTop: theme.spacing.xs,
+          width: '100%',
+        })}
       >
         <Container sx={{
           display: 'flex',
@@ -61,9 +77,7 @@ function CommentContainer({ comment }: ICommentContainerProps) {
             {commentedTimeAgo}
           </Badge>
         </Container>
-        <Text sx={{ display: 'block' }}>
-          {comment.comment_body}
-        </Text>
+        <CommentDisplay commentBody={comment.comment_body} />
         <Container sx={{
           display: 'flex',
           padding: 0,
@@ -90,7 +104,7 @@ function CommentContainer({ comment }: ICommentContainerProps) {
 export default function CommentSection({ comments }: ICommentSectionProps) {
   return (
     <>
-      <Space h="md" />
+      <Space h="lg" />
       {
         comments.map(
           // eslint-disable-next-line no-underscore-dangle
