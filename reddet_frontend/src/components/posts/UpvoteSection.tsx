@@ -3,7 +3,7 @@ import { ReactEventHandler } from 'react';
 import UpvoteLogo from '../../assets/UpvoteLogo';
 import DownvoteLogo from '../../assets/DownvoteLogo';
 
-enum ActiveState {
+export enum VoteActiveState {
   Up = 1,
   Neutral,
   Down,
@@ -13,7 +13,7 @@ interface IUpvoteProps {
   upvotes: number,
   handleUpvote: ReactEventHandler
   handleDownvote: ReactEventHandler,
-  activeState: ActiveState
+  activeState: VoteActiveState
 }
 
 export default function UpvoteSection({

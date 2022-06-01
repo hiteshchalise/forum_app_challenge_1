@@ -6,14 +6,15 @@ import { useNavigate } from 'react-router-dom';
 import IPost from '../../types/postType';
 import PostHeader from './PostHeader';
 import PostBody from './PostBody';
-import UpvoteSection from './UpvoteSection';
+import UpvoteSection, { VoteActiveState } from './UpvoteSection';
 import PostFooter from './PostFooter';
 
 interface PostItemProps {
-  post: IPost
+  post: IPost,
+  activeState: VoteActiveState
 }
 
-export default function PostItem({ post }: PostItemProps) {
+export default function PostItem({ post, activeState }: PostItemProps) {
   const navigate = useNavigate();
 
   const handleClick: ReactEventHandler = (ev) => {
@@ -60,7 +61,7 @@ export default function PostItem({ post }: PostItemProps) {
               upvotes={post.upvotes}
               handleDownvote={handleDownvote}
               handleUpvote={handleUpvote}
-              activeState={3}
+              activeState={activeState}
             />
           </Grid.Col>
           <Grid.Col span={11}>

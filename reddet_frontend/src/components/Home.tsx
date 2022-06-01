@@ -11,6 +11,7 @@ import MainLogo from 'assets/MainLogo';
 import { useAuth } from 'providers/authProvider';
 import { useEffect } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
+import useUserQuery from 'services/user';
 import AuthButtons from './AuthButtons';
 import LoggedInUserDisplay from './LoggedInUserDisplay';
 import PostsDisplay from './posts/PostsDisplay';
@@ -25,6 +26,8 @@ export default function Home() {
 
   const hasUser = auth?.data && auth.data.user;
   const displayAuthButtons = !auth?.isLoading && !hasUser;
+
+  const userQuery = useUserQuery(auth?.data?.user.id);
 
   return (
     <AppShell
@@ -61,7 +64,7 @@ export default function Home() {
       )}
     >
       <ErrorBoundary FallbackComponent={ErrorFallback}>
-        <PostsDisplay />
+        <PostsDisplay user={userQuery.data} />
       </ErrorBoundary>
     </AppShell>
   );
