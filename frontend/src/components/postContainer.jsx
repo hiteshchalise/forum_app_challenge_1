@@ -74,12 +74,7 @@ const PostContainer = (props) => {
           <small className="subitem"> {convertToTimeAgo(props.post.posted_at)}</small>
         </div>
         <div className="content-section">
-          <Editor
-            editorState={convertPost(props.post.post_body)}
-            readOnly={true}
-            customStyleMap={styleMap}
-            blockStyleFn={blockStyleFn}
-          />
+          <p> Comment </p>
         </div>
       </div>
     </div>

@@ -1,45 +1,46 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const Joi = require('@hapi/joi')
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
 
-const PostSchema = new Schema({
-    post_title: {
-        type: String,
-        require: true
+const postSchema = new Schema({
+  post_title: {
+    type: String,
+    require: true
+  },
+  post_body: {
+    type: String,
+    require: true
+  },
+  posted_by: {
+    _id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User'
     },
-    post_body: {
-        type: String,
-        require: true
-    },
-    posted_by: {
-        type: String,
-        require: true
-    },
-    posted_at: {
-        type: Date,
-        default: Date.now
-    },
-    comments: [{
-        comment_body: {
-            type: String,
-            require: true
-        },
-        commented_by: {
-            type: String,
-            require: true
-        },
-        commented_at: {
-            type: Date,
-            default: Date.now
-        },
-        upvotes: {
-            type: Number,
-            default: 1
-        }
-    }],
-    upvotes: {
-        type: Number,
-        default: 1
-    }
-});
+    name: String,
+    email: String,
+  },
+  posted_at: {
+    type: Date,
+    default: Date.now
+  },
+  comments: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Comment'
+  }],
+  upvotes: {
+    type: Number,
+    default: 1
+  }
+})
 
-module.exports = Post = mongoose.model('post', PostSchema);
+function validatePost(post) {
+  const schema = Joi.object({
+    post_title: Joi.string().required(),
+    post_body: Joi.string().required()
+  })
+  return schema.validate(post)
+}
+
+const Post = mongoose.model('Post', postSchema)
+module.exports.Post = Post
+module.exports.validatePost = validatePost

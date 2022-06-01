@@ -84,12 +84,7 @@ const Comment = (props) => {
                         <small> {convertToTimeAgo(props.comment.commented_at)}</small>
                     </div>
                     <div className="content-section">
-                        <Editor
-                            editorState={convertComment(props.comment.comment_body)}
-                            readOnly={true}
-                            customStyleMap={styleMap}
-                            blockStyleFn={blockStyleFn}
-                        />
+                        <p>{props.comment.comment_body}</p>
                     </div>
                 </div>
             </div>
