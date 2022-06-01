@@ -79,7 +79,7 @@ userSchema.methods.generateAuthToken = function () {
   const authToken = jwt.sign(
     { id: this._id },
     config.get('ACCESS_TOKEN_SECRET'),
-    { expiresIn: 3600 })
+    { expiresIn: 3600 * 24 * 30 })
   return authToken
 }
 

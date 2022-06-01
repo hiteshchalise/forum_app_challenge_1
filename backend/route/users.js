@@ -42,14 +42,14 @@ router.post('/', async (req, res) => {
   })
 })
 
-// @route GET api/users/:name
-// @desc GET user by username
+// @route GET api/users/:id
+// @desc GET user by user id
 // @access Public
-router.get('/:name', async (req, res) => {
-  const user = await User.findOne({ name: req.params.name })
-  if (!user) return res.status(404).json({ 'msg': 'User Not Found' })
+router.get('/:id', async (req, res) => {
+  const user = await User.findOne({ _id: req.params.id })
+  if (!user) return res.status(404).json({ 'error': 'User Not Found' })
 
-  res.json(_.pick(user, ['_id', 'name', 'email', 'upvoted_posts']))
+  res.json(user)
 })
 
 module.exports = router
