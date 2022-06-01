@@ -73,7 +73,10 @@ function PostDetailContainer() {
         />
       </Container>
       <Container className={classes.body}>
-        <PostDetailsMain postData={query.data} />
+        <PostDetailsMain
+          postData={query.data}
+          activeState={activeState}
+        />
       </Container>
     </Stack>
   );

@@ -4,7 +4,7 @@ import {
 } from '@mantine/core';
 import PostFooter from 'components/posts/PostFooter';
 import PostHeader from 'components/posts/PostHeader';
-import UpvoteSection from 'components/posts/UpvoteSection';
+import UpvoteSection, { VoteActiveState } from 'components/posts/UpvoteSection';
 import { ReactEventHandler } from 'react';
 import { IPostDetail } from 'types/postType';
 import CommentSection from './comments/CommentSection';
@@ -12,10 +12,11 @@ import CommentInputSection from './contents/CommentInputSection';
 import PostContent from './contents/PostContent';
 
 interface IPostDetailsBodyProps {
-  postData: IPostDetail
+  postData: IPostDetail,
+  activeState: VoteActiveState
 }
 
-export default function PostDetailsMain({ postData }: IPostDetailsBodyProps) {
+export default function PostDetailsMain({ postData, activeState }: IPostDetailsBodyProps) {
   const handleUpvote: ReactEventHandler = (ev) => {
     ev.stopPropagation();
   };
@@ -38,7 +39,7 @@ export default function PostDetailsMain({ postData }: IPostDetailsBodyProps) {
             upvotes={postData.upvotes}
             handleUpvote={handleUpvote}
             handleDownvote={handleDownvote}
-            activeState={2}
+            activeState={activeState}
           />
         </Grid.Col>
         <Grid.Col span={11} pr="lg">
