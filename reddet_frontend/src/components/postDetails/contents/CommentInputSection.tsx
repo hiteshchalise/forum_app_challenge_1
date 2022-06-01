@@ -4,7 +4,6 @@ import {
 } from '@mantine/core';
 import RichTextEditor from '@mantine/rte';
 import AuthButtons from 'components/AuthButtons';
-import { useAuth } from 'providers/authProvider';
 import { ReactEventHandler, useState } from 'react';
 import useCommentMutation from 'services/comments';
 import storage, { IAuth } from 'utils/storage';

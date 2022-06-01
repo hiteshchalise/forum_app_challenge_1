@@ -9,7 +9,6 @@ import {
 } from '@mantine/core';
 import MainLogo from 'assets/MainLogo';
 import { useAuth } from 'providers/authProvider';
-import { useEffect } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import useUserQuery from 'services/user';
 import AuthButtons from './AuthButtons';

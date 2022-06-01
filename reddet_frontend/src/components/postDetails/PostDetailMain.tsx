@@ -5,7 +5,9 @@ import {
 import PostFooter from 'components/posts/PostFooter';
 import PostHeader from 'components/posts/PostHeader';
 import UpvoteSection, { VoteActiveState } from 'components/posts/UpvoteSection';
+import { useAuth } from 'providers/authProvider';
 import { ReactEventHandler } from 'react';
+import useUserQuery from 'services/user';
 import { IPostDetail } from 'types/postType';
 import CommentSection from './comments/CommentSection';
 import CommentInputSection from './contents/CommentInputSection';
@@ -17,6 +19,9 @@ interface IPostDetailsBodyProps {
 }
 
 export default function PostDetailsMain({ postData, activeState }: IPostDetailsBodyProps) {
+  const auth = useAuth();
+  const userQuery = useUserQuery(auth?.data?.user.id);
+
   const handleUpvote: ReactEventHandler = (ev) => {
     ev.stopPropagation();
   };
@@ -52,7 +57,7 @@ export default function PostDetailsMain({ postData, activeState }: IPostDetailsB
           <CommentInputSection postId={postData._id} />
         </Grid.Col>
       </Grid>
-      <CommentSection comments={postData.comments} />
+      <CommentSection comments={postData.comments} user={userQuery.data} />
     </>
   );
 }

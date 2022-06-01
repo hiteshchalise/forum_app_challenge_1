@@ -1,19 +1,19 @@
+/* eslint-disable no-underscore-dangle */
 import {
   Avatar, Badge, Box, Container, Space, Stack, Text,
 } from '@mantine/core';
 import RichTextEditor from '@mantine/rte';
 import DownvoteLogo from 'assets/DownvoteLogo';
 import UpvoteLogo from 'assets/UpvoteLogo';
+import { VoteActiveState } from 'components/posts/UpvoteSection';
 import moment from 'moment';
 import { ReactEventHandler } from 'react';
+import { IUserResponse } from 'services/user';
 import { ICommentDetail } from 'types/commentType';
 
-interface ICommentSectionProps {
-  comments: ICommentDetail[]
-}
-
 interface ICommentContainerProps {
-  comment: ICommentDetail
+  comment: ICommentDetail,
+  activeState: VoteActiveState
 }
 
 function CommentDisplay({ commentBody }: { commentBody: string }) {
@@ -30,7 +30,7 @@ function CommentDisplay({ commentBody }: { commentBody: string }) {
   );
 }
 
-function CommentContainer({ comment }: ICommentContainerProps) {
+function CommentContainer({ comment, activeState }: ICommentContainerProps) {
   const commentedAt = Date.parse(comment.commented_at);
   const commentedTimeAgo = moment(commentedAt).fromNow();
   const handleUpvote: ReactEventHandler = (ev) => {
@@ -86,12 +86,12 @@ function CommentContainer({ comment }: ICommentContainerProps) {
         }}
         >
           <UpvoteLogo
-            active={false}
+            active={activeState === 1}
             onClickListener={handleUpvote}
           />
           <Text px="sm">{comment.upvotes}</Text>
           <DownvoteLogo
-            active={false}
+            active={activeState === 3}
             onClickListener={handleDownvote}
           />
           <Space w="lg" />
@@ -101,14 +101,43 @@ function CommentContainer({ comment }: ICommentContainerProps) {
   );
 }
 
-export default function CommentSection({ comments }: ICommentSectionProps) {
+interface ICommentSectionProps {
+  comments: ICommentDetail[],
+  user: IUserResponse | undefined,
+}
+
+export default function CommentSection({ comments, user }: ICommentSectionProps) {
   return (
     <>
       <Space h="lg" />
       {
         comments.map(
           // eslint-disable-next-line no-underscore-dangle
-          (comment: ICommentDetail) => <CommentContainer key={comment._id} comment={comment} />,
+          (comment: ICommentDetail) => {
+            let activeState: VoteActiveState;
+            if (!user || (user && user.voted_comments.length === 0)) {
+              activeState = VoteActiveState.Neutral;
+            } else {
+              const votedComment = user.voted_comments.find(
+                ((voted_comment) => voted_comment._id === comment._id),
+              );
+              if (votedComment && votedComment.dir === 1) {
+                activeState = VoteActiveState.Up;
+              } else if (!votedComment || (votedComment && votedComment.dir === 0)) {
+                activeState = VoteActiveState.Neutral;
+              } else {
+                activeState = VoteActiveState.Down;
+              }
+            }
+
+            return (
+              <CommentContainer
+                key={comment._id}
+                comment={comment}
+                activeState={activeState}
+              />
+            );
+          },
         )
       }
     </>
