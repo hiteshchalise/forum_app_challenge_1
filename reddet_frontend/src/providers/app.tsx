@@ -29,14 +29,14 @@ function AppProvider({ children }: AppProviderProps) {
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
       <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <MantineProvider>
-            <NotificationsProvider>
+        <MantineProvider>
+          <NotificationsProvider>
+            <AuthProvider>
               <BrowserRouter>{children}</BrowserRouter>
-            </NotificationsProvider>
-          </MantineProvider>
-        </AuthProvider>
-        <ReactQueryDevtools />
+            </AuthProvider>
+            <ReactQueryDevtools />
+          </NotificationsProvider>
+        </MantineProvider>
       </QueryClientProvider>
     </ErrorBoundary>
   );

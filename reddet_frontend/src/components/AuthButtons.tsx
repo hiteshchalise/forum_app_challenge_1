@@ -40,9 +40,7 @@ export default function AuthButtons() {
         title="Log In"
         overflow="inside"
       >
-        <LogInForm
-          onSuccess={() => { setMode('close'); }}
-        />
+        <LogInForm />
       </Modal>
       <Modal
         opened={mode === 'register'}
@@ -50,9 +48,7 @@ export default function AuthButtons() {
         title="Sign Up"
         overflow="inside"
       >
-        <SignupForm
-          onSuccess={() => { setMode('close'); }}
-        />
+        <SignupForm />
       </Modal>
     </Box>
   );
