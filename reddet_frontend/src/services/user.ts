@@ -24,11 +24,8 @@ export interface IUserResponse {
 }
 
 async function getUser(userId: string): Promise<IUserResponse> {
-  console.log('useQueryCalledddddd');
-
   try {
     const response = await axios.get(`/api/users/${userId}`);
-    console.log('response from usequery called', response);
     return response.data as IUserResponse;
   } catch (error: AxiosError | unknown) {
     let message;

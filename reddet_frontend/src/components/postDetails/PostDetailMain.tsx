@@ -45,6 +45,7 @@ export default function PostDetailsMain({ postData, activeState }: IPostDetailsB
             handleUpvote={handleUpvote}
             handleDownvote={handleDownvote}
             activeState={activeState}
+            isLoading={false}
           />
         </Grid.Col>
         <Grid.Col span={11} pr="lg">

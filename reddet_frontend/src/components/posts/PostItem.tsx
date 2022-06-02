@@ -3,6 +3,7 @@ import {
 } from '@mantine/core';
 import { ReactEventHandler } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useVotePost } from 'services/posts';
 import IPost from '../../types/postType';
 import PostHeader from './PostHeader';
 import PostBody from './PostBody';
@@ -16,6 +17,7 @@ interface PostItemProps {
 
 export default function PostItem({ post, activeState }: PostItemProps) {
   const navigate = useNavigate();
+  const votePostMutation = useVotePost();
 
   const handleClick: ReactEventHandler = (ev) => {
     ev.stopPropagation();
@@ -24,13 +26,16 @@ export default function PostItem({ post, activeState }: PostItemProps) {
 
   const handleUpvote: ReactEventHandler = (ev) => {
     ev.stopPropagation();
+    votePostMutation.mutate({ id: post.id, dir: 1 });
   };
 
   const handleDownvote: ReactEventHandler = (ev) => {
     ev.stopPropagation();
+    votePostMutation.mutate({ id: post.id, dir: -1 });
   };
 
   const handleCommentClicked: ReactEventHandler = () => {
+    // no-op parent will handle this event.
   };
 
   return (
@@ -61,6 +66,7 @@ export default function PostItem({ post, activeState }: PostItemProps) {
               handleDownvote={handleDownvote}
               handleUpvote={handleUpvote}
               activeState={activeState}
+              isLoading={votePostMutation.isLoading}
             />
           </Grid.Col>
           <Grid.Col span={11}>
