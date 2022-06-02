@@ -19,8 +19,7 @@ export default function PostItem({ post, activeState }: PostItemProps) {
 
   const handleClick: ReactEventHandler = (ev) => {
     ev.stopPropagation();
-    // eslint-disable-next-line no-underscore-dangle
-    navigate(`/posts/${post._id}`);
+    navigate(`/posts/${post.id}`);
   };
 
   const handleUpvote: ReactEventHandler = (ev) => {
