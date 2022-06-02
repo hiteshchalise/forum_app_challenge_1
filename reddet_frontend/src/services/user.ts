@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import Axios, { AxiosError } from 'axios';
 import { useQuery } from 'react-query';
 import { getErrorMessage } from 'types/errorTypes';
@@ -34,7 +35,6 @@ async function getUser(userId: string): Promise<IUserResponse> {
     } else {
       message = getErrorMessage(error);
     }
-    console.log('error', message);
     if (!message) throw error;
     else throw Error(message as string);
   }

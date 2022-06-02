@@ -5,6 +5,7 @@ import { ReactEventHandler } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useVotePost } from 'services/posts';
 import { useAuth } from 'providers/authProvider';
+import { showNotification } from '@mantine/notifications';
 import IPost from '../../types/postType';
 import PostHeader from './PostHeader';
 import PostBody from './PostBody';
@@ -29,13 +30,31 @@ export default function PostItem({ post, activeState }: PostItemProps) {
   const handleUpvote: ReactEventHandler = (ev) => {
     ev.stopPropagation();
     if (auth?.data?.token) votePostMutation.mutate({ id: post.id, dir: 1 });
-    else console.log('cannot perform that operation, notification system implementation');
+    else {
+      showNotification({
+        id: 'postVote',
+        autoClose: 4000,
+        disallowClose: true,
+        title: 'Unauthorized action',
+        message: 'Please Login first.',
+        color: 'red',
+      });
+    }
   };
 
   const handleDownvote: ReactEventHandler = (ev) => {
     ev.stopPropagation();
     if (auth?.data?.token) votePostMutation.mutate({ id: post.id, dir: -1 });
-    else console.log('cannot perform that operation, notification system implementation');
+    else {
+      showNotification({
+        id: 'postVote',
+        autoClose: 4000,
+        disallowClose: true,
+        title: 'Unauthorized action',
+        message: 'Please Login first.',
+        color: 'red',
+      });
+    }
   };
 
   const handleCommentClicked: ReactEventHandler = () => {

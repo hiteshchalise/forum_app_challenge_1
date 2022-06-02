@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import Axios, { AxiosError } from 'axios';
 import { useAuth } from 'providers/authProvider';
 import { useMutation, useQueryClient } from 'react-query';

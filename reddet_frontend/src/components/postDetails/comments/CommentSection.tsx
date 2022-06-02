@@ -2,6 +2,7 @@
 import {
   Avatar, Badge, Box, Container, Space, Stack, Text,
 } from '@mantine/core';
+import { showNotification } from '@mantine/notifications';
 import RichTextEditor from '@mantine/rte';
 import DownvoteLogo from 'assets/DownvoteLogo';
 import UpvoteLogo from 'assets/UpvoteLogo';
@@ -42,12 +43,30 @@ function CommentContainer({ comment, activeState }: ICommentContainerProps) {
   const handleUpvote: ReactEventHandler = (ev) => {
     ev.stopPropagation();
     if (auth?.data?.user) voteCommentMutation.mutate({ id: comment._id, dir: 1 });
-    else console.log('Cannot do that, this should be displayed in notification');
+    else {
+      showNotification({
+        id: 'postVote',
+        autoClose: 4000,
+        disallowClose: true,
+        title: 'Unauthorized action',
+        message: 'Please Login first.',
+        color: 'red',
+      });
+    }
   };
   const handleDownvote: ReactEventHandler = (ev) => {
     ev.stopPropagation();
     if (auth?.data?.user) voteCommentMutation.mutate({ id: comment._id, dir: -1 });
-    else console.log('Cannot do that, this should be displayed in notification');
+    else {
+      showNotification({
+        id: 'postVote',
+        autoClose: 4000,
+        disallowClose: true,
+        title: 'Unauthorized action',
+        message: 'Please Login first.',
+        color: 'red',
+      });
+    }
   };
 
   return (

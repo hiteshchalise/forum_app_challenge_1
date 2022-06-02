@@ -2,6 +2,7 @@ import {
   Button,
   Container, createStyles, Divider, Space, Text,
 } from '@mantine/core';
+import { showNotification } from '@mantine/notifications';
 import CloseIcon from 'assets/CloseIcon';
 import DocumentIcon from 'assets/DocumentIcon';
 import DownvoteLogo from 'assets/DownvoteLogo';
@@ -36,13 +37,31 @@ export default function PostDetailsHeader({ postData, activeState }: IPostDetail
   const handleUpvote: ReactEventHandler = (ev) => {
     ev.stopPropagation();
     if (auth?.data?.token) votePostMutation.mutate({ id: postData.id, dir: 1 });
-    else console.log('cannot perform that operation, notification system implementation');
+    else {
+      showNotification({
+        id: 'postVote',
+        autoClose: 4000,
+        disallowClose: true,
+        title: 'Unauthorized action',
+        message: 'Please Login first.',
+        color: 'red',
+      });
+    }
   };
 
   const handleDownvote: ReactEventHandler = (ev) => {
     ev.stopPropagation();
     if (auth?.data?.token) votePostMutation.mutate({ id: postData.id, dir: -1 });
-    else console.log('cannot perform that operation, notification system implementation');
+    else {
+      showNotification({
+        id: 'postVote',
+        autoClose: 4000,
+        disallowClose: true,
+        title: 'Unauthorized action',
+        message: 'Please Login first.',
+        color: 'red',
+      });
+    }
   };
 
   return (

@@ -2,12 +2,12 @@
 import {
   Grid,
 } from '@mantine/core';
+import { showNotification } from '@mantine/notifications';
 import PostFooter from 'components/posts/PostFooter';
 import PostHeader from 'components/posts/PostHeader';
 import UpvoteSection, { VoteActiveState } from 'components/posts/UpvoteSection';
 import { useAuth } from 'providers/authProvider';
 import { ReactEventHandler } from 'react';
-import { useQuery } from 'react-query';
 import { useVotePost } from 'services/posts';
 import useUserQuery from 'services/user';
 import { IPostDetail } from 'types/postType';
@@ -28,13 +28,31 @@ export default function PostDetailsMain({ postData, activeState }: IPostDetailsB
   const handleUpvote: ReactEventHandler = (ev) => {
     ev.stopPropagation();
     if (auth?.data?.token) votePostMutation.mutate({ id: postData.id, dir: 1 });
-    else console.log('cannot perform that operation, notification system implementation');
+    else {
+      showNotification({
+        id: 'postVote',
+        autoClose: 4000,
+        disallowClose: true,
+        title: 'Unauthorized action',
+        message: 'Please Login first.',
+        color: 'red',
+      });
+    }
   };
 
   const handleDownvote: ReactEventHandler = (ev) => {
     ev.stopPropagation();
     if (auth?.data?.token) votePostMutation.mutate({ id: postData.id, dir: -1 });
-    else console.log('cannot perform that operation, notification system implementation');
+    else {
+      showNotification({
+        id: 'postVote',
+        autoClose: 4000,
+        disallowClose: true,
+        title: 'Unauthorized action',
+        message: 'Please Login first.',
+        color: 'red',
+      });
+    }
   };
 
   const handleCommentClicked: ReactEventHandler = (ev) => {
