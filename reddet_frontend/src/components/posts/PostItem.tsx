@@ -4,6 +4,7 @@ import {
 import { ReactEventHandler } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useVotePost } from 'services/posts';
+import { useAuth } from 'providers/authProvider';
 import IPost from '../../types/postType';
 import PostHeader from './PostHeader';
 import PostBody from './PostBody';
@@ -17,6 +18,7 @@ interface PostItemProps {
 
 export default function PostItem({ post, activeState }: PostItemProps) {
   const navigate = useNavigate();
+  const auth = useAuth();
   const votePostMutation = useVotePost();
 
   const handleClick: ReactEventHandler = (ev) => {
@@ -26,12 +28,14 @@ export default function PostItem({ post, activeState }: PostItemProps) {
 
   const handleUpvote: ReactEventHandler = (ev) => {
     ev.stopPropagation();
-    votePostMutation.mutate({ id: post.id, dir: 1 });
+    if (auth?.data?.token) votePostMutation.mutate({ id: post.id, dir: 1 });
+    else console.log('cannot perform that operation, notification system implementation');
   };
 
   const handleDownvote: ReactEventHandler = (ev) => {
     ev.stopPropagation();
-    votePostMutation.mutate({ id: post.id, dir: -1 });
+    if (auth?.data?.token) votePostMutation.mutate({ id: post.id, dir: -1 });
+    else console.log('cannot perform that operation, notification system implementation');
   };
 
   const handleCommentClicked: ReactEventHandler = () => {

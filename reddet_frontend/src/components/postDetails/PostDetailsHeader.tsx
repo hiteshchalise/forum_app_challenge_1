@@ -7,8 +7,10 @@ import DocumentIcon from 'assets/DocumentIcon';
 import DownvoteLogo from 'assets/DownvoteLogo';
 import UpvoteLogo from 'assets/UpvoteLogo';
 import { VoteActiveState } from 'components/posts/UpvoteSection';
+import { useAuth } from 'providers/authProvider';
 import { ReactEventHandler } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useVotePost } from 'services/posts';
 import { IPostDetail } from 'types/postType';
 
 interface IPostDetailsHeaderProps {
@@ -27,13 +29,22 @@ const useStyles = createStyles(() => ({
 
 export default function PostDetailsHeader({ postData, activeState }: IPostDetailsHeaderProps) {
   const { classes } = useStyles();
+  const auth = useAuth();
+  const votePostMutation = useVotePost();
   const navigate = useNavigate();
+
   const handleUpvote: ReactEventHandler = (ev) => {
     ev.stopPropagation();
+    if (auth?.data?.token) votePostMutation.mutate({ id: postData.id, dir: 1 });
+    else console.log('cannot perform that operation, notification system implementation');
   };
+
   const handleDownvote: ReactEventHandler = (ev) => {
     ev.stopPropagation();
+    if (auth?.data?.token) votePostMutation.mutate({ id: postData.id, dir: -1 });
+    else console.log('cannot perform that operation, notification system implementation');
   };
+
   return (
     <>
       <Space h="md" />

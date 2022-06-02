@@ -1,6 +1,5 @@
 import { Stack } from '@mantine/core';
 import { ReactEventHandler } from 'react';
-import Loading from 'components/Loading';
 import { Loader } from 'tabler-icons-react';
 import UpvoteLogo from '../../assets/UpvoteLogo';
 import DownvoteLogo from '../../assets/DownvoteLogo';

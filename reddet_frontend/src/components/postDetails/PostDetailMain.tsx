@@ -7,6 +7,8 @@ import PostHeader from 'components/posts/PostHeader';
 import UpvoteSection, { VoteActiveState } from 'components/posts/UpvoteSection';
 import { useAuth } from 'providers/authProvider';
 import { ReactEventHandler } from 'react';
+import { useQuery } from 'react-query';
+import { useVotePost } from 'services/posts';
 import useUserQuery from 'services/user';
 import { IPostDetail } from 'types/postType';
 import CommentSection from './comments/CommentSection';
@@ -21,17 +23,23 @@ interface IPostDetailsBodyProps {
 export default function PostDetailsMain({ postData, activeState }: IPostDetailsBodyProps) {
   const auth = useAuth();
   const userQuery = useUserQuery(auth?.data?.user.id);
+  const votePostMutation = useVotePost();
 
   const handleUpvote: ReactEventHandler = (ev) => {
     ev.stopPropagation();
+    if (auth?.data?.token) votePostMutation.mutate({ id: postData.id, dir: 1 });
+    else console.log('cannot perform that operation, notification system implementation');
   };
 
   const handleDownvote: ReactEventHandler = (ev) => {
     ev.stopPropagation();
+    if (auth?.data?.token) votePostMutation.mutate({ id: postData.id, dir: -1 });
+    else console.log('cannot perform that operation, notification system implementation');
   };
 
   const handleCommentClicked: ReactEventHandler = (ev) => {
     ev.stopPropagation();
+    // should probably scroll to the comment section?
   };
 
   return (
@@ -45,7 +53,7 @@ export default function PostDetailsMain({ postData, activeState }: IPostDetailsB
             handleUpvote={handleUpvote}
             handleDownvote={handleDownvote}
             activeState={activeState}
-            isLoading={false}
+            isLoading={votePostMutation.isLoading}
           />
         </Grid.Col>
         <Grid.Col span={11} pr="lg">
