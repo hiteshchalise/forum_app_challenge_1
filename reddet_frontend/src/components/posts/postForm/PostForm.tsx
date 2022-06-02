@@ -7,11 +7,12 @@ import {
   AppShell, useMantineTheme, Header, Space,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
+import { showNotification } from '@mantine/notifications';
 import MainLogo from 'assets/MainLogo';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useSubmitPost from 'services/posts';
-import { Send } from 'tabler-icons-react';
+import { CircleCheck, Send } from 'tabler-icons-react';
 
 const useStyles = createStyles((theme) => ({
   container: {
@@ -28,7 +29,17 @@ const useStyles = createStyles((theme) => ({
 export default function PostForm() {
   const theme = useMantineTheme();
   const navigate = useNavigate();
-  const submitPostMutation = useSubmitPost();
+  const submitPostMutation = useSubmitPost(() => {
+    showNotification({
+      id: 'createPost',
+      autoClose: 5000,
+      disallowClose: true,
+      icon: <CircleCheck color="blue" />,
+      title: 'Successfully created post.',
+      message: 'You can view it at the main page.',
+      color: 'blue',
+    });
+  });
   const { classes } = useStyles();
   const form = useForm({
     initialValues: {

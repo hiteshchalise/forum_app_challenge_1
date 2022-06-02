@@ -56,7 +56,7 @@ export const useVotePost = () => {
   );
 };
 
-export const useSubmitPost = () => {
+export const useSubmitPost = (onSuccessCallback: ()=>void) => {
   const queryClient = useQueryClient();
 
   return useMutation(
@@ -68,6 +68,7 @@ export const useSubmitPost = () => {
         queryClient.setQueryData(['posts', response.id], response);
         await queryClient.invalidateQueries(['posts']);
         await queryClient.invalidateQueries(['user']);
+        onSuccessCallback();
       },
     },
   );
