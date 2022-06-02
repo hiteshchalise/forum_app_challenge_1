@@ -63,13 +63,14 @@ export default function Home() {
               <List.Item> Upvote / Downvote comments. </List.Item>
             </List>
             <Space h="lg" />
-            <Button
-              component={Link}
-              to="/postSubmit"
-              disabled={!hasUser}
-            >
-              Add a post.
-            </Button>
+            {hasUser ? (
+              <Button
+                component={Link}
+                to="/postSubmit"
+              >
+                Add a post.
+              </Button>
+            ) : <Button disabled>Add a post.</Button>}
           </Aside>
         </MediaQuery>
       )}

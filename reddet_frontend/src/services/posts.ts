@@ -34,6 +34,7 @@ export async function getPostDetails(id: string): Promise<IPostDetail> {
 }
 
 async function votePost(id: string, dir: number) {
+  console.log(id, dir);
   const response = await axios.post('/api/posts/upvote', { postId: id, dir });
   return response.data as IVotePostResponse;
 }

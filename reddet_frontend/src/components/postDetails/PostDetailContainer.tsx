@@ -53,13 +53,19 @@ function PostDetailContainer() {
   }
 
   if (!query.data) return null;
+
   let activeState: VoteActiveState;
-  if (!userQuery.data || userQuery.data.voted_posts.length === 0) {
+  if (!userQuery.data || (userQuery.data && userQuery.data.voted_posts.length === 0)) {
     activeState = VoteActiveState.Neutral;
-  } else if (userQuery.data && userQuery.data.voted_posts.find((post) => post._id === postId)) {
-    activeState = VoteActiveState.Up;
   } else {
-    activeState = VoteActiveState.Down;
+    const votedPost = userQuery.data.voted_posts.find(((post) => post._id === postId));
+    if (!votedPost) {
+      activeState = VoteActiveState.Neutral;
+    } else if (votedPost.dir === 1) {
+      activeState = VoteActiveState.Up;
+    } else {
+      activeState = VoteActiveState.Down;
+    }
   }
 
   return (

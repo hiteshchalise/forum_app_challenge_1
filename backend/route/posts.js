@@ -31,7 +31,7 @@ router.get('/:postId', validateObjectId, async (req, res) => {
   if (!post) return res.status(404).json({ error: 'no post found with that id' })
 
   post.comments.sort((a, b) => b.commented_at - a.commented_at)
-  res.json(_.pick(post, ['_id', 'post_title', 'post_body', 'posted_by', 'posted_at', 'comments', 'upvotes']))
+  res.json(post)
 })
 
 // @route POST api/posts/
