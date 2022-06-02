@@ -119,8 +119,6 @@ router.post('/upvote', auth, async (req, res) => {
   const user = await User.findById(req.user.id)
   if (!user) return res.status(401).json({ error: 'no user found' })
 
-  console.log(user.voted_posts)
-
   const votedPost = user.voted_posts.find(
     voted_post => voted_post._id && voted_post._id.toString() === post._id.toString()
   )
