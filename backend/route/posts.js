@@ -1,5 +1,4 @@
 const express = require('express')
-const _ = require('lodash')
 const { Post, validatePost } = require('../model/Post')
 const { User } = require('../model/User')
 const validateObjectId = require('../middleware/validateObjectId')

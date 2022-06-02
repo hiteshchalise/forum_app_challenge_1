@@ -14,6 +14,10 @@ interface ISubmitCommentResponse {
   upvotes: number
 }
 
+interface IVoteCommentResponse {
+  upvotes: number
+}
+
 async function submitComment(postId: string, data: string): Promise<ISubmitCommentResponse> {
   try {
     const response = await axios.post(`/api/posts/${postId}/comments/`, { comment_body: data });
@@ -30,6 +34,11 @@ async function submitComment(postId: string, data: string): Promise<ISubmitComme
   }
 }
 
+async function voteComment(id: string, dir: number) {
+  const response = await axios.post('/api/posts/upvote/comment', { commentId: id, dir });
+  return response.data as IVoteCommentResponse;
+}
+
 export const useCommentMutation = () => {
   const queryClient = useQueryClient();
 
@@ -41,6 +50,19 @@ export const useCommentMutation = () => {
         const { _id, ...rest } = response;
         const postBody = { id: _id, ...rest };
         queryClient.setQueryData(['posts', variables.postId], postBody);
+        await queryClient.invalidateQueries(['user']);
+      },
+    },
+  );
+};
+
+export const useVoteComment = () => {
+  const queryClient = useQueryClient();
+  return useMutation(
+    (data: { id: string, dir: number }) => voteComment(data.id, data.dir),
+    {
+      onSuccess: async () => {
+        await queryClient.invalidateQueries(['posts']);
         await queryClient.invalidateQueries(['user']);
       },
     },
