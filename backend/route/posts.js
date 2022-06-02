@@ -60,7 +60,7 @@ router.post('/', auth, async (req, res) => {
   user.voted_posts = user.voted_posts.concat({ _id: post._id, dir: 1 })
   await user.save()
 
-  return res.status(201).json({ postId: post._id, vote_dir: 1 })
+  return res.status(201).json(post)
 })
 
 // @route Post api/posts/:postId/comments/
