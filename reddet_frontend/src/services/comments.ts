@@ -51,6 +51,7 @@ export const useCommentMutation = () => {
         const postBody = { id: _id, ...rest };
         queryClient.setQueryData(['posts', variables.postId], postBody);
         await queryClient.invalidateQueries(['user']);
+        await queryClient.invalidateQueries(['posts']);
       },
     },
   );
