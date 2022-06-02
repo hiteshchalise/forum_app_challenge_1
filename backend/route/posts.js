@@ -119,11 +119,13 @@ router.post('/upvote', auth, async (req, res) => {
   const user = await User.findById(req.user.id)
   if (!user) return res.status(401).json({ error: 'no user found' })
 
+  console.log(user.voted_posts)
+
   const votedPost = user.voted_posts.find(
-    upvoted_post => upvoted_post._id.toString() === post._id.toString()
+    voted_post => voted_post._id && voted_post._id.toString() === post._id.toString()
   )
   if (!votedPost) {
-    user.voted_posts.push({ postId, dir })
+    user.voted_posts.push({ _id: postId, dir })
     post.upvotes += dir
   } else if (votedPost.dir !== dir) {
     // if user_voted dir goes from -1 to 1 OR 1 to -1, final upvotes in post should increase OR decrease by 2
