@@ -30,14 +30,19 @@ export default function PostDisplay({ user }: { user: IUserResponse | undefined 
           let activeState: VoteActiveState;
           if (!user || (user && user.voted_posts.length === 0)) {
             activeState = VoteActiveState.Neutral;
-          } else if (user.voted_posts.find(((post) => post._id === item._id))) {
-            activeState = VoteActiveState.Up;
           } else {
-            activeState = VoteActiveState.Down;
+            const votedPost = user.voted_posts.find(((post) => post._id === item.id));
+            if (!votedPost) {
+              activeState = VoteActiveState.Neutral;
+            } else if (votedPost.dir === 1) {
+              activeState = VoteActiveState.Up;
+            } else {
+              activeState = VoteActiveState.Down;
+            }
           }
           return (
             <PostItem
-              key={item._id}
+              key={item.id}
               post={item}
               activeState={activeState}
             />

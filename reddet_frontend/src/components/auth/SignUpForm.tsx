@@ -8,17 +8,24 @@ import {
 } from '@mantine/core';
 import { useEffect } from 'react';
 import { useForm } from '@mantine/form';
-import { Mail, Lock, Send } from 'tabler-icons-react';
+import {
+  Mail, Lock, Send,
+} from 'tabler-icons-react';
 import useRegisterUserMutation from 'services/auth';
 import { getErrorMessage } from 'types/errorTypes';
+import { showNotification } from '@mantine/notifications';
 
-interface ISignUpFormProps {
-  onSuccess: () => void,
-  // onError: (error: string) => void,
-}
-
-export default function SignupForm({ onSuccess }: ISignUpFormProps) {
-  const registerUserMutation = useRegisterUserMutation();
+export default function SignupForm() {
+  const registerUserMutation = useRegisterUserMutation((username) => {
+    showNotification({
+      id: 'signup',
+      autoClose: 5000,
+      disallowClose: true,
+      title: 'Signup Successful',
+      message: `Welcome ${username} and enjoy clone of reddet.`,
+      color: 'blue',
+    });
+  });
 
   const form = useForm({
     initialValues: {
@@ -57,8 +64,6 @@ export default function SignupForm({ onSuccess }: ISignUpFormProps) {
   const handleSignUpSubmit = (values: FormValues) => {
     registerUserMutation.mutate({ ...values });
   };
-
-  if (registerUserMutation.isSuccess) onSuccess();
 
   return (
     <Box sx={{ maxWidth: 300 }} mx="auto">
