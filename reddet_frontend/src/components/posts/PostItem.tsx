@@ -3,6 +3,9 @@ import {
 } from '@mantine/core';
 import { ReactEventHandler } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useVotePost } from 'services/posts';
+import { useAuth } from 'providers/authProvider';
+import { showNotification } from '@mantine/notifications';
 import IPost from '../../types/postType';
 import PostHeader from './PostHeader';
 import PostBody from './PostBody';
@@ -16,22 +19,46 @@ interface PostItemProps {
 
 export default function PostItem({ post, activeState }: PostItemProps) {
   const navigate = useNavigate();
+  const auth = useAuth();
+  const votePostMutation = useVotePost();
 
   const handleClick: ReactEventHandler = (ev) => {
     ev.stopPropagation();
-    // eslint-disable-next-line no-underscore-dangle
-    navigate(`/posts/${post._id}`);
+    navigate(`/posts/${post.id}`);
   };
 
   const handleUpvote: ReactEventHandler = (ev) => {
     ev.stopPropagation();
+    if (auth?.data?.token) votePostMutation.mutate({ id: post.id, dir: 1 });
+    else {
+      showNotification({
+        id: 'postVote',
+        autoClose: 4000,
+        disallowClose: true,
+        title: 'Unauthorized action',
+        message: 'Please Login first.',
+        color: 'red',
+      });
+    }
   };
 
   const handleDownvote: ReactEventHandler = (ev) => {
     ev.stopPropagation();
+    if (auth?.data?.token) votePostMutation.mutate({ id: post.id, dir: -1 });
+    else {
+      showNotification({
+        id: 'postVote',
+        autoClose: 4000,
+        disallowClose: true,
+        title: 'Unauthorized action',
+        message: 'Please Login first.',
+        color: 'red',
+      });
+    }
   };
 
   const handleCommentClicked: ReactEventHandler = () => {
+    // no-op parent will handle this event.
   };
 
   return (
@@ -62,6 +89,7 @@ export default function PostItem({ post, activeState }: PostItemProps) {
               handleDownvote={handleDownvote}
               handleUpvote={handleUpvote}
               activeState={activeState}
+              isLoading={votePostMutation.isLoading}
             />
           </Grid.Col>
           <Grid.Col span={11}>

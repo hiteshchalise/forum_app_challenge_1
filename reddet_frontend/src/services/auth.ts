@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import Axios, { AxiosError } from 'axios';
 import { useAuth } from 'providers/authProvider';
 import { useMutation, useQueryClient } from 'react-query';
@@ -29,7 +30,7 @@ async function registerUser(data: IRegisterUser): Promise<IRegisterUserResponse>
   }
 }
 
-const useRegisterUserMutation = () => {
+const useRegisterUserMutation = (onSuccessCallback: (username: string)=> void) => {
   const queryClient = useQueryClient();
   const auth = useAuth();
 
@@ -53,6 +54,7 @@ const useRegisterUserMutation = () => {
         storage.setUser(user);
         auth?.setAuthData({ ...user });
         queryClient.setQueryData(['user'], data.user);
+        onSuccessCallback(data.user.name);
       },
     },
   );
@@ -78,7 +80,7 @@ async function loginUser(data: ILoginUser): Promise<ILoginUserResponse> {
   }
 }
 
-export const useLoginUserMutation = () => {
+export const useLoginUserMutation = (onSuccessCallback: (username: string)=>void) => {
   const queryClient = useQueryClient();
   const auth = useAuth();
 
@@ -102,6 +104,7 @@ export const useLoginUserMutation = () => {
         storage.setUser(user);
         auth?.setAuthData({ ...user });
         queryClient.setQueryData(['user'], data.user);
+        onSuccessCallback(data.user.name);
       },
     },
   );

@@ -2,13 +2,16 @@ import {
   Button,
   Container, createStyles, Divider, Space, Text,
 } from '@mantine/core';
+import { showNotification } from '@mantine/notifications';
 import CloseIcon from 'assets/CloseIcon';
 import DocumentIcon from 'assets/DocumentIcon';
 import DownvoteLogo from 'assets/DownvoteLogo';
 import UpvoteLogo from 'assets/UpvoteLogo';
 import { VoteActiveState } from 'components/posts/UpvoteSection';
+import { useAuth } from 'providers/authProvider';
 import { ReactEventHandler } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useVotePost } from 'services/posts';
 import { IPostDetail } from 'types/postType';
 
 interface IPostDetailsHeaderProps {
@@ -27,13 +30,40 @@ const useStyles = createStyles(() => ({
 
 export default function PostDetailsHeader({ postData, activeState }: IPostDetailsHeaderProps) {
   const { classes } = useStyles();
+  const auth = useAuth();
+  const votePostMutation = useVotePost();
   const navigate = useNavigate();
+
   const handleUpvote: ReactEventHandler = (ev) => {
     ev.stopPropagation();
+    if (auth?.data?.token) votePostMutation.mutate({ id: postData.id, dir: 1 });
+    else {
+      showNotification({
+        id: 'postVote',
+        autoClose: 4000,
+        disallowClose: true,
+        title: 'Unauthorized action',
+        message: 'Please Login first.',
+        color: 'red',
+      });
+    }
   };
+
   const handleDownvote: ReactEventHandler = (ev) => {
     ev.stopPropagation();
+    if (auth?.data?.token) votePostMutation.mutate({ id: postData.id, dir: -1 });
+    else {
+      showNotification({
+        id: 'postVote',
+        autoClose: 4000,
+        disallowClose: true,
+        title: 'Unauthorized action',
+        message: 'Please Login first.',
+        color: 'red',
+      });
+    }
   };
+
   return (
     <>
       <Space h="md" />

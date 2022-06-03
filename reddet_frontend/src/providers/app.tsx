@@ -1,3 +1,5 @@
+import { MantineProvider } from '@mantine/core';
+import { NotificationsProvider } from '@mantine/notifications';
 import { ErrorBoundary } from 'react-error-boundary';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
@@ -17,8 +19,8 @@ const queryClient = new QueryClient({
     queries: {
       useErrorBoundary: true,
       refetchOnWindowFocus: false,
-      refetchOnMount: false,
-      staleTime: 1000 * 60 * 60,
+      refetchOnMount: true,
+      staleTime: 1000 * 60 * 10, // 10 min
     },
   },
 });
@@ -27,10 +29,14 @@ function AppProvider({ children }: AppProviderProps) {
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
       <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <BrowserRouter>{children}</BrowserRouter>
-        </AuthProvider>
-        <ReactQueryDevtools />
+        <MantineProvider>
+          <NotificationsProvider>
+            <AuthProvider>
+              <BrowserRouter>{children}</BrowserRouter>
+            </AuthProvider>
+            <ReactQueryDevtools />
+          </NotificationsProvider>
+        </MantineProvider>
       </QueryClientProvider>
     </ErrorBoundary>
   );

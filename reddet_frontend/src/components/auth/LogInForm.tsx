@@ -11,14 +11,19 @@ import { useForm } from '@mantine/form';
 import { Mail, Lock } from 'tabler-icons-react';
 import { useLoginUserMutation } from 'services/auth';
 import { getErrorMessage } from 'types/errorTypes';
+import { showNotification } from '@mantine/notifications';
 
-interface ILoginFormProps {
-  onSuccess: () => void,
-  // onError: (error: string) => void,
-}
-
-export default function LogInForm({ onSuccess }: ILoginFormProps) {
-  const loginUserMutation = useLoginUserMutation();
+export default function LogInForm() {
+  const loginUserMutation = useLoginUserMutation((username) => {
+    showNotification({
+      id: 'login',
+      autoClose: 5000,
+      disallowClose: true,
+      title: 'Login Successful',
+      message: `Welcome ${username} and enjoy discussions!`,
+      color: 'blue',
+    });
+  });
 
   const form = useForm({
     initialValues: {
@@ -49,10 +54,6 @@ export default function LogInForm({ onSuccess }: ILoginFormProps) {
   const handleLoginSubmit = (values: FormValues) => {
     loginUserMutation.mutate({ ...values });
   };
-
-  useEffect(() => {
-    if (loginUserMutation.isSuccess) onSuccess();
-  }, [loginUserMutation.isSuccess, onSuccess]);
 
   return (
     <Box sx={{ maxWidth: 300 }} mx="auto">
@@ -89,7 +90,7 @@ export default function LogInForm({ onSuccess }: ILoginFormProps) {
           {loginUserMutation.isError ? getErrorMessage(loginUserMutation.error) : ''}
         </Text>
         <Group position="right" mt="md">
-          <Button type="submit">Submit</Button>
+          <Button type="submit" disabled={loginUserMutation.isLoading}>Submit</Button>
         </Group>
       </form>
     </Box>
