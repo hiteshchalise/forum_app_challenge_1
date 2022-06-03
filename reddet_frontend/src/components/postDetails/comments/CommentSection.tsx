@@ -2,13 +2,17 @@
 import {
   Avatar, Badge, Box, Container, Space, Stack, Text,
 } from '@mantine/core';
+import { showNotification } from '@mantine/notifications';
 import RichTextEditor from '@mantine/rte';
 import DownvoteLogo from 'assets/DownvoteLogo';
 import UpvoteLogo from 'assets/UpvoteLogo';
 import { VoteActiveState } from 'components/posts/UpvoteSection';
 import moment from 'moment';
+import { useAuth } from 'providers/authProvider';
 import { ReactEventHandler } from 'react';
+import { useVoteComment } from 'services/comments';
 import { IUserResponse } from 'services/user';
+import { Loader } from 'tabler-icons-react';
 import { ICommentDetail } from 'types/commentType';
 
 interface ICommentContainerProps {
@@ -31,13 +35,38 @@ function CommentDisplay({ commentBody }: { commentBody: string }) {
 }
 
 function CommentContainer({ comment, activeState }: ICommentContainerProps) {
+  const voteCommentMutation = useVoteComment();
+  const auth = useAuth();
   const commentedAt = Date.parse(comment.commented_at);
   const commentedTimeAgo = moment(commentedAt).fromNow();
+
   const handleUpvote: ReactEventHandler = (ev) => {
     ev.stopPropagation();
+    if (auth?.data?.user) voteCommentMutation.mutate({ id: comment._id, dir: 1 });
+    else {
+      showNotification({
+        id: 'postVote',
+        autoClose: 4000,
+        disallowClose: true,
+        title: 'Unauthorized action',
+        message: 'Please Login first.',
+        color: 'red',
+      });
+    }
   };
   const handleDownvote: ReactEventHandler = (ev) => {
     ev.stopPropagation();
+    if (auth?.data?.user) voteCommentMutation.mutate({ id: comment._id, dir: -1 });
+    else {
+      showNotification({
+        id: 'postVote',
+        autoClose: 4000,
+        disallowClose: true,
+        title: 'Unauthorized action',
+        message: 'Please Login first.',
+        color: 'red',
+      });
+    }
   };
 
   return (
@@ -89,7 +118,7 @@ function CommentContainer({ comment, activeState }: ICommentContainerProps) {
             active={activeState === 1}
             onClickListener={handleUpvote}
           />
-          <Text px="sm">{comment.upvotes}</Text>
+          {voteCommentMutation.isLoading ? <Loader color="gray" /> : <Text px="sm">{comment.upvotes}</Text>}
           <DownvoteLogo
             active={activeState === 3}
             onClickListener={handleDownvote}

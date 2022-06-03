@@ -33,6 +33,14 @@ const postSchema = new Schema({
   }
 })
 
+postSchema.set('toJSON', {
+  transform: (document, returnedObject) => {
+    returnedObject.id = returnedObject._id.toString()
+    delete returnedObject._id
+    delete returnedObject.__v
+  }
+})
+
 function validatePost(post) {
   const schema = Joi.object({
     post_title: Joi.string().required(),

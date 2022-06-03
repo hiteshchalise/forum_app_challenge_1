@@ -1,5 +1,4 @@
 const express = require('express')
-const _ = require('lodash')
 const { Post, validatePost } = require('../model/Post')
 const { User } = require('../model/User')
 const validateObjectId = require('../middleware/validateObjectId')
@@ -31,7 +30,7 @@ router.get('/:postId', validateObjectId, async (req, res) => {
   if (!post) return res.status(404).json({ error: 'no post found with that id' })
 
   post.comments.sort((a, b) => b.commented_at - a.commented_at)
-  res.json(_.pick(post, ['_id', 'post_title', 'post_body', 'posted_by', 'posted_at', 'comments', 'upvotes']))
+  res.json(post)
 })
 
 // @route POST api/posts/
@@ -60,7 +59,7 @@ router.post('/', auth, async (req, res) => {
   user.voted_posts = user.voted_posts.concat({ _id: post._id, dir: 1 })
   await user.save()
 
-  return res.status(201).json({ postId: post._id, vote_dir: 1 })
+  return res.status(201).json(post)
 })
 
 // @route Post api/posts/:postId/comments/
@@ -120,10 +119,10 @@ router.post('/upvote', auth, async (req, res) => {
   if (!user) return res.status(401).json({ error: 'no user found' })
 
   const votedPost = user.voted_posts.find(
-    upvoted_post => upvoted_post._id.toString() === post._id.toString()
+    voted_post => voted_post._id && voted_post._id.toString() === post._id.toString()
   )
   if (!votedPost) {
-    user.voted_posts.push({ postId, dir })
+    user.voted_posts.push({ _id: postId, dir })
     post.upvotes += dir
   } else if (votedPost.dir !== dir) {
     // if user_voted dir goes from -1 to 1 OR 1 to -1, final upvotes in post should increase OR decrease by 2
