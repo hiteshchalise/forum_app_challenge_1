@@ -4,3 +4,4 @@
 requests.rest
 /config
 /coverage
+.env

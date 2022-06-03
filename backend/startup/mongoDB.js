@@ -1,6 +1,5 @@
-const config = require('config')
 const mongoose = require('mongoose')
-const db = config.get('mongoURI')
+const db = process.env.mongoURI
 
 module.exports = {
   mongoose,
