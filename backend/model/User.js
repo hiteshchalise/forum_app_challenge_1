@@ -2,7 +2,6 @@ const Joi = require('@hapi/joi')
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 const jwt = require('jsonwebtoken')
-const config = require('config')
 
 const userSchema = new Schema({
   name: {
@@ -78,7 +77,7 @@ userSchema.set('toJSON', {
 userSchema.methods.generateAuthToken = function () {
   const authToken = jwt.sign(
     { id: this._id },
-    config.get('ACCESS_TOKEN_SECRET'),
+    process.env.ACCESS_TOKEN_SECRET,
     { expiresIn: 3600 * 24 * 30 })
   return authToken
 }
