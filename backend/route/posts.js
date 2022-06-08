@@ -13,9 +13,13 @@ const router = express.Router()
 // @access Public
 router.get('/', async (req, res) => {
   const posts = await Post.find({})
-    .populate('comments')
-    .sort({ 'posted_at': 'desc' })
-    .limit(15)
+    .populate({
+      path: 'comments',
+      populate: { path: 'child_comments' }
+    })
+
+  // .sort({ 'posted_at': 'desc' })
+  // .limit(15)
 
   res.json(posts)
 })
@@ -98,6 +102,44 @@ router.post('/:postId/comments', auth, async (req, res) => {
   // return res.json(_.pick(post, ["_id", "post_title", "post_body", "posted_by", "posted_at", "comments", "upvotes"]));
   res.status(201).json(post)
 })
+
+// @route Post api/posts/:postId/comments/:commentId
+// @desc Submit comment under comment with commentId of post with postId.
+// @access Private
+router.post('/:postId/comments/:commentId', auth, async (req, res) => {
+
+  const { error } = validateComment(req.body)
+  if (error) return res.status(400).json({ error: error.details[0].message })
+
+  const user = await User.findById(req.user.id)
+  if (!user) return res.status(400).json({ error: 'User not found' })
+
+  const parentComment = await Comment.findById(req.params.commentId)
+  if (!parentComment) return res.status(400).json({ error: 'Comment not found' })
+
+  const comment = new Comment({
+    comment_body: req.body.comment_body,
+    commented_by: {
+      _id: user._id,
+      name: user.name,
+      email: user.email
+    },
+    commented_to: req.params.postId,
+  })
+
+  await comment.save()
+
+  user.voted_comments.push({ _id: comment._id, dir: 1 })
+  await user.save()
+
+  parentComment.child_comments.push({ _id: comment._id })
+  await parentComment.save()
+
+  const populatedParentComment = await parentComment.populate('child_comments')
+
+  return res.status(201).json(populatedParentComment)
+})
+
 
 
 // @route POST api/posts/upvote

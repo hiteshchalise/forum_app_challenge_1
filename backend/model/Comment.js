@@ -23,6 +23,10 @@ const commentSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Post'
   },
+  child_comments: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Comment',
+  }],
   commented_at: {
     type: Date,
     default: Date.now
