@@ -91,7 +91,7 @@ export default function CommentTree({
             (childComment) => (
               <Box
                 key={childComment._id}
-                sx={(theme) => ({ paddingLeft: '48px' })}
+                sx={{ paddingLeft: '48px' }}
               >
                 <CommentTree
                   comment={childComment}
