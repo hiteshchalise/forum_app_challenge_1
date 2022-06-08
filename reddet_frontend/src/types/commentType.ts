@@ -13,5 +13,6 @@ export interface ICommentDetail extends IComment {
   commented_by: ICommentedBy,
   commented_at: string,
   commented_to: string,
+  child_comments: ICommentDetail []
   upvotes: number
 }
