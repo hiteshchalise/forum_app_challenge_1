@@ -17,9 +17,8 @@ router.get('/', async (req, res) => {
       path: 'comments',
       populate: { path: 'child_comments' }
     })
-
-  // .sort({ 'posted_at': 'desc' })
-  // .limit(15)
+    .sort({ 'posted_at': 'desc' })
+    .limit(15)
 
   res.json(posts)
 })
@@ -30,7 +29,12 @@ router.get('/', async (req, res) => {
 router.get('/:postId', validateObjectId, async (req, res) => {
   const post = await Post
     .findById(req.params.postId)
-    .populate('comments')
+    .populate({
+      path: 'comments',
+      populate: { path: 'child_comments' }
+    })
+    .sort({ 'posted_at': 'asc' })
+    .limit(15)
   if (!post) return res.status(404).json({ error: 'no post found with that id' })
 
   post.comments.sort((a, b) => b.commented_at - a.commented_at)
@@ -96,7 +100,11 @@ router.post('/:postId/comments', auth, async (req, res) => {
   user.voted_comments.push({ _id: comment._id, dir: 1 })
   await user.save()
 
-  await post.populate('comments')
+  await post
+    .populate({
+      path: 'comments',
+      populate: { path: 'child_comments' }
+    })
   post.comments.sort((a, b) => b.commented_at - a.commented_at)
 
   // return res.json(_.pick(post, ["_id", "post_title", "post_body", "posted_by", "posted_at", "comments", "upvotes"]));
