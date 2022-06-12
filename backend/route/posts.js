@@ -31,7 +31,10 @@ router.get('/:postId', validateObjectId, async (req, res) => {
     .findById(req.params.postId)
     .populate({
       path: 'comments',
-      populate: { path: 'child_comments' }
+      populate: {
+        path: 'child_comments',
+        populate: { path: 'child_comments' }
+      }
     })
     .sort({ 'posted_at': 'asc' })
     .limit(15)
@@ -119,6 +122,9 @@ router.post('/:postId/comments/:commentId', auth, async (req, res) => {
   const { error } = validateComment(req.body)
   if (error) return res.status(400).json({ error: error.details[0].message })
 
+  const post = await Post.findById(req.params.postId)
+  if (!post) return res.status(404).json({ error: 'no post found with that id' })
+
   const user = await User.findById(req.user.id)
   if (!user) return res.status(400).json({ error: 'User not found' })
 
@@ -143,9 +149,12 @@ router.post('/:postId/comments/:commentId', auth, async (req, res) => {
   parentComment.child_comments.push({ _id: comment._id })
   await parentComment.save()
 
-  const populatedParentComment = await parentComment.populate('child_comments')
+  const populatedPost = await post.populate({
+    path: 'comments',
+    populate: { path: 'child_comments' }
+  })
 
-  return res.status(201).json(populatedParentComment)
+  return res.status(201).json(populatedPost)
 })
 
 
