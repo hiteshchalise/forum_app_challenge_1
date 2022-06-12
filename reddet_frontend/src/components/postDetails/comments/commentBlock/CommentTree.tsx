@@ -6,6 +6,8 @@ import moment from 'moment';
 import { ICommentDetail } from 'types/commentType';
 import { VoteActiveState } from 'components/posts/UpvoteSection';
 import { IUserResponse } from 'services/user';
+import { useReplyOnCommentMutation } from 'services/comments';
+import { showNotification } from '@mantine/notifications';
 import CommentDisplay from './CommentDisplay';
 import Footer from './Footer';
 
@@ -36,6 +38,25 @@ function getActiveState(user: IUserResponse | undefined, comment: ICommentDetail
 export function CommentBlock({ comment, activeState }: ICommentBlockProps) {
   const commentedAt = Date.parse(comment.commented_at);
   const commentedTimeAgo = moment(commentedAt).fromNow();
+  const replyOnCommentMutation = useReplyOnCommentMutation(() => {
+    showNotification({
+      id: 'replyOnComment',
+      autoClose: 4000,
+      disallowClose: true,
+      message: 'Comment replied successfully.',
+      color: 'red',
+    });
+  });
+
+  const hanldeReplySubmit = (replyValue: string) => {
+    replyOnCommentMutation.mutate({
+      postId: comment.commented_to,
+      commentId: comment._id,
+      value: replyValue,
+    });
+  };
+
+  if (!comment.commented_by) return null;
 
   return (
     <Box
@@ -72,7 +93,7 @@ export function CommentBlock({ comment, activeState }: ICommentBlockProps) {
           </Badge>
         </Container>
         <CommentDisplay commentBody={comment.comment_body} />
-        <Footer activeState={activeState} comment={comment} />
+        <Footer activeState={activeState} comment={comment} onReplySubmit={hanldeReplySubmit} />
       </Stack>
     </Box>
   );
@@ -88,17 +109,22 @@ export default function CommentTree({
       {
         comment.child_comments && comment.child_comments.length > 0
           ? comment.child_comments.map(
-            (childComment) => (
-              <Box
-                key={childComment._id}
-                sx={{ paddingLeft: '48px' }}
-              >
-                <CommentTree
-                  comment={childComment}
-                  user={user}
-                />
-              </Box>
-            ),
+            (childComment) => {
+              if (childComment.commented_by) {
+                return (
+                  <Box
+                    key={childComment._id}
+                    sx={{ paddingLeft: '48px' }}
+                  >
+                    <CommentTree
+                      comment={childComment}
+                      user={user}
+                    />
+                  </Box>
+                );
+              }
+              return '';
+            },
           ) : null
       }
     </>

@@ -35,12 +35,32 @@ async function submitComment(postId: string, data: string): Promise<ISubmitComme
   }
 }
 
+async function submitReplyOnComment(
+  postId: string,
+  commentId: string,
+  data: string,
+): Promise<ISubmitCommentResponse> {
+  try {
+    const response = await axios.post(`/api/posts/${postId}/comments/${commentId}`, { comment_body: data });
+    return response.data as ISubmitCommentResponse;
+  } catch (error: AxiosError | unknown) {
+    let message;
+    if (Axios.isAxiosError(error)) {
+      message = (error.response?.data as { error: string }).error;
+    } else {
+      message = getErrorMessage(error);
+    }
+    if (!message) throw error;
+    else throw Error(message as string);
+  }
+}
+
 async function voteComment(id: string, dir: number) {
   const response = await axios.post('/api/posts/upvote/comment', { commentId: id, dir });
   return response.data as IVoteCommentResponse;
 }
 
-export const useCommentMutation = () => {
+export const useCommentMutation = (onSuccessCallback: ()=>void) => {
   const queryClient = useQueryClient();
 
   return useMutation(
@@ -53,6 +73,28 @@ export const useCommentMutation = () => {
         queryClient.setQueryData(['posts', variables.postId], postBody);
         await queryClient.invalidateQueries(['user']);
         await queryClient.invalidateQueries(['posts']);
+        onSuccessCallback();
+      },
+    },
+  );
+};
+
+export const useReplyOnCommentMutation = (onSuccessCallback: ()=>void) => {
+  const queryClient = useQueryClient();
+
+  return useMutation(
+    (data: {
+      postId: string, commentId: string, value: string
+    }) => submitReplyOnComment(data.postId, data.commentId, data.value),
+    {
+      onSuccess: async (response, variables) => {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        const { _id, ...rest } = response;
+        const postBody = { id: _id, ...rest };
+        queryClient.setQueryData(['posts', variables.postId], postBody);
+        await queryClient.invalidateQueries(['user']);
+        await queryClient.invalidateQueries(['posts']);
+        onSuccessCallback();
       },
     },
   );

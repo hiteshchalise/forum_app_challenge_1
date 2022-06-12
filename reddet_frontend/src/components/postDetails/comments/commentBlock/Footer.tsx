@@ -9,19 +9,23 @@ import { showNotification } from '@mantine/notifications';
 import DownvoteLogo from 'assets/DownvoteLogo';
 import UpvoteLogo from 'assets/UpvoteLogo';
 import { useAuth } from 'providers/authProvider';
-import { ReactEventHandler, useState } from 'react';
+import {
+  ReactEventHandler, useRef, useState,
+} from 'react';
 import { useVoteComment } from 'services/comments';
 import { Loader, Message } from 'tabler-icons-react';
-import RichTextEditor from '@mantine/rte';
+import RichTextEditor, { Editor } from '@mantine/rte';
 
 interface IFooterProps {
   comment: ICommentDetail,
-  activeState: VoteActiveState
+  activeState: VoteActiveState,
+  onReplySubmit: (string) => void,
 }
 
-export default function Footer({ comment, activeState }: IFooterProps) {
+export default function Footer({ comment, activeState, onReplySubmit }: IFooterProps) {
   const [showReply, setShowReply] = useState(false);
-  const [value, setValue] = useState('');
+  const editorRef = useRef<Editor>() as React.RefObject<Editor>;
+  const [replyValue, setReplyValue] = useState('');
   const voteCommentMutation = useVoteComment();
   const auth = useAuth();
 
@@ -54,6 +58,9 @@ export default function Footer({ comment, activeState }: IFooterProps) {
 
   const handleSubmit: ReactEventHandler = (ev) => {
     ev.stopPropagation();
+    onReplySubmit(replyValue);
+    setReplyValue('');
+    if (editorRef.current) editorRef.current.editor?.setText('');
   };
 
   const hanldeReplyButton: ReactEventHandler = (ev) => {
@@ -91,8 +98,9 @@ export default function Footer({ comment, activeState }: IFooterProps) {
       </Container>
       <Stack sx={{ display: showReply ? 'flex' : 'none' }}>
         <RichTextEditor
-          value={value}
-          onChange={setValue}
+          ref={editorRef}
+          value={replyValue}
+          onChange={setReplyValue}
           controls={[
             ['bold', 'italic', 'underline'],
             ['unorderedList', 'h1', 'h2', 'h3'],
