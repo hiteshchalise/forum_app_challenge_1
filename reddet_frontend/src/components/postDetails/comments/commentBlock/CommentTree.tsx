@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 import {
-  Avatar, Badge, Box, Container, Space, Stack, Text,
+  Avatar, Badge, Box, Button, Container, Space, Stack, Text,
 } from '@mantine/core';
 import moment from 'moment';
 import { ICommentDetail } from 'types/commentType';
@@ -56,8 +56,6 @@ export function CommentBlock({ comment, activeState }: ICommentBlockProps) {
     });
   };
 
-  if (!comment.commented_by) return null;
-
   return (
     <Box
       sx={(theme) => ({
@@ -107,6 +105,21 @@ export default function CommentTree({
     <>
       <CommentBlock comment={comment} activeState={activeState} />
       {
+        comment.child_comments
+          && comment.child_comments[0]
+          && !comment.child_comments[0].commented_by
+          ? (
+            <Button
+              sx={{ marginLeft: '48px' }}
+              variant="subtle"
+              compact
+            >
+              See more..
+            </Button>
+          )
+          : ''
+      }
+      {
         comment.child_comments && comment.child_comments.length > 0
           ? comment.child_comments.map(
             (childComment) => {
@@ -114,7 +127,7 @@ export default function CommentTree({
                 return (
                   <Box
                     key={childComment._id}
-                    sx={{ paddingLeft: '48px' }}
+                    sx={{ marginLeft: '48px' }}
                   >
                     <CommentTree
                       comment={childComment}
