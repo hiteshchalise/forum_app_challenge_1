@@ -1,8 +1,8 @@
 /* eslint-disable no-underscore-dangle */
 import {
-  Avatar, Badge, Box, Button, Container, Space, Stack, Text,
+  Avatar, Badge, Box, Button, Container, createStyles, Divider, Space, Stack, Text,
 } from '@mantine/core';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import moment from 'moment';
 import { ICommentDetail } from 'types/commentType';
 import { VoteActiveState } from 'components/posts/UpvoteSection';
@@ -11,6 +11,13 @@ import { useReplyOnCommentMutation } from 'services/comments';
 import { showNotification } from '@mantine/notifications';
 import CommentDisplay from './CommentDisplay';
 import Footer from './Footer';
+
+const useStyles = createStyles((theme) => ({
+  commentContainer: {
+    marginLeft: theme.spacing.md / 2 + theme.spacing.lg,
+    position: 'relative',
+  },
+}));
 
 interface ICommentBlockProps {
   comment: ICommentDetail,
@@ -59,16 +66,20 @@ export function CommentBlock({ comment, activeState }: ICommentBlockProps) {
 
   return (
     <Box
-      sx={(theme) => ({
+      sx={() => ({
         display: 'flex',
         flexWrap: 'nowrap',
         justifyContent: 'flex-start',
-        padding: theme.spacing.md,
       })}
     >
-      <Avatar radius="xl" color="blue">
-        {comment.commented_by.name.substring(0, 2)}
-      </Avatar>
+      <Stack sx={(theme) => ({
+        gap: theme.spacing.xs,
+      })}
+      >
+        <Avatar radius="xl" color="blue" sx={{ flex: '0 0 auto' }}>
+          {comment.commented_by.name.substring(0, 2)}
+        </Avatar>
+      </Stack>
       <Space w="sm" />
       <Stack
         sx={(theme) => ({
@@ -101,9 +112,27 @@ export function CommentBlock({ comment, activeState }: ICommentBlockProps) {
 export default function CommentTree({
   comment, user,
 }: { comment: ICommentDetail, user: IUserResponse | undefined }) {
+  const { classes } = useStyles();
   const activeState = getActiveState(user, comment);
+  const { postId } = useParams();
   return (
-    <>
+
+    <Box
+      className={classes.commentContainer}
+    >
+      <Divider
+        sx={(theme) => ({
+          position: 'absolute',
+          left: theme.spacing.lg - 2,
+          margin: 'auto',
+          '&:hover': {
+            borderLeftColor: theme.colors.blue[9],
+            cursor: 'pointer',
+          },
+        })}
+        orientation="vertical"
+        size="md"
+      />
       <CommentBlock comment={comment} activeState={activeState} />
       {
         comment.child_comments
@@ -114,7 +143,7 @@ export default function CommentTree({
               sx={{ marginLeft: '48px' }}
               variant="subtle"
               component={Link}
-              to={`comments/${comment._id}`}
+              to={`/posts/${postId as string}/comments/${comment._id}`}
               compact
             >
               See more..
@@ -130,7 +159,6 @@ export default function CommentTree({
                 return (
                   <Box
                     key={childComment._id}
-                    sx={{ marginLeft: '48px' }}
                   >
                     <CommentTree
                       comment={childComment}
@@ -143,6 +171,6 @@ export default function CommentTree({
             },
           ) : null
       }
-    </>
+    </Box>
   );
 }

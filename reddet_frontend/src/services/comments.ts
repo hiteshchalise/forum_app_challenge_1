@@ -19,6 +19,22 @@ interface IVoteCommentResponse {
   upvotes: number
 }
 
+export async function getCommentDetail(postId: string, commentId: string): Promise<ICommentDetail> {
+  try {
+    const response = await axios.get(`/api/posts/${postId}/comments/${commentId}`);
+    return response.data as ICommentDetail;
+  } catch (error: AxiosError | unknown) {
+    let message;
+    if (Axios.isAxiosError(error)) {
+      message = (error.response?.data as { error: string }).error;
+    } else {
+      message = getErrorMessage(error);
+    }
+    if (!message) throw error;
+    else throw Error(message as string);
+  }
+}
+
 async function submitComment(postId: string, data: string): Promise<ISubmitCommentResponse> {
   try {
     const response = await axios.post(`/api/posts/${postId}/comments/`, { comment_body: data });
@@ -94,6 +110,7 @@ export const useReplyOnCommentMutation = (onSuccessCallback: ()=>void) => {
         queryClient.setQueryData(['posts', variables.postId], postBody);
         await queryClient.invalidateQueries(['user']);
         await queryClient.invalidateQueries(['posts']);
+        await queryClient.invalidateQueries(['comment']);
         onSuccessCallback();
       },
     },
