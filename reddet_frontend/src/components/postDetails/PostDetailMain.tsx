@@ -8,10 +8,11 @@ import PostHeader from 'components/posts/PostHeader';
 import UpvoteSection, { VoteActiveState } from 'components/posts/UpvoteSection';
 import { useAuth } from 'providers/authProvider';
 import { ReactEventHandler } from 'react';
+import { Outlet, useOutletContext } from 'react-router-dom';
 import { useVotePost } from 'services/posts';
-import useUserQuery from 'services/user';
+import useUserQuery, { IUserResponse } from 'services/user';
 import { IPostDetail } from 'types/postType';
-import CommentSection from './comments/CommentSection';
+import { ICommentDetail } from 'types/commentType';
 import CommentInputSection from './contents/CommentInputSection';
 import PostContent from './contents/PostContent';
 
@@ -84,7 +85,13 @@ export default function PostDetailsMain({ postData, activeState }: IPostDetailsB
           <CommentInputSection />
         </Grid.Col>
       </Grid>
-      <CommentSection comments={postData.comments} user={userQuery.data} />
+      <Outlet context={{ comments: postData.comments, user: userQuery.data }} />
     </>
   );
+}
+
+type ContextType = { comments: ICommentDetail[], user: IUserResponse | undefined, };
+
+export function useComments() {
+  return useOutletContext<ContextType>();
 }

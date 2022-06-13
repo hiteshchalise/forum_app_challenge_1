@@ -2,6 +2,7 @@
 import {
   Avatar, Badge, Box, Button, Container, Space, Stack, Text,
 } from '@mantine/core';
+import { Link } from 'react-router-dom';
 import moment from 'moment';
 import { ICommentDetail } from 'types/commentType';
 import { VoteActiveState } from 'components/posts/UpvoteSection';
@@ -112,6 +113,8 @@ export default function CommentTree({
             <Button
               sx={{ marginLeft: '48px' }}
               variant="subtle"
+              component={Link}
+              to={`comments/${comment._id}`}
               compact
             >
               See more..

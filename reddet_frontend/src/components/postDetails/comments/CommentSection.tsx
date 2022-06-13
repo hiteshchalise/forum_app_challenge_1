@@ -4,6 +4,7 @@ import {
 } from '@mantine/core';
 import { IUserResponse } from 'services/user';
 import { ICommentDetail } from 'types/commentType';
+import { useComments } from '../PostDetailMain';
 import CommentTree from './commentBlock/CommentTree';
 
 export interface ICommentSectionProps {
@@ -11,7 +12,8 @@ export interface ICommentSectionProps {
   user: IUserResponse | undefined,
 }
 
-export default function CommentSection({ comments, user }: ICommentSectionProps) {
+export default function CommentSection() {
+  const { comments, user } = useComments();
   return (
     <>
       <Space h="lg" />
