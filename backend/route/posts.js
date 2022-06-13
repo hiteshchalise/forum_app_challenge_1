@@ -114,6 +114,28 @@ router.post('/:postId/comments', auth, async (req, res) => {
   res.status(201).json(post)
 })
 
+// @route GET api/posts/:postId/comments/:commentId
+// @desc Get comment with commentId of post with postId, with three level deep child comments
+// @access PUBLIC
+router.get('/:postId/comments/:commentId', async (req, res) => {
+
+  const post = await Post.findById(req.params.postId)
+  if (!post) return res.status(404).json({ error: 'no post found with that id' })
+
+  const comment = await Comment.findById(req.params.commentId)
+  if (!comment) return res.status(400).json({ error: 'Comment not found' })
+
+  const populatedComment = await comment.populate({
+    path: 'child_comments',
+    populate: {
+      path: 'child_comments',
+      populate: { path: 'child_comments' }
+    }
+  })
+
+  res.status(200).json(populatedComment)
+})
+
 // @route Post api/posts/:postId/comments/:commentId
 // @desc Submit comment under comment with commentId of post with postId.
 // @access Private
