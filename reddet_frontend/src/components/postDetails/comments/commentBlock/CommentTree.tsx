@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 import {
-  Avatar, Badge, Box, Button, Container, createStyles, Divider, Space, Stack, Text,
+  Avatar, Badge, Box, Button, Container, createStyles, Divider, Space, Stack, Text, useMantineTheme,
 } from '@mantine/core';
 import { Link, useParams } from 'react-router-dom';
 import moment from 'moment';
@@ -15,6 +15,7 @@ import Footer from './Footer';
 const useStyles = createStyles((theme) => ({
   commentContainer: {
     marginLeft: theme.spacing.md / 2 + theme.spacing.lg,
+    marginTop: theme.spacing.lg,
     position: 'relative',
   },
 }));
@@ -113,6 +114,7 @@ export default function CommentTree({
   comment, user,
 }: { comment: ICommentDetail, user: IUserResponse | undefined }) {
   const { classes } = useStyles();
+  const theme = useMantineTheme();
   const activeState = getActiveState(user, comment);
   const { postId } = useParams();
   return (
@@ -121,17 +123,19 @@ export default function CommentTree({
       className={classes.commentContainer}
     >
       <Divider
-        sx={(theme) => ({
+        sx={{
           position: 'absolute',
-          left: theme.spacing.lg - 2,
-          margin: 'auto',
+          borderLeftColor: theme.colors.gray[2],
+          margin: theme.spacing.sm + theme.spacing.xs / 3,
+          padding: theme.spacing.xs,
           '&:hover': {
-            borderLeftColor: theme.colors.blue[9],
+            borderLeftColor: theme.colors.blue[3],
             cursor: 'pointer',
           },
-        })}
+        }}
         orientation="vertical"
-        size="md"
+        size="lg"
+        color={theme.fn.rgba('red', 0)}
       />
       <CommentBlock comment={comment} activeState={activeState} />
       {
