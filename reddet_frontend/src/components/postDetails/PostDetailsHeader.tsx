@@ -112,7 +112,7 @@ export default function PostDetailsHeader({ postData, activeState }: IPostDetail
           leftIcon={<CloseIcon />}
           variant="white"
           compact
-          onClick={() => { navigate(-1); }}
+          onClick={() => { navigate('/'); }}
         >
           Close
 

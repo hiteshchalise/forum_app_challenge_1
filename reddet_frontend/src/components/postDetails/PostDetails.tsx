@@ -21,7 +21,7 @@ export default function PostDetails() {
   const navigate = useNavigate();
   const handleSidePaneClick: ReactEventHandler = (ev) => {
     ev.stopPropagation();
-    navigate(-1);
+    navigate('/');
   };
 
   return (

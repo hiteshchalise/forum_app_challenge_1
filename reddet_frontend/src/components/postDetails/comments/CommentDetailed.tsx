@@ -1,9 +1,12 @@
-import { Box, createStyles } from '@mantine/core';
+import {
+  Box, Button, createStyles, Space, Stack,
+} from '@mantine/core';
 import Loading from 'components/Loading';
 import { useAuth } from 'providers/authProvider';
 import { useQuery } from 'react-query';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import useUserQuery from 'services/user';
+import { ArrowLeft } from 'tabler-icons-react';
 import { getCommentDetail } from '../../../services/comments';
 import CommentTree from './commentBlock/CommentTree';
 
@@ -35,6 +38,19 @@ export default function CommentDetailed() {
   if (!commentQuery.data) return null;
 
   return (
-    <CommentTree comment={commentQuery.data} user={userQuery.data} />
+    <Stack sx={{ alignItems: 'flex-start' }}>
+      <Space h="lg" />
+      <Button
+        sx={{ marginLeft: '48px' }}
+        variant="subtle"
+        component={Link}
+        to={`/posts/${postId as string}/`}
+        leftIcon={<ArrowLeft />}
+        compact
+      >
+        Back to parent thread
+      </Button>
+      <CommentTree comment={commentQuery.data} user={userQuery.data} />
+    </Stack>
   );
 }
