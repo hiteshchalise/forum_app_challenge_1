@@ -23,9 +23,9 @@ interface IVotePostResponse {
   upvotes: number
 }
 
-export async function getPosts(): Promise<IPost[]> {
+export async function getPosts(): Promise<IPostDetail[]> {
   const response = await axios.get('/api/posts/');
-  return response.data as IPost[];
+  return response.data as IPostDetail[];
 }
 
 export async function getPostDetails(id: string): Promise<IPostDetail> {

@@ -125,6 +125,7 @@ export const useVoteComment = () => {
       onSuccess: async () => {
         await queryClient.invalidateQueries(['posts']);
         await queryClient.invalidateQueries(['user']);
+        await queryClient.invalidateQueries(['comment']);
       },
     },
   );

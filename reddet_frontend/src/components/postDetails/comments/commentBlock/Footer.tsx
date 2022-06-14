@@ -31,9 +31,14 @@ export default function Footer({ comment, activeState, onReplySubmit }: IFooterP
 
   const handleUpvote: ReactEventHandler = (ev) => {
     ev.stopPropagation();
-    if (auth?.data?.user) { voteCommentMutation.mutate({ id: comment._id, dir: 1 }); } else {
+    if (auth?.data?.user) {
+      voteCommentMutation.mutate({
+        id: comment._id,
+        dir: activeState === VoteActiveState.Up ? 0 : 1,
+      });
+    } else {
       showNotification({
-        id: 'postVote',
+        id: 'postCommentVote',
         autoClose: 4000,
         disallowClose: true,
         title: 'Unauthorized action',
@@ -44,9 +49,14 @@ export default function Footer({ comment, activeState, onReplySubmit }: IFooterP
   };
   const handleDownvote: ReactEventHandler = (ev) => {
     ev.stopPropagation();
-    if (auth?.data?.user) { voteCommentMutation.mutate({ id: comment._id, dir: -1 }); } else {
+    if (auth?.data?.user) {
+      voteCommentMutation.mutate({
+        id: comment._id,
+        dir: activeState === VoteActiveState.Down ? 0 : -1,
+      });
+    } else {
       showNotification({
-        id: 'postVote',
+        id: 'postCommentVote',
         autoClose: 4000,
         disallowClose: true,
         title: 'Unauthorized action',

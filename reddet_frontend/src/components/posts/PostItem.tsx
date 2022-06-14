@@ -1,20 +1,25 @@
 import {
   Box, Grid, Space,
 } from '@mantine/core';
-import { ReactEventHandler } from 'react';
+import { ReactEventHandler, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useVotePost } from 'services/posts';
 import { useAuth } from 'providers/authProvider';
 import { showNotification } from '@mantine/notifications';
-import IPost from '../../types/postType';
+import IComment, { ICommentDetail } from 'types/commentType';
+import IPost, { IPostDetail } from '../../types/postType';
 import PostHeader from './PostHeader';
 import PostBody from './PostBody';
 import UpvoteSection, { VoteActiveState } from './UpvoteSection';
 import PostFooter from './PostFooter';
 
 interface PostItemProps {
-  post: IPost,
+  post: IPostDetail,
   activeState: VoteActiveState
+}
+
+interface IGetCommentLengthType {
+  (comments: ICommentDetail[]): number
 }
 
 export default function PostItem({ post, activeState }: PostItemProps) {
@@ -22,6 +27,12 @@ export default function PostItem({ post, activeState }: PostItemProps) {
   const auth = useAuth();
   const votePostMutation = useVotePost();
 
+  const getCommentLength: IGetCommentLengthType = (
+    comments: ICommentDetail[],
+  ): number => (comments ? comments.reduce(
+    (acc, comment) => acc + getCommentLength(comment.child_comments),
+    comments.length,
+  ) : 0);
   const handleClick: ReactEventHandler = (ev) => {
     ev.stopPropagation();
     navigate(`/posts/${post.id}`);
@@ -96,7 +107,7 @@ export default function PostItem({ post, activeState }: PostItemProps) {
             <PostHeader posted_at={post.posted_at} postedBy={post.posted_by.name} />
             <PostBody post_title={post.post_title} post_body={post.post_body} />
             <PostFooter
-              commentLength={post.comments.length}
+              commentLength={getCommentLength(post.comments)}
               onCommentClicked={handleCommentClicked}
             />
           </Grid.Col>
