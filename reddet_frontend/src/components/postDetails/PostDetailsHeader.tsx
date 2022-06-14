@@ -36,8 +36,12 @@ export default function PostDetailsHeader({ postData, activeState }: IPostDetail
 
   const handleUpvote: ReactEventHandler = (ev) => {
     ev.stopPropagation();
-    if (auth?.data?.token) votePostMutation.mutate({ id: postData.id, dir: 1 });
-    else {
+    if (auth?.data?.token) {
+      votePostMutation.mutate({
+        id: postData.id,
+        dir: activeState === VoteActiveState.Up ? 0 : 1,
+      });
+    } else {
       showNotification({
         id: 'postVote',
         autoClose: 4000,
@@ -51,8 +55,12 @@ export default function PostDetailsHeader({ postData, activeState }: IPostDetail
 
   const handleDownvote: ReactEventHandler = (ev) => {
     ev.stopPropagation();
-    if (auth?.data?.token) votePostMutation.mutate({ id: postData.id, dir: -1 });
-    else {
+    if (auth?.data?.token) {
+      votePostMutation.mutate({
+        id: postData.id,
+        dir: activeState === VoteActiveState.Down ? 0 : -1,
+      });
+    } else {
       showNotification({
         id: 'postVote',
         autoClose: 4000,

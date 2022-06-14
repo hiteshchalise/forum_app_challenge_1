@@ -1,13 +1,13 @@
 import {
   Box, Grid, Space,
 } from '@mantine/core';
-import { ReactEventHandler, useCallback } from 'react';
+import { ReactEventHandler } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useVotePost } from 'services/posts';
 import { useAuth } from 'providers/authProvider';
 import { showNotification } from '@mantine/notifications';
-import IComment, { ICommentDetail } from 'types/commentType';
-import IPost, { IPostDetail } from '../../types/postType';
+import { ICommentDetail } from 'types/commentType';
+import { IPostDetail } from '../../types/postType';
 import PostHeader from './PostHeader';
 import PostBody from './PostBody';
 import UpvoteSection, { VoteActiveState } from './UpvoteSection';
@@ -40,8 +40,12 @@ export default function PostItem({ post, activeState }: PostItemProps) {
 
   const handleUpvote: ReactEventHandler = (ev) => {
     ev.stopPropagation();
-    if (auth?.data?.token) votePostMutation.mutate({ id: post.id, dir: 1 });
-    else {
+    if (auth?.data?.token) {
+      votePostMutation.mutate({
+        id: post.id,
+        dir: activeState === VoteActiveState.Up ? 0 : 1,
+      });
+    } else {
       showNotification({
         id: 'postVote',
         autoClose: 4000,
@@ -55,8 +59,12 @@ export default function PostItem({ post, activeState }: PostItemProps) {
 
   const handleDownvote: ReactEventHandler = (ev) => {
     ev.stopPropagation();
-    if (auth?.data?.token) votePostMutation.mutate({ id: post.id, dir: -1 });
-    else {
+    if (auth?.data?.token) {
+      votePostMutation.mutate({
+        id: post.id,
+        dir: activeState === VoteActiveState.Down ? 0 : -1,
+      });
+    } else {
       showNotification({
         id: 'postVote',
         autoClose: 4000,

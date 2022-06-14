@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from 'react-query';
 import IComment from 'types/commentType';
 import axios from '../lib/axios';
-import IPost, { IPostDetail } from '../types/postType';
+import { IPostDetail } from '../types/postType';
 
 interface IPostedBy {
   _id: string,

@@ -63,6 +63,8 @@ function PostDetailContainer() {
       activeState = VoteActiveState.Neutral;
     } else if (votedPost.dir === 1) {
       activeState = VoteActiveState.Up;
+    } else if (votedPost.dir === 0) {
+      activeState = VoteActiveState.Neutral;
     } else {
       activeState = VoteActiveState.Down;
     }
