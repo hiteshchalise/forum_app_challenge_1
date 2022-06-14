@@ -1,4 +1,5 @@
 /* eslint-disable no-underscore-dangle */
+import { ReactEventHandler, useState } from 'react';
 import {
   Avatar, Badge, Box, Button, Container, createStyles, Divider, Space, Stack, Text, useMantineTheme,
 } from '@mantine/core';
@@ -117,8 +118,14 @@ export default function CommentTree({
   const theme = useMantineTheme();
   const activeState = getActiveState(user, comment);
   const { postId } = useParams();
-  return (
+  const [hidden, setHidden] = useState(false);
 
+  const handleDividerClick: ReactEventHandler = (ev) => {
+    ev.stopPropagation();
+    setHidden(!hidden);
+  };
+
+  return (
     <Box
       className={classes.commentContainer}
     >
@@ -134,8 +141,9 @@ export default function CommentTree({
           },
         }}
         orientation="vertical"
-        size="lg"
+        size="sm"
         color={theme.fn.rgba('red', 0)}
+        onClick={handleDividerClick}
       />
       <CommentBlock comment={comment} activeState={activeState} />
       {
@@ -150,13 +158,25 @@ export default function CommentTree({
               to={`/posts/${postId as string}/comments/${comment._id}`}
               compact
             >
-              See more..
+              Continue this thread..
             </Button>
           )
           : ''
       }
       {
-        comment.child_comments && comment.child_comments.length > 0
+        hidden ? (
+          <Button
+            sx={{ marginLeft: '48px' }}
+            variant="subtle"
+            compact
+            onClick={handleDividerClick}
+          >
+            See More..
+          </Button>
+        ) : ''
+      }
+      {
+        !hidden && comment.child_comments && comment.child_comments.length > 0
           ? comment.child_comments.map(
             (childComment) => {
               if (childComment.commented_by) {
