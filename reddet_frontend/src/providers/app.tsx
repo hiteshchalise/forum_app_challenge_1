@@ -1,5 +1,6 @@
-import { MantineProvider } from '@mantine/core';
+import { MantineProvider, ColorSchemeProvider, ColorScheme } from '@mantine/core';
 import { NotificationsProvider } from '@mantine/notifications';
+import { useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
@@ -26,17 +27,22 @@ const queryClient = new QueryClient({
 });
 
 function AppProvider({ children }: AppProviderProps) {
+  const [colorScheme, setColorScheme] = useState<ColorScheme>('light');
+  const toggleColorScheme = (value?: ColorScheme) => setColorScheme(value || (colorScheme === 'dark' ? 'light' : 'dark'));
+
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
       <QueryClientProvider client={queryClient}>
-        <MantineProvider>
-          <NotificationsProvider>
-            <AuthProvider>
-              <BrowserRouter>{children}</BrowserRouter>
-            </AuthProvider>
-            <ReactQueryDevtools />
-          </NotificationsProvider>
-        </MantineProvider>
+        <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
+          <MantineProvider theme={{ colorScheme }} withGlobalStyles withNormalizeCSS>
+            <NotificationsProvider>
+              <AuthProvider>
+                <BrowserRouter>{children}</BrowserRouter>
+              </AuthProvider>
+              <ReactQueryDevtools />
+            </NotificationsProvider>
+          </MantineProvider>
+        </ColorSchemeProvider>
       </QueryClientProvider>
     </ErrorBoundary>
   );

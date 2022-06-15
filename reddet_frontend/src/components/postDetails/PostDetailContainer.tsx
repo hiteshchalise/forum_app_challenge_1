@@ -24,7 +24,7 @@ const useStyles = createStyles((theme) => ({
     paddingTop: '32',
     paddingLeft: '0',
     paddingRight: '0',
-    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[9] : theme.colors.gray[0],
+    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.colors.gray[0],
     margin: theme.spacing.lg,
     maxWidth: '100%',
   },
@@ -32,7 +32,7 @@ const useStyles = createStyles((theme) => ({
     cursor: 'pointer',
   },
   container: {
-    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[9] : theme.colors.gray[2],
+    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.colors.gray[2],
     minHeight: '100vh',
   },
 }));

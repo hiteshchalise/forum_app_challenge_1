@@ -46,6 +46,7 @@ function getActiveState(user: IUserResponse | undefined, comment: ICommentDetail
 }
 
 export function CommentBlock({ comment, activeState }: ICommentBlockProps) {
+  const theme = useMantineTheme();
   const commentedAt = Date.parse(comment.commented_at);
   const commentedTimeAgo = moment(commentedAt).fromNow();
   const replyOnCommentMutation = useReplyOnCommentMutation(() => {
@@ -74,20 +75,20 @@ export function CommentBlock({ comment, activeState }: ICommentBlockProps) {
         justifyContent: 'flex-start',
       })}
     >
-      <Stack sx={(theme) => ({
+      <Stack sx={{
         gap: theme.spacing.xs,
-      })}
+      }}
       >
-        <Avatar radius="xl" color="blue" sx={{ flex: '0 0 auto' }}>
+        <Avatar radius={theme.spacing.lg} color="blue" sx={{ flex: '0 0 auto' }}>
           {comment.commented_by.name.substring(0, 2)}
         </Avatar>
       </Stack>
       <Space w="sm" />
       <Stack
-        sx={(theme) => ({
+        sx={{
           paddingTop: theme.spacing.xs,
           width: '100%',
-        })}
+        }}
       >
         <Container sx={{
           display: 'flex',
@@ -132,9 +133,10 @@ export default function CommentTree({
       <Divider
         sx={{
           position: 'absolute',
-          borderLeftColor: theme.colors.gray[2],
-          margin: theme.spacing.sm + theme.spacing.xs / 3,
-          padding: theme.spacing.xs,
+          borderLeftColor: theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[2],
+          margin: theme.spacing.lg - 2,
+          height: `calc(100% - ${theme.spacing.lg * 2}px)`,
+          top: theme.spacing.xl,
           '&:hover': {
             borderLeftColor: theme.colors.blue[3],
             cursor: 'pointer',

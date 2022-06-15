@@ -4,10 +4,15 @@ import {
   Box,
   Menu,
   Group,
+  useMantineColorScheme,
+  Space,
+  Divider,
 } from '@mantine/core';
 import { useAuth } from 'providers/authProvider';
 import { Link } from 'react-router-dom';
-import { Logout, Send } from 'tabler-icons-react';
+import {
+  Logout, Send, MoonStars, Sun, ChevronDown, Settings,
+} from 'tabler-icons-react';
 
 export interface ILoggedInUserDisplayProps {
   user: {
@@ -18,10 +23,13 @@ export interface ILoggedInUserDisplayProps {
 
 export default function LoggedInUserDisplay({ user }: ILoggedInUserDisplayProps) {
   const auth = useAuth();
+  const mantineColorScheme = useMantineColorScheme();
 
   const handleLogout = () => {
     auth?.removeAuthData();
   };
+
+  const dark = mantineColorScheme.colorScheme === 'dark';
 
   return (
     <Box sx={(theme) => ({
@@ -29,24 +37,27 @@ export default function LoggedInUserDisplay({ user }: ILoggedInUserDisplayProps)
       marginRight: 0,
       display: 'flex',
       alignItems: 'center',
-      borderWidth: 1,
-      borderColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.colors.gray[3],
-      borderStyle: 'solid',
-      borderRadius: theme.spacing.sm,
-      backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[1],
-      paddingLeft: theme.spacing.xs,
-      paddingRight: theme.spacing.xs,
-      [`@media (max-width: ${theme.breakpoints.sm}px)`]: {
-        padding: 0,
+      borderRadius: theme.spacing.xs,
+      padding: theme.spacing.xs,
+      '&:hover': {
+        borderStyle: 'solid',
+        borderWidth: '1px',
+        borderColor: theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[1],
       },
     })}
     >
       <Menu
         control={(
-          <Group>
+          <Group sx={(theme) => ({
+            flexWrap: 'nowrap',
+            [`@media (max-width: ${theme.breakpoints.md}px)`]: {
+              gap: theme.spacing.xs,
+            },
+          })}
+          >
             <Group
               sx={(theme) => ({
-                [`@media (max-width: ${theme.breakpoints.xs}px)`]: {
+                [`@media (max-width: ${theme.breakpoints.md}px)`]: {
                   display: 'none',
                 },
               })}
@@ -60,7 +71,7 @@ export default function LoggedInUserDisplay({ user }: ILoggedInUserDisplayProps)
             <Avatar
               sx={(theme) => ({
                 display: 'none',
-                [`@media (max-width: ${theme.breakpoints.xs}px)`]: {
+                [`@media (max-width: ${theme.breakpoints.md}px)`]: {
                   display: 'inline-block',
                 },
               })}
@@ -69,19 +80,26 @@ export default function LoggedInUserDisplay({ user }: ILoggedInUserDisplayProps)
             >
               {user.name.substring(0, 2)}
             </Avatar>
+            <ChevronDown color="gray" strokeWidth={1} />
           </Group>
         )}
-        sx={{
+        sx={() => ({
           '&:Hover': {
             cursor: 'pointer',
           },
-        }}
+        })}
       >
         <Menu.Label>
           Logged in as:
           {' '}
           {user.name}
         </Menu.Label>
+        <Menu.Item
+          icon={<Settings size={24} color="gray" />}
+          onClick={() => console.log('Hello')}
+        >
+          Settings
+        </Menu.Item>
         <Menu.Item
           icon={<Send size={24} color="gray" />}
           sx={(theme) => ({
@@ -95,12 +113,29 @@ export default function LoggedInUserDisplay({ user }: ILoggedInUserDisplayProps)
         >
           Add a post.
         </Menu.Item>
+        <Menu.Label>
+          View Options
+        </Menu.Label>
+        <Menu.Item
+          icon={dark ? <Sun size={24} strokeWidth={1.5} />
+            : <MoonStars size={24} strokeWidth={1.5} />}
+          color={dark ? 'yellow' : 'blue'}
+          onClick={() => mantineColorScheme.toggleColorScheme()}
+        >
+          <Text size="sm" color="gray">
+            Toggle color scheme
+          </Text>
+        </Menu.Item>
+        <Menu.Label>
+          <Divider />
+        </Menu.Label>
         <Menu.Item
           icon={<Logout size={24} color="gray" />}
           onClick={handleLogout}
         >
           Log Out
         </Menu.Item>
+        <Space h="lg" />
       </Menu>
     </Box>
   );
