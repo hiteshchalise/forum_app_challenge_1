@@ -12,7 +12,9 @@ const router = express.Router()
 // @desc Get all posts
 // @access Public
 router.get('/', async (req, res) => {
-  const posts = await Post.find({})
+  const posts = await Post.find({
+    post_title: { $ne: '[removed]' }
+  })
     .populate({
       path: 'comments',
       populate: { path: 'child_comments' }
@@ -71,6 +73,23 @@ router.post('/', auth, async (req, res) => {
   await user.save()
 
   return res.status(201).json(post)
+})
+
+// @route DELETE api/posts/:postId
+// @desc Remove post by id
+// @access Private
+router.delete('/:postId', auth, async (req, res) => {
+  const user = await User.findById(req.user.id)
+  if (!user) return res.status(404).json('User Not Found')
+
+  const post = await Post
+    .findById(req.params.postId)
+  if (!post) return res.status(404).json({ error: 'no post found with that id' })
+
+  post.post_title = '[removed]'
+  post.post_body = '[removed]'
+  await post.save()
+  return res.status(204)
 })
 
 // @route Post api/posts/:postId/comments/
