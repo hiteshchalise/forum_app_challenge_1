@@ -61,6 +61,9 @@ export default function Home() {
               <List.Item> Upvote / Downvote posts if you are logged in. </List.Item>
               <List.Item> Comment with rich text. </List.Item>
               <List.Item> Upvote / Downvote comments. </List.Item>
+              <List.Item> Nested Comments. </List.Item>
+              <List.Item> Upvote / Downvote nested comments. </List.Item>
+              <List.Item> Dark Mode.</List.Item>
             </List>
             <Space h="lg" />
             {hasUser ? (

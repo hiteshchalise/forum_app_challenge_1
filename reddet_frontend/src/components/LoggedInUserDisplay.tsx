@@ -11,7 +11,7 @@ import {
 import { useAuth } from 'providers/authProvider';
 import { Link } from 'react-router-dom';
 import {
-  Logout, Send, MoonStars, Sun, ChevronDown, Settings,
+  Logout, Send, MoonStars, Sun, ChevronDown,
 } from 'tabler-icons-react';
 
 export interface ILoggedInUserDisplayProps {
@@ -94,12 +94,12 @@ export default function LoggedInUserDisplay({ user }: ILoggedInUserDisplayProps)
           {' '}
           {user.name}
         </Menu.Label>
-        <Menu.Item
+        {/* <Menu.Item
           icon={<Settings size={24} color="gray" />}
           onClick={() => console.log('Hello')}
         >
           Settings
-        </Menu.Item>
+        </Menu.Item> */}
         <Menu.Item
           icon={<Send size={24} color="gray" />}
           sx={(theme) => ({
@@ -123,7 +123,7 @@ export default function LoggedInUserDisplay({ user }: ILoggedInUserDisplayProps)
           onClick={() => mantineColorScheme.toggleColorScheme()}
         >
           <Text size="sm" color="gray">
-            Toggle color scheme
+            {dark ? 'Light Mode' : 'Dark Mode'}
           </Text>
         </Menu.Item>
         <Menu.Label>
