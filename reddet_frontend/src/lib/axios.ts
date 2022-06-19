@@ -2,9 +2,6 @@ import Axios, { AxiosRequestConfig } from 'axios';
 import storage from 'utils/storage';
 import config from '../config/config';
 
-console.log(config.API_URL);
-console.log(config.API_URL);
-
 /* eslint-disable no-param-reassign */
 const authRequestInterceptor = (axiosRequestConfig: AxiosRequestConfig) => {
   const token = storage.getAuth() ? storage.getAuth().token : null;
